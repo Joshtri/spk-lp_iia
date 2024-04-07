@@ -1,0 +1,9 @@
+POST http://localhost:3000/data/post_pekerjaan
+Content-Type: application/json
+
+{
+    "nama_pekerjaan" : "Sudah Bekerja"
+}
+
+###
+GET http://localhost:3000/data/data_pekerjaan

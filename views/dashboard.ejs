@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/vendor/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <style>
+        /* Custom CSS for responsive columns */
+        @media screen and (max-width: 768px) {
+            .custom-columns .column {
+                width: 100% !important;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+
+
+    <%-include('partials/header'); %>
+    <div class="container mt-5">
+        <div class="columns is-centered">
+            <div class="column ">
+                <div class="card">
+                    <div class="card-content">
+                        <h5 class="title is-4">Selamat datang </h5>
+                        <p class="subtitle is-6">di Website Sistem Pendukung Keputusan pemberian hak pembebasan bersyarat kepada narapidana dengan menggunakan metode TOPSIS.</p>
+                        <!-- <a href="#" class="button is-primary">
+                            Selamat Datang
+                            <span class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 10">
+                                    <path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                                </svg>
+                            </span>
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs is-toggle is-toggle-rounded">
+            <ul>
+              <li class="is-active">
+                <a>
+                  <span class="icon is-small"><i class="fa-solid fa-table"></i></span>
+                  <span>Ikhtisar Data</span>
+                </a>
+              </li>
+              <li>
+                <a>
+                  <span class="icon is-small"><i class="fa-solid fa-ranking-star"></i></span>
+                  <span>Hasil Rangking</span>
+                </a>
+              </li>
+              <!-- <li>
+                <a> 
+                  <span class="icon is-small"><i class="fas fa-film"></i></span>
+                  <span>Videos</span>
+                </a>
+              </li>
+              <li>
+                <a>
+                  <span class="icon is-small"><i class="fas fa-file-alt"></i></span>
+                  <span>Documents</span>
+                </a>
+              </li> -->
+            </ul>
+        </div>
+        
+        <div class="columns is-centered custom-columns">
+            <div class="column is-half-tablet is-one-third-desktop">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <h3 class="title is-4">Jumlah Narapidana</h3>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <p class="is-size-5">100</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column is-half-tablet is-one-third-desktop">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <h3 class="title is-4">Jumlah Kriteria</h3>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <p class="is-size-5">5</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column is-half-tablet is-one-third-desktop">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="media">
+                            <div class="media-content">
+                                <h3 class="title is-4">Jumlah Admin</h3>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <p class="is-size-5">3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+
+
+
+        
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbarBurgers = Array.from(document.querySelectorAll('.navbar-burger'));
+            if (navbarBurgers.length > 0) {
+                navbarBurgers.forEach(burger => {
+                    burger.addEventListener('click', () => {
+                        const target = burger.dataset.target;
+                        const menu = document.getElementById(target);
+                        burger.classList.toggle('is-active');
+                        menu.classList.toggle('is-active');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

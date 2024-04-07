@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Narapidana</title>
+
+    <link rel="stylesheet" href="/vendor/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <%-include('partials/header'); %>
+
+
+    <div class="container mt-6 mb-6">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul>
+              <li>
+                <a href="/dashboard">
+                  <span class="icon is-small">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                  </span>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="">
+                <a href="/data/data_narapidana">
+                  <span class="icon is-small">
+                    <i class="fas fa-book" aria-hidden="true"></i>
+                  </span>
+                  <span>Data Narapidana</span>
+                </a>
+              </li>
+    
+              <li class="is-active">
+                <a href="#">
+                  <span class="icon is-small">
+                    <i class="fa-solid fa-person" aria-hidden="true"></i>
+                  </span>
+                  <span>Tambah Narapidana</span>
+                </a>
+              </li>
+            </ul>
+        </nav>
+
+
+        <div class="field is-grouped">
+            <a href="/data/data_narapidana">
+                <button class="button is-warning is-small">Kembali</button>
+            </a>
+            <!-- <div class="is-one-third is-flex ml-auto">
+                <p class="control is-expanded">
+                    <input class="input" type="text" placeholder="Search">
+                </p>
+            </div> -->
+        </div>
+
+
+        <div class="columns is-multiline">
+            <div class="column is-half">
+                <div class="box">
+                    <label class="label">Nama Narapidana:</label>
+                    <input class="input" type="text">
+
+                    <label class="label">Umur:</label>
+                    <input class="input" type="number">
+
+                    <label class="label">Tempat Lahir:</label>
+                    <input class="input" type="text">
+
+                    <label class="label">Tanggal Lahir:</label>
+                    <input class="input" type="date">
+
+                    <label class="label">Alamat:</label>
+                    <input class="input" type="text">
+                </div>
+            </div>
+            
+            <div class="column is-half">
+                <div class="box">
+                    <label class="label">Nomor KTP:</label>
+                    <input class="input" type="text">
+
+                    <label class="label">Pekerjaan Semula:</label>
+                    <input class="input" type="text">
+
+                    <label class="label">Kewarganegaraan:</label>
+                    <input class="input" type="text">
+
+                    <label class="label">Status:</label>
+                    <input class="input" type="text" value="Sedang Ditahan">
+
+                    <label class="label">Masa Hukuman:</label>
+                    <input class="input" type="text" >
+                </div>
+            </div>
+        </div>
+
+        <!-- Konten lainnya -->
+        <div class="is-flex is-justify-content-center">
+            <button class="button is-success">Simpan</button>
+        </div>
+
+
+    </div>
+
+
+    <%-include('partials/footer'); %>
+
+
+</body>
+</html>
