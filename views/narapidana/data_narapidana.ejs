@@ -58,18 +58,21 @@
                     <tr>
                         <th>No.</th>
                         <th>Nama Narapidana</th>
+                        <th>Register</th>
                         <th>Nomor KTP</th>
                         <!-- <th>Kewarganegaraan</th> -->
-                        <th>Tindak Pidana</th>
+                        <th>Nama Wali</th>
                         <th class="">Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <% for (let i = 0; i < narapidanaData.length; i++) { %>
                     <tr>
                         <th>1</th>
-                        <td>Nyoman</td>
-                        <td>Laptop</td>
-                        <td>Curi Ayam</td>
+                        <td><%= narapidanaData[i].nama_narapidana %></td>
+                        <td><%= narapidanaData[i].register %></td>
+                        <td><%= narapidanaData[i].no_ktp %></td>
+                        <td><%= narapidanaData[i].nama_wali %></td>
                         <td>
                             <button class="button">
                                 <a href="/data/detail_narapidana" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
@@ -84,6 +87,7 @@
                             </button>
                         </td>
                     </tr>
+                    <% } %>
                     <!-- Other table data -->
                 </tbody>
             </table>

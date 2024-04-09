@@ -11,8 +11,17 @@
 <body>
     <%-include('partials/header'); %>
 
+    <style>
+      .notification {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+    </style>
 
     <div class="container mt-6 mb-6">
+
         <nav class="breadcrumb" aria-label="breadcrumbs">
             <ul>
               <li>
@@ -56,53 +65,170 @@
         </div>
 
 
+
+        <!-- Notifikasi KTP -->
+        <div id="notificationKTP" class="notification is-danger" style="display: none;">
+          Nomor KTP tidak boleh melebihi 16 digit.
+          <button class="delete" onclick="closeNotification('notificationKTP')"></button>
+        </div>
+
+
+
         <div class="columns is-multiline">
             <div class="column is-half">
                 <div class="box">
+                  <form action="/data/post_narapidana" method="post">
+
+                  <div class="field">
                     <label class="label">Nama Narapidana:</label>
-                    <input class="input" type="text">
+                    <input class="input" required name="nama_narapidana" type="text">
+                  </div>
 
-                    <label class="label">Umur:</label>
-                    <input class="input" type="number">
+                    <div class="field">
+                      <label class="label">Agama</label>
+                      <div class="control">
+                        <div class="select">
+                          <select name="agama" required>
+                            <option>-</option>
+                            <option value="kristen protestan">Kristen Protestan</option>
+                            <option value="katholik">Katholik</option>
+                            <option value="islam">Islam</option>
+                            <option value="hindu">Hindu</option>
+                            <option value="buddha">Buddha</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
 
-                    <label class="label">Tempat Lahir:</label>
-                    <input class="input" type="text">
+                    <!-- <label class="label">Umur:</label>
+                    <input class="input" name="umur" type="number"> -->
 
-                    <label class="label">Tanggal Lahir:</label>
-                    <input class="input" type="date">
+                    <div class="field">
+                      <label class="label">Tempat Lahir:</label>
+                      <input class="input" required name="tempat_lahir" type="text">
+                    </div>
 
-                    <label class="label">Alamat:</label>
-                    <input class="input" type="text">
+                    <div class="field">
+                      <label class="label">Tanggal Lahir:</label>
+                      <input class="input" required name="tanggal_lahir" type="date">
+                    </div>
+
+                    <div class="field">
+                      <label class="label">Alamat:</label>
+                      <input class="input" required name="alamat_lengkap" type="text">
+                    </div>
                 </div>
             </div>
             
             <div class="column is-half">
                 <div class="box">
+
+                  <div class="field">
                     <label class="label">Nomor KTP:</label>
-                    <input class="input" type="text">
+                    <input class="input" required name="no_ktp" type="text" oninput="validateNIPLength(this)">
+                  </div>
 
-                    <label class="label">Pekerjaan Semula:</label>
-                    <input class="input" type="text">
 
-                    <label class="label">Kewarganegaraan:</label>
-                    <input class="input" type="text">
 
-                    <label class="label">Status:</label>
-                    <input class="input" type="text" value="Sedang Ditahan">
+                  <div class="field">
+                    <label class="label">Pekerjaan Semula</label>
+                    <div class="control">
+                      <div class="select">
+                        <select name="pekerjaan_semula" required>
+                          <% for(let i = 0; i < pekerjaanData.length; i++) { %>
+                            <option value="<%= pekerjaanData[i].id_pekerjaan %>"><%= pekerjaanData[i].nama_pekerjaan %></option>
+                          <% } %>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  
 
-                    <label class="label">Masa Hukuman:</label>
-                    <input class="input" type="text" >
+                    <!-- <div class="field">
+                      <label class="label">Status Narapidana</label>
+                      <div class="control">
+                        <div class="select">
+                          <select name="status_narapidana">
+                            <option>-</option>
+                            <option value="menjalani masa tahanan">Menjalani Masa Tahanan</option>
+                            <option value="cuti menjelang bebas">Cuti Menjelang Bebas</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div> -->
+
+                    <div class="field">
+                      <label class="label">Register</label>
+                      <div class="control">
+                        <div class="select">
+                          <select name="register" required>
+                            <option>-</option>
+                            <option value="B1">B1 (hukuman 5 tahun ke atas (sampai hukuman seumur hidup/hukuman mati) )</option>
+                            <option value="B2A">B2A (hukuman 2 tahun - 5 tahun)</option>
+                            <option value="B2B">B2B (Hukuman 10 bulan ke bawah)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+   
+
+                    <label class="label">Sisa Masa Tahanan:</label>
+                    <div class="field has-addons">
+                      <div class="control">
+                        <input class="input" required type="number" name="sisa_masa_tahanan" id="sisa_masa_tahanan">
+                      </div>
+                      <div class="control">
+                        <a class="button is-static">
+                          Bulan
+                        </a>
+                      </div>
+                    </div>
+                    
+                    
+
+                    <% if(admin) { %>
+                    <input type="hidden" name="nama_wali" value="<%= admin.id_admin %>" required>
+                    <% } %>
+                    
                 </div>
             </div>
         </div>
 
         <!-- Konten lainnya -->
         <div class="is-flex is-justify-content-center">
-            <button class="button is-success">Simpan</button>
+            <button type="submit" class="button is-success">Simpan</button>
         </div>
-
+      </form>
 
     </div>
+
+    <script>
+      // Fungsi untuk memeriksa panjang NIP dan menampilkan notifikasi is-danger
+      function validateNIPLength(element) {
+          var nip = element.value;
+          var notification = document.getElementById("notificationKTP");
+          if (nip.length > 16) {
+              // Jika panjang NIP melebihi 16 karakter, tampilkan notifikasi
+              notification.style.display = "block";
+              // Potong input menjadi 16 karakter
+              element.value = nip.substring(0, 16);
+          } else {
+              // Jika panjang NIP tidak melebihi 16 karakter, sembunyikan notifikasi
+              notification.style.display = "none";
+          }
+      }
+
+      // Fungsi untuk menutup notifikasi
+      function closeNotification(id) {
+          var notification = document.getElementById(id);
+          notification.style.display = "none";
+      }
+
+
+  </script>
+  
+  
 
 
     <%-include('partials/footer'); %>

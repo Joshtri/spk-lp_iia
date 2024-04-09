@@ -97,12 +97,13 @@
                                         </section>
                                         <footer class="modal-card-foot">
                                             <!-- Form untuk mengirimkan request DELETE saat tombol "Ya" ditekan -->
-                                            <form id="deleteForm<%= pekerjaanData[i].id_pekerjaan %>" action="/data/delete_pekerjaan/<%= pekerjaanData[i].id_pekerjaan %>" method="POST">
+                                            <form id="deleteForm<%= pekerjaanData[i].id_pekerjaan %>" action="/data/delete_pekerjaan/<%= pekerjaanData[i].id_pekerjaan %>?_method=DELETE" method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="button is-danger">Ya</button>
                                             </form>
+                                            
                                             <!-- Tombol untuk menutup modal tanpa menghapus data -->
-                                            <button class="button" onclick="closeConfirmationModal('<%= pekerjaanData[i].id_pekerjaan %>')">Tidak</button>
+                                            <button class="button mx-3" onclick="closeConfirmationModal('<%= pekerjaanData[i].id_pekerjaan %>')">Tidak</button>
 
                                         </footer>
                                     </div>

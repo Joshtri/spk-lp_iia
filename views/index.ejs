@@ -38,17 +38,17 @@
         <div class="columns is-centered">
             <div class="column is-one-third">
                 <h1 class="title is-3 has-text-centered mb-3 mt-6">Log In</h1>
-                <form class="box">
+                <form class="box" method="post" action="/login">
                     <div class="field">
-                        <label class="label">Email</label>
+                        <label class="label">Username</label>
                         <div class="control">
-                            <input class="input" type="email" placeholder="name@flowbite.com" required>
+                            <input class="input" type="text" name="username" placeholder="name@flowbite.com" required>
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">Password</label>
                         <div class="control">
-                            <input class="input" type="password" required>
+                            <input class="input" type="password" name="password" required>
                         </div>
                         <p class="help"><a href="#" class="has-text-primary">lupa password ?</a></p>
                     </div>

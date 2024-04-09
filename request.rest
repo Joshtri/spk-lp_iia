@@ -1,3 +1,7 @@
+# @baseUrl = http://localhost:3005
+
+
+
 POST http://localhost:3000/data/post_pekerjaan
 Content-Type: application/json
 
@@ -7,3 +11,70 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/data/data_pekerjaan
+
+
+
+
+###
+POST http://localhost:3005/data/post_admin
+Content-Type: application/json
+
+{
+    "nama_lengkap": "Erica Wu",
+    "username": "ericwu",
+    "password": "123",
+    "email": "johndoe@example.com",
+    "role": "wali permasyarakatan"
+}
+###
+
+POST http://localhost:3005/data/post_admin
+Content-Type: application/json
+
+{
+    "nama_lengkap": "Jimmi Hendrik",
+    "username": "jimmi44",
+    "password": "jimmi44",
+    "email": "jommie@example.com",
+    "role": "wali pemasyarakatan"
+}
+
+
+### Delete Admin by ID
+DELETE http://localhost:3005/data/delete_admin/3
+Content-Type: application/json
+
+
+###
+GET http://localhost:3005/data/data_admin
+
+
+
+### Login Admin
+
+POST http://localhost:3005/login
+Content-Type: application/json
+
+{
+    "username": "johndoe",
+    "password": "123456"
+}
+
+
+
+### POST Add Narapidana
+POST http://localhost:3005/data/post_narapidana
+Content-Type: application/json
+
+{
+    "nama_lengkap": "John Doe",
+    "tempat_lahir": "Jakarta",
+    "tanggal_lahir": "1990-01-01",
+    "alamat_lengkap": "Jl. Raya",
+    "no_ktp": "5371041506020007",
+    "pekerjaan_semula": "1",
+    "agama": "islam",
+    "sisa_masa_tahanan": "10",
+    "register": "B1",
+    "nama_wali" : "5"
+}

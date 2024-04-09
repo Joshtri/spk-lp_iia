@@ -3,6 +3,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
+const session = require('express-session');
 const db = require('./utils/database');
 
 
@@ -14,12 +15,25 @@ const routeKriteria = require('./routes/kriteria');
 const routeMerge = require('./routes/merge');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3005;
 
 db.connect();
-``
+
 // Menggunakan method-override
 app.use(methodOverride('_method'));
+
+app.use(
+    session({
+      proxy: true,
+      secret: 'secret',
+      resave: false,
+      saveUninitialized: true,
+
+    
+      
+    })
+);
+  
 
 // Middleware untuk mengatur sesi dan cookie
 app.use(cookieParser());
@@ -48,8 +62,8 @@ app.set("views", [
 
 
 // Menggunakan rute secara eksplisit untuk setiap grup rute
-app.use('/login', routeLogin);
-app.use('/dashboard', routeDashboard);
+app.use('/', routeLogin);
+app.use('/adm', routeDashboard);
 app.use('/data', routeNarapidana, routeAdmin, routeKriteria, routeMerge);
 
 // Menyediakan akses ke file statis di folder 'public'

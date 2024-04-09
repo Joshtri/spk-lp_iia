@@ -21,11 +21,37 @@
 
     <%-include('partials/header'); %>
     <div class="container mt-5">
+
+            <!-- Cek peran admin -->
+    <% if (admin) { %>
+        <% if (admin.role === 'wali pemasyarakatan' || admin.role === 'kepala lapas') { %>
+            <!-- Bagian dashboard yang bisa diakses oleh admin dengan peran tertentu -->
+            <div class="container mt-5">
+                <!-- Konten yang diperbolehkan -->
+            </div>
+        <% } else if(admin.role === 'koordinator wali')  { %>
+            <!-- Admin dengan peran lain, mungkin ditampilkan pesan kesalahan atau redirect -->
+            <p>Anda adalah role koordinator wali.</p>
+        <% } %>
+    <% } else { %>
+        <!-- Tidak ada data admin -->
+        <p>No admin data available</p>
+    <% } %>
+
+
+
         <div class="columns is-centered">
             <div class="column ">
                 <div class="card">
                     <div class="card-content">
-                        <h5 class="title is-4">Selamat datang </h5>
+                        <% if (admin) { %>
+                            <h5 class="title is-4">Selamat datang, <%= admin.nama_lengkap %> <small class="is-size-6">(<%= admin.role %>)</small></h5>
+
+                            <!-- Ubah "username" sesuai dengan properti yang Anda gunakan untuk menyimpan nama pengguna admin -->
+                            <!-- Anda dapat menampilkan informasi lain dari objek admin sesuai kebutuhan -->
+                        <% } else { %>
+                            <p>No admin data available</p>
+                        <% } %>
                         <p class="subtitle is-6">di Website Sistem Pendukung Keputusan pemberian hak pembebasan bersyarat kepada narapidana dengan menggunakan metode TOPSIS.</p>
                         <!-- <a href="#" class="button is-primary">
                             Selamat Datang
@@ -35,6 +61,8 @@
                                 </svg>
                             </span>
                         </a> -->
+
+
                     </div>
                 </div>
             </div>

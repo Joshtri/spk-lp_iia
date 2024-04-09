@@ -14,7 +14,7 @@
         <div id="navbarMenu" class="navbar-menu">
             <div class="navbar-end">
 
-                <a href="/dashboard" class="navbar-item">Dashboard</a>
+                <a href="/adm/dashboard" class="navbar-item">Dashboard</a>
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">Data</a>
                     <div class="navbar-dropdown">
@@ -22,14 +22,41 @@
                         <a href="/data/data_kriteria" class="navbar-item">Data Kriteria</a>
                         <a href="/data/data_admin" class="navbar-item">Data Admin</a>
                         <!-- <a href="/admin" class="navbar-item">Data Kewarganegaraan</a> -->
-                        <a href="/data/data_agama" class="navbar-item">Data Agama</a>
-                        <a href="/data/data_pekerjaan" class="navbar-item">Data Pekerjaan</a>
-                        <a href="/admin" class="navbar-item">Data Tindak Pidana</a>
+                        <!-- <a href="/data/data_agama" class="navbar-item">Data Agama</a> -->
+                        <% if(admin) { %>
+                            <% if(admin.role === 'wali pemasyarakatan') { %>
+                                <a href="/data/data_pekerjaan" class="navbar-item">Data Pekerjaan</a>
+                            <% } %>
+                        <% } %>
+                        <% if(admin) { %>
+                            <% if(admin.role === 'wali pemasyarakatan') { %>
+                                <a href="/admin" class="navbar-item">Data Tindak Pidana</a>
+                            <% } %>
+                        <% } %>
+                        
                         <hr class="navbar-divider">
-                        <a href="#" class="navbar-item">Sign out</a>
+                        <!-- <a href="#" class="navbar-item">Sign out</a> -->
                     </div>
                 </div>
                 <a href="#" class="navbar-item">Perhitungan TOPSIS</a>
+                
+                <!-- Dropdown Profile -->
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        <!-- <img src="https://via.placeholder.com/50" class="mr-2 rounded-full h-8"> -->
+                        <i class="fa-solid fa-user-tie has-text-black" style="background-color: #00967f;
+                        padding: 0.5rem 1rem; border-radius: 0.5rem;" class="mr-2 rounded-full h-8"></i>
+                        
+                    </a>
+                    <div class="navbar-dropdown">
+                        <!-- Isi dropdown untuk profil -->
+                        <a href="#" class="navbar-item">Profil Saya</a>
+                        <a href="#" class="navbar-item">Pengaturan</a>
+                        <hr class="navbar-divider">
+                        <a href="#" class="navbar-item">Log Out</a>
+                    </div>
+                </div>
+                <!-- Akhir Dropdown Profile -->
             </div>
         </div>
     </div>

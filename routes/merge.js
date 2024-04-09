@@ -15,7 +15,7 @@ router.get('/data_pekerjaan', pekerjaanController.getPage);
 // Rute untuk menambah data pekerjaan
 router.post('/post_pekerjaan', pekerjaanController.create);
 // Tentukan rute DELETE untuk menghapus data pekerjaan berdasarkan ID
-router.delete('/delete_pekerjaan/:id', pekerjaanController.delete);
+router.delete('/delete_pekerjaan/:id_pekerjaan', pekerjaanController.delete);
 
 
 
