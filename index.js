@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const session = require('express-session');
+const flash = require('connect-flash');
 const db = require('./utils/database');
 
 
@@ -37,7 +38,8 @@ app.use(
 
 // Middleware untuk mengatur sesi dan cookie
 app.use(cookieParser());
-
+// Flash Messages
+app.use(flash({ sessionKeyName: 'flashMessage' }));
 // Menambahkan middleware body-parser pada aplikasi
 app.use(bodyParser.json());
 // parse request to body-parser

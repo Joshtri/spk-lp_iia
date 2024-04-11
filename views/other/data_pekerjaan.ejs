@@ -16,7 +16,7 @@
         <nav class="breadcrumb" aria-label="breadcrumbs">
             <ul>
               <li>
-                <a href="/dashboard">
+                <a href="/adm/dashboard">
                   <span class="icon is-small">
                     <i class="fas fa-home" aria-hidden="true"></i>
                   </span>
@@ -35,6 +35,40 @@
         </nav>
 
         <hr>
+
+        <% if (messagePost && messagePost.length > 0) { %>
+            <div class="notification is-success">
+                <% messagePost.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
+        <% if (messageUpdate && messageUpdate.length > 0) { %>
+            <div class="notification is-success">
+                <% messageUpdate.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
+        <% if (messageDelete && messageDelete.length > 0) { %>
+            <div class="notification is-success">
+                <% messageDelete.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
+
+        <script>
+            function closeNotification(button) {
+                // Mendapatkan parent dari tombol delete, yaitu notifikasi
+                var notification = button.parentNode;
+                // Menghapus notifikasi
+                notification.remove();
+            }
+        </script>
 
         <div class="field is-grouped">
 
@@ -66,18 +100,32 @@
                 <tbody>
                     <% for(let i = 0 ; i < pekerjaanData.length; i++) { %>
                         <tr>
-                            <th><%= i + 1 %></th>
+                            <td><%= (currentPage - 1) * limit + i + 1 %></td>
                             <td><%= pekerjaanData[i].nama_pekerjaan %></td>
                             <td class="has-text-centered"><%= new Date(pekerjaanData[i].createdAt).toISOString().slice(0, 19).replace('T', ' ') %></td>
                         
                             <td class="has-text-centered">
-                                <button class="button">
-                                    <a href="/data/detail_narapidana" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
+                             
+                                <!-- Tambahkan tombol edit pada setiap baris tabel -->
+                                <button class="button" onclick="editPekerjaan('<%= pekerjaanData[i].id_pekerjaan %>', '<%= pekerjaanData[i].nama_pekerjaan %>')">
+                                    <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
-                        
-                                <button class="button">
-                                    <a href="/data/edit_narapidana" class="has-text-dark"><i class="fa-regular fa-pen-to-square"></i></a>
-                                </button>
+
+                                <!-- Fungsi JavaScript untuk menampilkan data kriteria pada modal -->
+                                <script>
+                                    function editPekerjaan(id, nama) {
+                                        const modal = document.getElementById('modalEdit');
+                                        const inputId = document.getElementById('editIdPekerjaan');
+                                        const inputNama = document.getElementById('editNamaPekerjaan');
+
+                                        // Set nilai id dan nama kriteria pada input di modal
+                                        inputId.value = id;
+                                        inputNama.value = nama;
+
+                                        // Tampilkan modal
+                                        modal.classList.add('is-active');
+                                    }
+                                </script>
                         
                                 <!-- Tombol untuk membuka modal konfirmasi -->
                                 <button class="button is-danger" onclick="openConfirmationModal('<%= pekerjaanData[i].id_pekerjaan %>')">
@@ -116,6 +164,48 @@
                 </tbody>
             </table>
         </div>
+
+
+
+        <div id="modalEdit" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <h2 class="title is-4">Edit Pekerjaan</h2>
+                    <hr>
+                    <!-- Form untuk mengedit data kriteria -->
+                    <form id="formEditData" action="/data/update_pekerjaan" method="POST">
+                        <!-- Input field untuk id kriteria (hidden) -->
+                        <input type="hidden" id="editIdPekerjaan" name="id_pekerjaan">
+                        <div class="field">
+                            <label class="label">Nama Pekerjaan:</label>
+                            <div class="control">
+                                <!-- Input field untuk nama kriteria -->
+                                <input class="input" type="text" id="editNamaPekerjaan" name="nama_pekerjaan" placeholder="Masukkan nama kriteria">
+                            </div>
+                        </div>
+                        <!-- Tombol untuk menutup modal -->
+                        <button type="button" id="btnCloseModalEdit" class="mr-3 button is-light mt-3">Tutup</button>
+                        <!-- Tombol untuk menyimpan perubahan -->
+                        <button type="submit" class="button is-success mt-3">Simpan</button>
+                    </form>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const btnCloseModalEdit = document.getElementById('btnCloseModalEdit');
+                const modalEdit = document.getElementById('modalEdit');
+        
+                btnCloseModalEdit.addEventListener('click', () => {
+                    modalEdit.classList.remove('is-active');
+                });
+            });
+        </script>
+
+
         <div id="modalTambah" class="modal">
             <div class="modal-background"></div>
             <div class="modal-content">
@@ -141,6 +231,27 @@
             <button class="modal-close is-large" aria-label="close"></button>
         </div>
         
+        <hr>
+        <div class="container mt-5 mb-5">
+
+            <!-- Pagination -->
+            <nav class="pagination" role="navigation" aria-label="pagination">
+                <a class="pagination-previous <% if (currentPage === 1) { %>is-disabled<% } %>"
+                    <% if (currentPage !== 1) { %>href="?page=<%= currentPage - 1 %>"<% } %>>Previous</a>
+                <a class="pagination-next <% if (currentPage === totalPages) { %>is-disabled<% } %>"
+                    <% if (currentPage !== totalPages) { %>href="?page=<%= currentPage + 1 %>"<% } %>>Next page</a>
+                <ul class="pagination-list">
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <li>
+                            <a class="pagination-link <% if (currentPage === i) { %>is-current<% } %>"
+                                aria-label="Page <%= i %>" aria-current="<%= currentPage === i ? 'page' : '' %>"
+                                href="?page=<%= i %>"><%= i %></a>
+                        </li>
+                    <% } %>
+                </ul>
+            </nav>
+        </div>
+        <!-- End Pagination -->
     </div>
     
     <script>
@@ -158,19 +269,20 @@
             }
         });
     </script>
-<script>
-    // Fungsi untuk membuka modal konfirmasi
-    function openConfirmationModal(id) {
-        const modal = document.getElementById('confirmationModal' + id);
-        modal.classList.add('is-active');
-    }
+    
+    <script>
+        // Fungsi untuk membuka modal konfirmasi
+        function openConfirmationModal(id) {
+            const modal = document.getElementById('confirmationModal' + id);
+            modal.classList.add('is-active');
+        }
 
-    // Fungsi untuk menutup modal konfirmasi
-    function closeConfirmationModal(id) {
-        const modal = document.getElementById('confirmationModal' + id);
-        modal.classList.remove('is-active');
-    }
-</script>
+        // Fungsi untuk menutup modal konfirmasi
+        function closeConfirmationModal(id) {
+            const modal = document.getElementById('confirmationModal' + id);
+            modal.classList.remove('is-active');
+        }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {

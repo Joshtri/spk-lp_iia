@@ -78,3 +78,7 @@ Content-Type: application/json
     "register": "B1",
     "nama_wali" : "5"
 }
+
+
+###
+GET http://localhost:3005/data/detail_narapidana/6

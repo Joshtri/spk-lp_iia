@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Narapidana</title>
+    <link rel="stylesheet" href="/vendor/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Masukkan stylesheet atau link eksternal lainnya di sini -->
+</head>
+<body>
+    <!-- Header dan bagian lainnya -->
+    <%-include('partials/header'); %>
+    <section class="section">
+        <div class="container mb-3">
+            <nav class="breadcrumb" aria-label="breadcrumbs">
+              <ul>
+                <li>
+                  <a href="/dashboard">
+                    <span class="icon is-small">
+                      <i class="fas fa-home" aria-hidden="true"></i>
+                    </span>
+                    <span>Dashboard</span>
+                  </a>
+                </li>
+                <li class="">
+                  <a href="/data/data_narapidana">
+                    <span class="icon is-small">
+                      <i class="fas fa-book" aria-hidden="true"></i>
+                    </span>
+                    <span>Data Narapidana</span>
+                  </a>
+                </li>
+  
+                <li class="is-active">
+                  <a href="#">
+                    <span class="icon is-small">
+                      <i class="fa-solid fa-person" aria-hidden="true"></i>
+                    </span>
+                    <span>Edit (<%= narapidana.nama_narapidana %>)</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+    
+            <hr>
+
+            <div class="mb-3">
+                <h1 class="title">Edit Data Narapidana</h1>
+                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.nama_wali %></p>
+                <p class="has-text-weight-bold is-text ">Data dibuat: <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
+                <p class="has-text-weight-bold is-text ">Data diperbarui: <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
+
+            </div>
+            
+            <form action="/data/update_narapidana/<%= narapidana.id_narapidana %>" method="POST">
+
+            
+            <div class="mb-4">
+                <a href="/data/data_narapidana">
+                    <button type="button" class="button is-warning is-small">Kembali</button>
+                </a>
+
+               
+                <button type="submit" class="button is-success is-small">Update <i class="fa-solid fa-rotate fa-spin ml-1"></i></button>
+                
+
+            </div>
+
+
+  
+            <div class="columns is-multiline">
+                <div class="column is-half">
+                    <div class="box">
+                        <div class="field">
+                            <label class="label">Nama Narapidana:</label>
+                            <input class="input" type="text" name="nama_narapidana"  value=" <%= narapidana.nama_narapidana %>">
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Agama:</label>
+                            <select class="input" name="agama" id="agamaSelect">
+                                <option>-</option>
+                                <option value="kristen protestan">Kristen Protestan</option>
+                                <option value="katholik">Katholik</option>
+                                <option value="islam">Islam</option>
+                                <option value="hindu">Hindu</option>
+                                <option value="buddha">Buddha</option>
+                            </select>
+                        </div>
+                        
+                        <script>
+                            // Mendapatkan nilai agama dari narapidana
+                            var agamaNarapidana = '<%= narapidana.agama %>';
+                        
+                            // Memilih opsi yang sesuai berdasarkan nilai agama
+                            document.getElementById('agamaSelect').value = agamaNarapidana;
+                        </script>
+                        
+  
+                        <div class="field">
+                            <label class="label">Umur:</label>
+                            <input class="input" disabled  type="text" value="<%= narapidana.umur %> Tahun">
+                        </div>
+  
+                        <div class="field">
+                            <label class="label">Tempat Lahir:</label>
+                            <input class="input" name="tempat_lahir"  type="text" value="<%= narapidana.tempat_lahir %>">
+                        </div>
+  
+                        <div class="field">
+                            <label class="label">Tanggal Lahir:</label>
+                            <div class="field has-addons">
+                                <div class="control">
+                                    <!-- Input text yang menampilkan tanggal lahir -->
+                                    <input class="input" id="tanggal_lahir" type="text" name="tanggal_lahir" value="<%= new Date(narapidana.tanggal_lahir).toLocaleDateString() %>" readonly>
+                                </div>
+                                <div class="control">
+                                    <!-- Button "Edit" -->
+                                    <a class="button is-info" onclick="enableDateInput()">
+                                        Edit
+                                    </a>
+                                </div>
+                                <div class="control">
+                                    <!-- Button "Batal" -->
+                                    <a class="button is-danger" onclick="cancelEdit()">
+                                        Batal
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Input type="date" yang awalnya disembunyikan -->
+                            <input class="input" id="input_tanggal_lahir" type="date" style="display: none;" onchange="updateTextInput(this.value)">
+                        </div>
+                        
+                        <script>
+                            var originalDate; // Variabel untuk menyimpan nilai tanggal lahir asli sebelum diubah
+                        
+                            function enableDateInput() {
+                                // Simpan nilai tanggal lahir asli sebelum diubah
+                                originalDate = document.getElementById('tanggal_lahir').value;
+                                
+                                // Ambil nilai tanggal lahir dari input text
+                                var tanggalLahir = originalDate;
+                                
+                                // Mengubah nilai input text menjadi input type="date"
+                                document.getElementById('tanggal_lahir').style.display = 'none';
+                                document.getElementById('input_tanggal_lahir').style.display = 'block';
+                                
+                                // Mengatur nilai input type="date" sesuai dengan nilai tanggal lahir sebelumnya
+                                document.getElementById('input_tanggal_lahir').value = tanggalLahir;
+                            }
+                        
+                            function updateTextInput(newDate) {
+                                // Mengubah nilai input text sesuai dengan nilai tanggal yang dipilih
+                                document.getElementById('tanggal_lahir').value = newDate;
+                                
+                                // Mengubah kembali input text menjadi tampilan setelah mengubah nilai
+                                document.getElementById('tanggal_lahir').style.display = 'block';
+                                document.getElementById('input_tanggal_lahir').style.display = 'none';
+                            }
+                        
+                            function cancelEdit() {
+                                // Mengembalikan nilai tanggal lahir asli
+                                document.getElementById('tanggal_lahir').value = originalDate;
+                                
+                                // Mengubah kembali input text menjadi tampilan setelah mengubah nilai
+                                document.getElementById('tanggal_lahir').style.display = 'block';
+                                document.getElementById('input_tanggal_lahir').style.display = 'none';
+                            }
+                        </script>
+                        
+                        
+                        
+
+                        <div class="field">
+                            <label class="label">Alamat:</label>
+                            <input class="input" name="alamat_lengkap"  type="text" value="<%= narapidana.alamat_lengkap %>">
+                        </div>
+
+
+                    </div>
+                </div>
+                
+                <div class="column is-half">
+                    <div class="box">
+                        <div class="field">
+                            <label class="label">Nomor KTP:</label>
+                            <input class="input" name="no_ktp"  type="text" value="<%= narapidana.no_ktp %>">
+                        </div>
+  
+
+                        <div class="field">
+                            <label class="label">Pekerjaan Semula:</label>
+                            <select name="pekerjaan_semula" class="select input" id="pekerjaanSelect" required>
+                                <option value="">-</option>
+                                <% for(let i = 0; i < pekerjaanData.length; i++) { %>
+                                  <option value="<%= pekerjaanData[i].id_pekerjaan %>"><%= pekerjaanData[i].nama_pekerjaan %></option>
+                                <% } %>
+                            </select>
+                        </div>
+
+                        <script>
+                            // Mendapatkan nilai agama dari narapidana
+                            var pekerjaanNarapidana = '<%= narapidana.pekerjaan_semula %>';
+                        
+                            // Memilih opsi yang sesuai berdasarkan nilai agama
+                            document.getElementById('pekerjaanSelect').value = pekerjaanNarapidana;
+                        </script>
+  
+                        <div class="field">
+                            <label class="label">Pendidikan Terakhir:</label>
+                            <div class="select">
+                                <select name="pendidikan_terakhir" id="pendidikanSelect" required>
+                                  <option>-</option>
+                                  <option value="Belum/Tidak Pernah Sekolah">Belum/Tidak Pernah Sekolah</option>
+                                  <option value="Belum/Tidak Tamat SD/SDLB/MI/Paket A">Belum/Tidak Tamat SD/SDLB/MI/Paket A</option>
+                                  <option value="SD/SDLB/MI/Paket A">SD/SDLB/MI/Paket A</option>
+                                  <option value="SMP/SMPLB/MTs/Paket B">SMP/SMPLB/MTs/Paket B</option>
+                                  <option value="SMA/SMLB/MA/SMK/MAK/paket C">SMA/SMLB/MA/SMK/MAK/paket C</option>
+                                  <option value="DI/DII/DIII">DI/DII/DIII</option>
+                                  <option value="DIV/S1">DIV/S1</option>
+                                  <option value="S2">S2</option>
+                                  <option value="S3">S3</option>
+                                </select>
+                              </div>
+                        </div>
+
+                        <script>
+                            // Mendapatkan nilai agama dari narapidana
+                            var pendidikanNarapidana = '<%= narapidana.pendidikan_terakhir %>';
+                        
+                            // Memilih opsi yang sesuai berdasarkan nilai agama
+                            document.getElementById('pendidikanSelect').value = pendidikanNarapidana;
+                        </script>
+  
+                        <div class="field">
+                            <label class="label">Kategori Register</label>
+                            <div class="control">
+                                <div class="select">
+                                  <select name="register" id="registerSelect" required>
+                                    <option>-</option>
+                                    <option value="B1">B1 (hukuman 5 tahun ke atas (sampai hukuman seumur hidup/hukuman mati) )</option>
+                                    <option value="B2A">B2A (hukuman 2 tahun - 5 tahun)</option>
+                                    <option value="B2B">B2B (Hukuman 10 bulan ke bawah)</option>
+                                  </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            // Mendapatkan nilai agama dari narapidana
+                            var registerNarapidana = '<%= narapidana.register %>';
+                        
+                            // Memilih opsi yang sesuai berdasarkan nilai agama
+                            document.getElementById('registerSelect').value = registerNarapidana;
+                        </script>
+
+  
+                        <div class="field">
+                            <label class="label">Masa Hukuman:</label>
+                            <div class="field has-addons">
+                                <div class="control">
+                                  <input class="input" required name="sisa_masa_tahanan" type="text" value="<%= narapidana.sisa_masa_tahanan %>">
+                                </div>
+                                <div class="control">
+                                  <a class="button is-static">
+                                    Bulan
+                                  </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </div>
+    </section>
+</form>
+
+   
+  
+
+</body>
+</html>

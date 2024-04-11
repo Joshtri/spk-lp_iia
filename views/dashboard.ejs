@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><%= locals.title %></title>
     <link rel="stylesheet" href="/vendor/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -18,26 +20,58 @@
         }
     </style>
 
+<style>
+    /* CSS untuk animasi fade out */
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+
+    .notification.fade-out {
+        animation: fadeOut 0.5s ease forwards;
+    }
+</style>
+
 
     <%-include('partials/header'); %>
     <div class="container mt-5">
 
-            <!-- Cek peran admin -->
-    <% if (admin) { %>
-        <% if (admin.role === 'wali pemasyarakatan' || admin.role === 'kepala lapas') { %>
-            <!-- Bagian dashboard yang bisa diakses oleh admin dengan peran tertentu -->
-            <div class="container mt-5">
-                <!-- Konten yang diperbolehkan -->
-            </div>
-        <% } else if(admin.role === 'koordinator wali')  { %>
-            <!-- Admin dengan peran lain, mungkin ditampilkan pesan kesalahan atau redirect -->
-            <p>Anda adalah role koordinator wali.</p>
-        <% } %>
-    <% } else { %>
-        <!-- Tidak ada data admin -->
-        <p>No admin data available</p>
-    <% } %>
 
+        <% if (messageLoginSuccess && messageLoginSuccess.length > 0) { %>
+            <div class="notification is-success">
+                <% messageLoginSuccess.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
+
+ <script>
+    function closeNotification(button) {
+        var notification = button.parentNode;
+        notification.classList.add('animate__animated', 'animate__fadeOut'); // Tambahkan kelas animasi fade out
+        setTimeout(function() {
+            notification.remove();
+        }, 1000); // Setelah 1 detik (durasi animasi), notifikasi dihapus
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var notification = document.querySelector('.notification'); // Cari notifikasi pertama yang ditemukan
+
+        if (notification) {
+            setTimeout(function() {
+                notification.remove();
+            }, 6500);
+        }
+    });
+</script>
+
+        
 
 
         <div class="columns is-centered">
@@ -74,6 +108,12 @@
                 <a>
                   <span class="icon is-small"><i class="fa-solid fa-table"></i></span>
                   <span>Ikhtisar Data</span>
+                </a>
+              </li>
+              <li>
+                <a>
+                  <span class="icon is-small"><i class="fa-solid fa-ranking-star"></i></span>
+                  <span>Pelaporan</span>
                 </a>
               </li>
               <li>

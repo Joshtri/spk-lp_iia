@@ -25,7 +25,7 @@
         <nav class="breadcrumb" aria-label="breadcrumbs">
             <ul>
               <li>
-                <a href="/dashboard">
+                <a href="/adm/dashboard">
                   <span class="icon is-small">
                     <i class="fas fa-home" aria-hidden="true"></i>
                   </span>
@@ -52,6 +52,8 @@
             </ul>
         </nav>
 
+        <hr>
+
 
         <div class="field is-grouped">
             <a href="/data/data_narapidana">
@@ -69,7 +71,7 @@
         <!-- Notifikasi KTP -->
         <div id="notificationKTP" class="notification is-danger" style="display: none;">
           Nomor KTP tidak boleh melebihi 16 digit.
-          <button class="delete" onclick="closeNotification('notificationKTP')"></button>
+          <!-- <button class="delete" onclick="closeNotification('notificationKTP')"></button> -->
         </div>
 
 
@@ -126,7 +128,15 @@
                   <div class="field">
                     <label class="label">Nomor KTP:</label>
                     <input class="input" required name="no_ktp" type="text" oninput="validateNIPLength(this)">
+                    <!-- Notifikasi teks untuk NIP -->
+                    <p id="nipNotification" class="help is-danger" style="display: none;">Nomor KTP harus terdiri dari 16 digit.</p>
+                    
+                    <div id="nipNotificationSuccess" class="help is-success" style="display: none;">
+                      Data NIP sudah 16 digit. Pastikan NIP sudah benar.
                   </div>
+                  
+                </div>
+                
 
 
 
@@ -135,6 +145,7 @@
                     <div class="control">
                       <div class="select">
                         <select name="pekerjaan_semula" required>
+                          <option value="">-</option>
                           <% for(let i = 0; i < pekerjaanData.length; i++) { %>
                             <option value="<%= pekerjaanData[i].id_pekerjaan %>"><%= pekerjaanData[i].nama_pekerjaan %></option>
                           <% } %>
@@ -156,6 +167,27 @@
                         </div>
                       </div>
                     </div> -->
+
+                    <div class="field">
+                      <label class="label">Pendidikan Terakhir</label>
+                      <div class="control">
+                        <div class="select">
+                          <select name="pendidikan_terakhir" required>
+                            <option>-</option>
+                            <option value="Belum/Tidak Pernah Sekolah">Belum/Tidak Pernah Sekolah</option>
+                            <option value="Belum/Tidak Tamat SD/SDLB/MI/Paket A">Belum/Tidak Tamat SD/SDLB/MI/Paket A</option>
+                            <option value="SD/SDLB/MI/Paket A">SD/SDLB/MI/Paket A</option>
+                            <option value="SMP/SMPLB/MTs/Paket B">SMP/SMPLB/MTs/Paket B</option>
+                            <option value="SMA/SMLB/MA/SMK/MAK/paket C">SMA/SMLB/MA/SMK/MAK/paket C</option>
+                            <option value="DI/DII/DIII">DI/DII/DIII</option>
+                            <option value="DIV/S1">DIV/S1</option>
+                            <option value="S2">S2</option>
+                            <option value="S3">S3</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
 
                     <div class="field">
                       <label class="label">Register</label>
@@ -204,29 +236,55 @@
     </div>
 
     <script>
-      // Fungsi untuk memeriksa panjang NIP dan menampilkan notifikasi is-danger
-      function validateNIPLength(element) {
-          var nip = element.value;
-          var notification = document.getElementById("notificationKTP");
-          if (nip.length > 16) {
-              // Jika panjang NIP melebihi 16 karakter, tampilkan notifikasi
-              notification.style.display = "block";
-              // Potong input menjadi 16 karakter
-              element.value = nip.substring(0, 16);
-          } else {
-              // Jika panjang NIP tidak melebihi 16 karakter, sembunyikan notifikasi
-              notification.style.display = "none";
-          }
-      }
+function validateNIPLength(element) {
+    var nip = element.value;
+    var notification = document.getElementById("notificationKTP");
+    var nipNotification = document.getElementById("nipNotification");
+    var nipNotificationSuccess = document.getElementById("nipNotificationSuccess");
 
-      // Fungsi untuk menutup notifikasi
-      function closeNotification(id) {
-          var notification = document.getElementById(id);
-          notification.style.display = "none";
-      }
+    if (nip.length < 16) { // Periksa jika panjang NIP kurang dari 16
+        // Jika panjang NIP kurang dari 16 karakter, tampilkan pesan dan sembunyikan notifikasi panjang NIP
+        nipNotification.style.display = "block";
+        notification.style.display = "none";
+        nipNotificationSuccess.style.display = "none";
+        return; // Keluar dari fungsi karena NIP belum mencapai 16 digit
+    }
+
+    if (nip.length > 16) {
+        // Jika panjang NIP melebihi 16 karakter, tampilkan notifikasi
+        notification.style.display = "block";
+        nipNotification.style.display = "none"; // Sembunyikan pesan NIP sudah 16 digit
+        nipNotificationSuccess.style.display = "none";
+        // Potong input menjadi 16 karakter
+        element.value = nip.substring(0, 16);
+    } else {
+        // Jika panjang NIP tidak melebihi 16 karakter, sembunyikan notifikasi
+        notification.style.display = "none";
+        nipNotification.style.display = "none"; // Sembunyikan pesan NIP sudah 16 digit
+        nipNotificationSuccess.style.display = "block";
+    }
+}
+
+// Fungsi untuk menutup notifikasi dengan fade out setelah 3 detik
+function closeNotification(id) {
+    var notification = document.getElementById(id);
+    notification.style.transition = "opacity 0.5s"; // Efek fade out
+    notification.style.opacity = "0"; // Mengatur opacity menjadi 0
+    // Setelah 3 detik, notifikasi akan dihilangkan dari tampilan
+    // setTimeout(function() {
+    //     notification.style.display = "none";
+    // }, 3000); // 3000 ms = 3 detik
+}
+
+// Mengatur event listener pada input field untuk memanggil fungsi validateNIPLength saat pengguna memasukkan NIP
+document.getElementById("nipInput").addEventListener("input", function() {
+    validateNIPLength(this);
+});
 
 
   </script>
+  
+  
   
   
 

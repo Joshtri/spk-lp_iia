@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya</title>
+    <link rel="stylesheet" href="/vendor/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+
+    <%-include('partials/header') %>
+    <section class="section">
+        <div class="container">
+            <h1 class="title">Profil Saya</h1>
+            <div class="columns">
+                <div class="column is-one-quarter">
+                    <figure class="image is-128x128">
+                        <img src="https://via.placeholder.com/128" alt="Profil Image">
+                    </figure>
+                </div>
+                <div class="column">
+                    <div class="content">
+                        <p><strong>Nama:</strong> <%= admin.nama_lengkap %></p>
+                        <p><strong>Email:</strong> <%= admin.email %></p>
+                        <p><strong>Username:</strong> <%= admin.username %></p>
+                        <p><strong>Akses Sebagai:</strong> <%= admin.role %></p>
+                        <p><strong>Akun dibuat:</strong> <%= admin.createdAt %></p>
+                    </div>
+                    <div class="buttons">
+                        <button class="button is-primary">Edit Profil</button>
+                        <button class="button is-danger">Hapus Akun</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbarBurgers = Array.from(document.querySelectorAll('.navbar-burger'));
+            if (navbarBurgers.length > 0) {
+                navbarBurgers.forEach(burger => {
+                    burger.addEventListener('click', () => {
+                        const target = burger.dataset.target;
+                        const menu = document.getElementById(target);
+                        burger.classList.toggle('is-active');
+                        menu.classList.toggle('is-active');
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

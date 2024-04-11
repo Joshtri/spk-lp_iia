@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><%= locals.title %></title>
     <link rel="stylesheet" href="/vendor/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -16,7 +16,7 @@
         <nav class="breadcrumb" aria-label="breadcrumbs">
             <ul>
               <li>
-                <a href="/dashboard">
+                <a href="/adm/dashboard">
                   <span class="icon is-small">
                     <i class="fas fa-home" aria-hidden="true"></i>
                   </span>
@@ -33,16 +33,62 @@
               </li>
             </ul>
         </nav>
+        
 
         <hr>
 
+        
+
+        <% if (messagePost && messagePost.length > 0) { %>
+            <div class="notification is-success">
+                <% messagePost.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
+
+        <% if (messageDelete && messageDelete.length > 0) { %>
+            <div class="notification is-success">
+                <% messageDelete.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
+
+        <% if (messageUpdate && messageUpdate.length > 0) { %>
+            <div class="notification is-success">
+                <% messageUpdate.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
+        
+        <script>
+            function closeNotification(button) {
+                // Mendapatkan parent dari tombol delete, yaitu notifikasi
+                var notification = button.parentNode;
+                // Menghapus notifikasi
+                notification.remove();
+            }
+        </script>
+           <!-- Tombol "Show All" dipindahkan ke sini -->
+        <div class="ml-auto mb-2">
+            <button class="button">Show All</button>
+        </div>
+
+
         <div class="field is-grouped">
+            <% if (admin && admin.role === 'wali pemasyarakatan') { %>
             <a href="/data/add_narapidana">
                 <button class="button">Tambah Data</button>
             </a>
+            <% } %>
             <div class="is-one-third is-flex ml-auto">
                 <p class="control is-expanded">
-                    <input class="input" type="text" placeholder="Search">
+                    <input class="input" type="text" id="searchInput" placeholder="Search">
                 </p>
                 <p class="control">
                     <button class="button is-info">
@@ -67,32 +113,87 @@
                 </thead>
                 <tbody>
                     <% for (let i = 0; i < narapidanaData.length; i++) { %>
-                    <tr>
-                        <th>1</th>
-                        <td><%= narapidanaData[i].nama_narapidana %></td>
-                        <td><%= narapidanaData[i].register %></td>
-                        <td><%= narapidanaData[i].no_ktp %></td>
-                        <td><%= narapidanaData[i].nama_wali %></td>
-                        <td>
-                            <button class="button">
-                                <a href="/data/detail_narapidana" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
-                            </button>
-    
-                            <button class="button">
-                                <a href="/data/edit_narapidana" class="has-text-dark"><i class="fa-regular fa-pen-to-square"></i></a>
-                            </button>
-    
-                            <button class="button is-danger">
-                                <a href="#" class="has-text-dark"><i class="fa-solid fa-trash"></i></a>
-                            </button>
-                        </td>
-                    </tr>
+                        <% const narapidana = narapidanaData[i]; %>
+                        <tr>
+                            <td><%= (currentPage - 1) * limit + i + 1 %></td>
+                            <td><%= narapidana.nama_narapidana %></td>
+                            <td><%= narapidana.register %></td>
+                            <td><%= narapidana.no_ktp %></td>
+                            <td><%= narapidana.nama_wali %></td>
+                            <td>
+                                <button class="button">
+                                    <a href="/data/detail_narapidana/<%= narapidana.id_narapidana %>" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
+                                </button>
+                                
+                                <% if (admin && admin.id_admin === narapidana.id_wali) { %>
+                                    <button class="button">
+                                        <a href="/data/edit_narapidana/<%= narapidana.id_narapidana %>" class="has-text-dark"><i class="fa-regular fa-pen-to-square"></i></a>
+                                    </button>
+                
+                                    <!-- Tombol untuk membuka modal konfirmasi -->
+                                    <button class="button is-danger" onclick="openConfirmationModal('<%= narapidana.id_narapidana %>')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+
+
+                                        <!-- Modal konfirmasi -->
+                                    <div id="confirmationModal<%= narapidana.id_narapidana %>" class="modal">
+                                        <div class="modal-background"></div>
+                                        <div class="modal-card">
+                                            <header class="modal-card-head">
+                                                <p class="modal-card-title">Konfirmasi Hapus</p>
+                                                <button class="delete" aria-label="close" onclick="closeConfirmationModal('<%= narapidana.id_narapidana %>')"></button>
+                                            </header>
+                                            <section class="modal-card-body">
+                                                <p>Apakah Anda yakin ingin menghapus data ini?</p>
+                                            </section>
+                                            <footer class="modal-card-foot">
+                                                <!-- Form untuk mengirimkan request DELETE saat tombol "Ya" ditekan -->
+                                                <form id="deleteForm<%= narapidana.id_narapidana %>" action="/data/delete_narapidana/<%= narapidana.id_narapidana %>?_method=DELETE" method="POST">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <button type="submit" class="button is-danger">Ya</button>
+                                                </form>
+                                                
+                                                <!-- Tombol untuk menutup modal tanpa menghapus data -->
+                                                <button class="button mx-3" onclick="closeConfirmationModal('<%= narapidana.id_narapidana %>')">Tidak</button>
+
+                                            </footer>
+                                        </div>
+                                    </div>
+                                <% } %>
+
+
+
+                            </td>
+                        </tr>
                     <% } %>
-                    <!-- Other table data -->
                 </tbody>
+                
             </table>
         </div>
     </div>
+
+    <hr>
+    <div class="container mt-5 mb-5">
+
+        <!-- Pagination -->
+        <nav class="pagination" role="navigation" aria-label="pagination">
+            <a class="pagination-previous <% if (currentPage === 1) { %>is-disabled<% } %>"
+                <% if (currentPage !== 1) { %>href="?page=<%= currentPage - 1 %>"<% } %>>Previous</a>
+            <a class="pagination-next <% if (currentPage === totalPages) { %>is-disabled<% } %>"
+                <% if (currentPage !== totalPages) { %>href="?page=<%= currentPage + 1 %>"<% } %>>Next page</a>
+            <ul class="pagination-list">
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li>
+                        <a class="pagination-link <% if (currentPage === i) { %>is-current<% } %>"
+                            aria-label="Page <%= i %>" aria-current="<%= currentPage === i ? 'page' : '' %>"
+                            href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+    <!-- End Pagination -->
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -109,5 +210,21 @@
             }
         });
     </script>
+
+    <script>
+        // Fungsi untuk membuka modal konfirmasi
+        function openConfirmationModal(id) {
+            const modal = document.getElementById('confirmationModal' + id);
+            modal.classList.add('is-active');
+        }
+
+        // Fungsi untuk menutup modal konfirmasi
+        function closeConfirmationModal(id) {
+            const modal = document.getElementById('confirmationModal' + id);
+            modal.classList.remove('is-active');
+        }
+    </script>
+
+    <script src="/js/liveSearchBar.js"></script>
 </body>
 </html>

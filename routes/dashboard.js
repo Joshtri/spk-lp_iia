@@ -1,5 +1,5 @@
 const express = require('express');
-const { dashboardPage } = require('../controllers/dashboardController');
+const { dashboardPage, myProfilePage } = require('../controllers/dashboardController');
 const {isLoggedIn} = require('../auth/protect');
 const router = express.Router();
 const protect = require('../auth/protect');
@@ -23,7 +23,21 @@ const checkAdminLogin = (req, res, next) => {
 
 router.get('/dashboard', protect, dashboardPage)
 
+router.get('/profil_saya',protect,   myProfilePage);
 
+// Router untuk logout
+router.get('/logout', (req, res) => {
+    // Hapus session admin
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error saat menghapus session:', err);
+            res.redirect('/dashboard'); // Redirect ke halaman dashboard jika terjadi kesalahan
+        } else {
+            // Jika session berhasil dihapus, redirect ke halaman login
+            res.redirect('/');
+        }
+    });
+});
 
 
 

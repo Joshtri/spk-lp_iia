@@ -3,7 +3,7 @@
         <div class="navbar-brand">
             <a href="#" class="navbar-item">
                 <img src="https://flowbite.com/docs/images/logo.svg" alt="Flowbite Logo" class="h-8">
-                <span class="text-2xl font-semibold">Flowbite</span>
+                <span class="text-2xl mx-1 font-semibold has-text-weight-bold">SPK Lapas IIA</span>
             </a>
             <button class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
                 <span></span>
@@ -19,10 +19,19 @@
                     <a class="navbar-link">Data</a>
                     <div class="navbar-dropdown">
                         <a href="/data/data_narapidana" class="navbar-item">Data Narapidana</a>
+                        <% if(admin) { %>
+                            <% if(admin.role === 'wali pemasyarakatan') { %>
                         <a href="/data/data_kriteria" class="navbar-item">Data Kriteria</a>
-                        <a href="/data/data_admin" class="navbar-item">Data Admin</a>
+                            <% } %>
+                        <% } %>
+                        
+                        <% if(admin) { %>
+                            <% if(admin.role === 'wali pemasyarakatan') { %>
+                        <!-- <a href="/data/data_admin" class="navbar-item">Data Admin</a> -->
                         <!-- <a href="/admin" class="navbar-item">Data Kewarganegaraan</a> -->
                         <!-- <a href="/data/data_agama" class="navbar-item">Data Agama</a> -->
+                            <% } %>
+                        <% } %>
                         <% if(admin) { %>
                             <% if(admin.role === 'wali pemasyarakatan') { %>
                                 <a href="/data/data_pekerjaan" class="navbar-item">Data Pekerjaan</a>
@@ -50,10 +59,10 @@
                     </a>
                     <div class="navbar-dropdown">
                         <!-- Isi dropdown untuk profil -->
-                        <a href="#" class="navbar-item">Profil Saya</a>
-                        <a href="#" class="navbar-item">Pengaturan</a>
+                        <a href="/adm/profil_saya" class="navbar-item">Profil Saya</a>
+                        <!-- <a href="#" class="navbar-item">Pengaturan</a> -->
                         <hr class="navbar-divider">
-                        <a href="#" class="navbar-item">Log Out</a>
+                        <a href="/adm/logout" class="navbar-item">Log Out</a>
                     </div>
                 </div>
                 <!-- Akhir Dropdown Profile -->
