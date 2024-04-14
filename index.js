@@ -6,6 +6,8 @@ const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
+const redis = require('redis');
+const RedisStore = require("connect-redis").default;
 const LocalStrategy = require('passport-local').Strategy;
 const db = require('./utils/database');
 
@@ -20,23 +22,38 @@ const routeMerge = require('./routes/merge');
 const app = express();
 const PORT = 3005;
 
+const client = redis.createClient({
+    password: process.env.REDIS_PASS,
+    socket: { 
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+    }
+  });
+(async () => { await client.connect(); })()
+
 db.connect();
 
 // Menggunakan method-override
 app.use(methodOverride('_method'));
 
+// Express Session
 app.use(
     session({
       proxy: true,
       secret: 'secret',
       resave: false,
       saveUninitialized: true,
-
+      name: 'spk_lp_iia',
+      store: new RedisStore({ 
+        client: client,
+        // ttl: 3600, // waktu kadaluwarsa dalam detik (misalnya 1 jam)
+      
+      
+      }),
     
       
     })
-);
-
+  );
 // Inisialisasi Passport
 app.use(passport.initialize());
 app.use(passport.session());
