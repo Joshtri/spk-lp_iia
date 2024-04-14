@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= locals.title %></title>
+    <link rel="icon" href="/img/spk_logo.png" />
     <link rel="stylesheet" href="/vendor/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -18,30 +19,31 @@
                 margin-bottom: 20px;
             }
         }
+
+        .hidden{
+            display: none;
+        }
     </style>
 
-<style>
-    /* CSS untuk animasi fade out */
-    @keyframes fadeOut {
-        from {
-            opacity: 1;
+    <style>
+        /* CSS untuk animasi fade out */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
         }
-        to {
-            opacity: 0;
-            visibility: hidden;
+
+        .notification.fade-out {
+            animation: fadeOut 0.5s ease forwards;
         }
-    }
-
-    .notification.fade-out {
-        animation: fadeOut 0.5s ease forwards;
-    }
-</style>
-
+    </style>
 
     <%-include('partials/header'); %>
     <div class="container mt-5">
-
-
         <% if (messageLoginSuccess && messageLoginSuccess.length > 0) { %>
             <div class="notification is-success">
                 <% messageLoginSuccess.forEach(message => { %>
@@ -51,52 +53,16 @@
             </div>
         <% } %>
 
- <script>
-    function closeNotification(button) {
-        var notification = button.parentNode;
-        notification.classList.add('animate__animated', 'animate__fadeOut'); // Tambahkan kelas animasi fade out
-        setTimeout(function() {
-            notification.remove();
-        }, 1000); // Setelah 1 detik (durasi animasi), notifikasi dihapus
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var notification = document.querySelector('.notification'); // Cari notifikasi pertama yang ditemukan
-
-        if (notification) {
-            setTimeout(function() {
-                notification.remove();
-            }, 6500);
-        }
-    });
-</script>
-
-        
-
-
         <div class="columns is-centered">
             <div class="column ">
                 <div class="card">
                     <div class="card-content">
                         <% if (admin) { %>
                             <h5 class="title is-4">Selamat datang, <%= admin.nama_lengkap %> <small class="is-size-6">(<%= admin.role %>)</small></h5>
-
-                            <!-- Ubah "username" sesuai dengan properti yang Anda gunakan untuk menyimpan nama pengguna admin -->
-                            <!-- Anda dapat menampilkan informasi lain dari objek admin sesuai kebutuhan -->
                         <% } else { %>
                             <p>No admin data available</p>
                         <% } %>
                         <p class="subtitle is-6">di Website Sistem Pendukung Keputusan pemberian hak pembebasan bersyarat kepada narapidana dengan menggunakan metode TOPSIS.</p>
-                        <!-- <a href="#" class="button is-primary">
-                            Selamat Datang
-                            <span class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 10">
-                                    <path d="M1 5h12m0 0L9 1m4 4L9 9" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-                                </svg>
-                            </span>
-                        </a> -->
-
-
                     </div>
                 </div>
             </div>
@@ -104,94 +70,185 @@
 
         <div class="tabs is-toggle is-toggle-rounded">
             <ul>
-              <li class="is-active">
-                <a>
-                  <span class="icon is-small"><i class="fa-solid fa-table"></i></span>
-                  <span>Ikhtisar Data</span>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <span class="icon is-small"><i class="fa-solid fa-ranking-star"></i></span>
-                  <span>Pelaporan</span>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <span class="icon is-small"><i class="fa-solid fa-ranking-star"></i></span>
-                  <span>Hasil Rangking</span>
-                </a>
-              </li>
-              <!-- <li>
-                <a> 
-                  <span class="icon is-small"><i class="fas fa-film"></i></span>
-                  <span>Videos</span>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <span class="icon is-small"><i class="fas fa-file-alt"></i></span>
-                  <span>Documents</span>
-                </a>
-              </li> -->
+                <li class="is-active">
+                    <a id="ikhtisar-data" href="#">
+                        <span class="icon is-small"><i class="fa-solid fa-table"></i></span>
+                        <span>Ikhtisar Data</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="pelaporan" href="#">
+                        <span class="icon is-small"><i class="fa-solid fa-ranking-star"></i></span>
+                        <span>Pelaporan</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="hasil-rangking" href="#">
+                        <span class="icon is-small"><i class="fa-solid fa-ranking-star"></i></span>
+                        <span>Hasil Rangking</span>
+                    </a>
+                </li>
             </ul>
         </div>
         
-        <div class="columns is-centered custom-columns">
-            <div class="column is-half-tablet is-one-third-desktop">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="media">
-                            <div class="media-content">
-                                <h3 class="title is-4">Jumlah Narapidana</h3>
+        <section id="ikhtisar-data-section">
+            <div class="columns is-centered custom-columns" hx-get="/adm/getTotalNapi" hx-trigger="load" hx-swap="innerHTML" hx-target="#totalNapi">
+                <div class="column is-half-tablet is-one-third-desktop">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-content">
+                                    <h3 class="title is-4">Jumlah Narapidana</h3>
+                                </div>
+                            </div>
+                            <div class="content">
+                                <p class="is-size-5" id="totalNapi">loading...</p>
                             </div>
                         </div>
-                        <div class="content">
-                            <p class="is-size-5">100</p>
+                    </div>
+                </div>
+                <div class="column is-half-tablet is-one-third-desktop" hx-get="/adm/getTotalKriteria" hx-trigger="load" hx-swap="innerHTML" hx-target="#totalKriteria">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-content">
+                                    <h3 class="title is-4">Jumlah Kriteria</h3>
+                                </div>
+                            </div>
+                            <div class="content">
+                                <p class="is-size-5" id="totalKriteria">loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-half-tablet is-one-third-desktop">
+                    <div class="card">
+                        <div class="card-content">
+                            <div class="media">
+                                <div class="media-content">
+                                    <h3 class="title is-4">Jumlah Admin</h3>
+                                </div>
+                            </div>
+                            <div class="content">
+                                <p class="is-size-5">0</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
+        <section id="pelaporan-section" class="hidden">
+            <!-- Konten pelaporan -->
+        </section>
+        <section id="hasil-rangking-section" class="hidden">
+            <p>Berikut ini merupakan hasil perangkingan dari proses perhitungan menggunakan metode TOPSIS</p>
+            <table class="table is-fullwidth">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Narapidana</th>
+                        <th>Nilai Rangking</th>
+                    </tr>
+                </thead>
+                <tbody id="hasil-rangking-body">
+                    <!-- Data perangkingan akan ditampilkan di sini -->
+                </tbody>
+            </table>
+        </section>
 
-            <div class="column is-half-tablet is-one-third-desktop">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="media">
-                            <div class="media-content">
-                                <h3 class="title is-4">Jumlah Kriteria</h3>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <p class="is-size-5">5</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <script>
+            function closeNotification(button) {
+                var notification = button.parentNode;
+                notification.classList.add('animate__animated', 'animate__fadeOut'); // Tambahkan kelas animasi fade out
+                setTimeout(function() {
+                    notification.remove();
+                }, 1000); // Setelah 1 detik (durasi animasi), notifikasi dihapus
+            }
 
-            <div class="column is-half-tablet is-one-third-desktop">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="media">
-                            <div class="media-content">
-                                <h3 class="title is-4">Jumlah Admin</h3>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <p class="is-size-5">3</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        
-        
+            document.addEventListener('DOMContentLoaded', function() {
+                var notification = document.querySelector('.notification'); // Cari notifikasi pertama yang ditemukan
 
+                if (notification) {
+                    setTimeout(function() {
+                        notification.remove();
+                    }, 6500);
+                }
+            });
 
+            function ShowIkhtisarContent() {
+                document.getElementById('ikhtisar-data-section').classList.remove("hidden");
+                document.getElementById('pelaporan-section').classList.add("hidden");
+                document.getElementById('hasil-rangking-section').classList.add("hidden");
+            }
 
-        
+            function ShowPelaporanContent() {
+                document.getElementById('ikhtisar-data-section').classList.add("hidden");
+                document.getElementById('pelaporan-section').classList.remove("hidden");
+                document.getElementById('hasil-rangking-section').classList.add("hidden");
+            }
+
+            function ShowHasilRangkingContent() {
+                document.getElementById('ikhtisar-data-section').classList.add("hidden");
+                document.getElementById('pelaporan-section').classList.add("hidden");
+                document.getElementById('hasil-rangking-section').classList.remove("hidden");
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // Tambahkan event listener untuk setiap tautan menu
+                document.getElementById("ikhtisar-data").addEventListener("click", function (event) {
+                    event.preventDefault();
+                    ShowIkhtisarContent();
+                });
+
+                document.getElementById("pelaporan").addEventListener("click", function (event) {
+                    event.preventDefault();
+                    ShowPelaporanContent();
+                });
+
+                document.getElementById("hasil-rangking").addEventListener("click", function (event) {
+                    event.preventDefault();
+                    ShowHasilRangkingContent();
+                });
+            });
+        </script>
     </div>
-    
+
+
+    <script>
+        // Ambil elemen tbody untuk tabel perangkingan
+        const tbody = document.getElementById('hasil-rangking-body');
+
+        // Data perangkingan (contoh)
+        const dataPerangkingan = [
+        { nama: 'Napi A', nilai: 0.85 },
+        { nama: 'Napi B', nilai: 0.75 },
+        { nama: 'Napi C', nilai: 0.68 }
+        ];
+
+        // Fungsi untuk menampilkan data perangkingan ke dalam tabel
+        function tampilkanDataPerangkingan() {
+        // Bersihkan isi tbody
+        tbody.innerHTML = '';
+
+        // Loop melalui setiap data perangkingan dan tambahkan ke dalam tabel
+        dataPerangkingan.forEach((narapidana, index) => {
+            const row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${narapidana.nama}</td>
+                    <td>${narapidana.nilai}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+        }
+
+        // Panggil fungsi untuk menampilkan data perangkingan saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+        tampilkanDataPerangkingan();
+        });
+
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const navbarBurgers = Array.from(document.querySelectorAll('.navbar-burger'));

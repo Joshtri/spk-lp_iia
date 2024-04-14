@@ -4,11 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= locals.title %></title>
+    <link rel="icon" href="/img/spk_logo.png" />
     <link rel="stylesheet" href="/vendor/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
+
+    <style>
+        /* Style for help button */
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+    </style>
 
     <%-include('partials/header'); %>
     <div class="container mt-6">
@@ -74,10 +87,7 @@
                 notification.remove();
             }
         </script>
-           <!-- Tombol "Show All" dipindahkan ke sini -->
-        <div class="ml-auto mb-2">
-            <button class="button">Show All</button>
-        </div>
+
 
 
         <div class="field is-grouped">
@@ -124,12 +134,45 @@
                                 <button class="button">
                                     <a href="/data/detail_narapidana/<%= narapidana.id_narapidana %>" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
                                 </button>
+
+
                                 
                                 <% if (admin && admin.id_admin === narapidana.id_wali) { %>
-                                    <button class="button">
-                                        <a href="/data/edit_narapidana/<%= narapidana.id_narapidana %>" class="has-text-dark"><i class="fa-regular fa-pen-to-square"></i></a>
-                                    </button>
-                
+                                    <!-- Tambahkan tombol edit pada setiap baris tabel -->
+                                    <div class="dropdown is-hoverable">
+            
+                                        <div class="dropdown-trigger">
+                                          <button class="button" aria-haspopup="true" aria-controls="dropdown-menu4">
+                                            <span><i class="fa-regular fa-pen-to-square"></i></span>
+                                            <span class="icon is-small">
+                                              <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                            </span>
+                                          </button>
+                                        </div>
+                            
+                                        <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+                                          <div class="dropdown-content">
+                                            <div class="dropdown-item">
+                                                <a href="/data/edit_narapidana/<%= narapidana.id_narapidana %>" class="dropdown-item">
+                                                    Edit Data
+                                                </a>
+                                                <!-- Opsi untuk memberi penilaian -->
+                                                <a href="/data/penilaian_napi" class="dropdown-item">
+                                                    Beri Penilaian
+                                                </a>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        function toggleDropdown(napiId) {
+                                            const dropdown = document.getElementById('dropdown_' + napiId);
+                                            dropdown.classList.toggle('is-active');
+                                        }
+                                    </script>
+
+
                                     <!-- Tombol untuk membuka modal konfirmasi -->
                                     <button class="button is-danger" onclick="openConfirmationModal('<%= narapidana.id_narapidana %>')">
                                         <i class="fa-solid fa-trash"></i>
@@ -171,16 +214,17 @@
                 
             </table>
         </div>
-    </div>
+
+    
 
     <hr>
     <div class="container mt-5 mb-5">
 
         <!-- Pagination -->
-        <nav class="pagination" role="navigation" aria-label="pagination">
-            <a class="pagination-previous <% if (currentPage === 1) { %>is-disabled<% } %>"
+        <nav class="pagination " role="navigation" aria-label="pagination">
+            <a class="pagination-previous  <% if (currentPage === 1) { %>is-disabled<% } %>"
                 <% if (currentPage !== 1) { %>href="?page=<%= currentPage - 1 %>"<% } %>>Previous</a>
-            <a class="pagination-next <% if (currentPage === totalPages) { %>is-disabled<% } %>"
+            <a class="pagination-next  <% if (currentPage === totalPages) { %>is-disabled<% } %>"
                 <% if (currentPage !== totalPages) { %>href="?page=<%= currentPage + 1 %>"<% } %>>Next page</a>
             <ul class="pagination-list">
                 <% for (let i = 1; i <= totalPages; i++) { %>
@@ -194,6 +238,97 @@
         </nav>
     </div>
     <!-- End Pagination -->
+
+    <!-- Tombol bantuan -->
+    <button id="helpButton" class="button is-success help-button opacity-75" style="width: 40px; height: 40px; border-radius: 50%;">
+        <i class="fa-solid fa-expand"></i>
+    </button>
+
+    <!-- Modal -->
+    <div id="helpModal" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-card" style="width: 1280px;">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Data Narapidana - Expand</p>
+            <button id="closeModal" class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <table class="table is-fullwidth is-hoverable">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nama Narapidana</th>
+                        <th>Register</th>
+                        <th>Nomor KTP</th>
+                        <!-- <th>Kewarganegaraan</th> -->
+                        <th>Nama Wali</th>
+                        <th class="">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (let i = 0; i < narapidanaData.length; i++) { %>
+                        <% const narapidana = narapidanaData[i]; %>
+                        <tr>
+                            <td><%= (currentPage - 1) * limit + i + 1 %></td>
+                            <td><%= narapidana.nama_narapidana %></td>
+                            <td><%= narapidana.register %></td>
+                            <td><%= narapidana.no_ktp %></td>
+                            <td><%= narapidana.nama_wali %></td>
+                            <td>
+
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </section>
+        <footer class="modal-card-foot">
+            <div class="buttons">
+            <button id="closeModalButton" class="button">Tutup ❌</button>
+            </div>
+        </footer>
+        </div>
+    </div>
+
+    <script>
+        // Ambil tombol penutup modal
+        const closeModalButton = document.getElementById('closeModalButton');
+        const closeModal = document.getElementById('closeModal');
+
+        // Tambahkan event click pada tombol penutup modal
+        closeModalButton.addEventListener('click', function() {
+            // Sembunyikan modal
+            document.getElementById('helpModal').classList.remove('is-active');
+        });
+
+        // Tambahkan event click pada background modal
+        closeModal.addEventListener('click', function() {
+            // Sembunyikan modal
+            document.getElementById('helpModal').classList.remove('is-active');
+        });
+    </script>
+
+
+
+    <script>
+        // Ambil tombol dan modal
+        const helpButton = document.getElementById('helpButton');
+        const helpModal = document.getElementById('helpModal');
+
+        // Tambahkan acara klik pada tombol
+        helpButton.addEventListener('click', function() {
+            // Tampilkan modal
+            helpModal.classList.add('is-active');
+        });
+
+        // Tambahkan acara klik pada tombol tutup modal
+        helpModal.querySelector('.modal-close').addEventListener('click', function() {
+            // Sembunyikan modal
+            helpModal.classList.remove('is-active');
+        });
+    </script>
+
+    
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -224,6 +359,8 @@
             modal.classList.remove('is-active');
         }
     </script>
+
+<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
     <script src="/js/liveSearchBar.js"></script>
 </body>

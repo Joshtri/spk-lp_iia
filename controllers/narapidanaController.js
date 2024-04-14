@@ -91,7 +91,8 @@ exports.detailNarapidanaPage = (req, res) => {
         sisa_masa_tahanan,
         narapidana.register,
         narapidana.createdAt,
-        pekerjaan.nama_pekerjaan, 
+        pekerjaan.nama_pekerjaan,
+        tindak_pidana.jenis_tindak_pidana,
         admin.id_admin AS id_wali,
         admin.nama_lengkap AS nama_wali
     FROM 
@@ -100,6 +101,8 @@ exports.detailNarapidanaPage = (req, res) => {
         pekerjaan ON narapidana.pekerjaan_semula = pekerjaan.id_pekerjaan
     JOIN 
         admin ON narapidana.nama_wali = admin.id_admin
+    JOIN
+        tindak_pidana ON narapidana.tindak_pidana = tindak_pidana.id_tindak_pidana
     WHERE 
         id_narapidana = ?`;
 
@@ -124,32 +127,37 @@ exports.detailNarapidanaPage = (req, res) => {
 };
 
 
-exports.addNarapidanaPage = (req,res)=>{
+exports.addNarapidanaPage = (req, res) => {
     // Dapatkan data admin dari session dan gunakan sesuai kebutuhan
     const adminData = req.session.admin;
 
-    
-    
     try {
-        const readQuery = "SELECT * FROM pekerjaan";
+        const readQueryPekerjaan = "SELECT * FROM pekerjaan";
+        const readQueryTindakPidana = "SELECT * FROM tindak_pidana";
 
-        db.query(readQuery,(err,resultsPekerjaan)=>{
-            if(err){
+        db.query(readQueryPekerjaan, (err, resultsPekerjaan) => {
+            if (err) {
                 throw err;
-            }
-            else {
-                res.render('add_narapidana',{
-                    admin:adminData,
-                    pekerjaanData: resultsPekerjaan
+            } else {
+                db.query(readQueryTindakPidana, (err, resultsTindakPidana) => {
+                    if (err) {
+                        throw err;
+                    } else {
+                        res.render('add_narapidana', {
+                            admin: adminData,
+                            pekerjaanData: resultsPekerjaan,
+                            tindakPidanaData: resultsTindakPidana // Menambahkan data tindak pidana ke dalam objek yang akan dilewatkan ke template
+                        });
+                    }
                 });
             }
-        })
-        
+        });
+
     } catch (error) {
         console.log(error);
     }
-
 }
+
 
 exports.editNarapidanaPage = (req, res) => {
     const idNarapidana = req.params.id_narapidana; // Ambil id_narapidana dari parameter URL
@@ -228,6 +236,7 @@ exports.postNarapidana = (req, res) => {
         pendidikan_terakhir: req.body.pendidikan_terakhir,
         pekerjaan_semula: req.body.pekerjaan_semula,
         agama: req.body.agama,
+        tindak_pidana:req.body.tindak_pidana,
 
         //atribut blm fix.
         sisa_masa_tahanan: req.body.sisa_masa_tahanan,
@@ -342,3 +351,17 @@ exports.postUpdateNarapidana = (req, res) => {
         res.redirect('/data/data_narapidana');
     });
 };
+
+
+
+exports.penilaianPage = (req,res)=>{
+    const locals = {
+        title : "Beri Penilaian"
+    }
+
+    const adminData = req.session.admin;
+    res.render('add_penilaian',{
+        locals,
+        admin: adminData
+    });
+}

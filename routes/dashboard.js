@@ -1,8 +1,9 @@
 const express = require('express');
-const { dashboardPage, myProfilePage } = require('../controllers/dashboardController');
+const { dashboardPage, myProfilePage, totalKriteriaJSON, totalNarapidanaJSON } = require('../controllers/dashboardController');
 const {isLoggedIn} = require('../auth/protect');
 const router = express.Router();
 const protect = require('../auth/protect');
+const { adminController } = require('../controllers/mergeController');
 
 
 
@@ -24,6 +25,10 @@ const checkAdminLogin = (req, res, next) => {
 router.get('/dashboard', protect, dashboardPage)
 
 router.get('/profil_saya',protect,   myProfilePage);
+router.post('/update_pass',adminController.changePassword);
+router.get('/getTotalKriteria',totalKriteriaJSON);
+
+router.get('/getTotalNapi', totalNarapidanaJSON);
 
 // Router untuk logout
 router.get('/logout', (req, res) => {

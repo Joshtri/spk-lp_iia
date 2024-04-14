@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="icon" href="/img/spk_logo.png" />
+    <link rel="stylesheet" href="vendor/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        .notification{
+            position: absolute;
+            right: 10px;
+        }
+        .password-match {
+            color: green;
+        }
+        .password-not-match {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="https://flowbite.com/" class="navbar-item">
+                    <img src="https://flowbite.com/docs/images/logo.svg" alt="Flowbite Logo" width="112" height="28">
+                </a>
+                <button class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="navbarMenu" class="navbar-menu">
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a href="/" class="button is-primary is-light has-text-black">
+                                Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="columns is-centered">
+            <div class="column is-one-third">
+
+                <h1 class="title is-3 has-text-centered mb-3 mt-6">Sign Up</h1>
+                <form class="box" method="post" action="/register_account">
+                    <div class="field">
+                        <label class="label">Nama Lengkap</label>
+                        <div class="control">
+                            <input class="input" type="text" name="nama_lengkap"  required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Username</label>
+                        <div class="control">
+                            <input class="input" type="text" name="username"  required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Email Pengguna</label>
+                        <div class="control">
+                            <input class="input" type="email" name="email"  required>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control">
+                            <input class="input" type="password" id="password" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Confirm Password</label>
+                        <div class="control">
+                            <input class="input" type="password" id="confirmPassword" name="password" required>
+                            <span id="passwordMatchIndicator"></span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary is-fullwidth" type="submit">Sign Up</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchIndicator = document.getElementById('passwordMatchIndicator');
+
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            if (password === confirmPassword) {
+                passwordMatchIndicator.textContent = 'Passwords match';
+                passwordMatchIndicator.classList.remove('password-not-match');
+                passwordMatchIndicator.classList.add('password-match');
+            } else {
+                passwordMatchIndicator.textContent = 'Passwords do not match';
+                passwordMatchIndicator.classList.remove('password-match');
+                passwordMatchIndicator.classList.add('password-not-match');
+            }
+        });
+    </script>
+
+</body>
+</html>

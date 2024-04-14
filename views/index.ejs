@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= locals.title %></title>
+    <link rel="icon" href="/img/spk_logo.png" />
     <link rel="stylesheet" href="vendor/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
@@ -25,7 +26,7 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <a class="button is-primary is-light has-text-black">
+                            <a href="/sign_up" class="button is-primary is-light has-text-black">
                                 Sign Up
                             </a>
                         </div>
@@ -74,6 +75,16 @@
                         <button class="delete" onclick="closeNotification(this)"></button>
                     </div>
                 <% } %>
+
+                <% if (messageRegister && messageRegister.length > 0) { %>
+                    <div class="notification is-success mt-3">
+                        <% messageRegister.forEach(message => { %>
+                            <p><%= message %></p>
+                        <% }) %>
+                        <button class="delete" onclick="closeNotification(this)"></button>
+                    </div>
+                <% } %>
+
 
 
                 <script>

@@ -4,15 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya</title>
+    <link rel="icon" href="/img/spk_logo.png" />
     <link rel="stylesheet" href="/vendor/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 </head>
 <body>
 
     <%-include('partials/header') %>
     <section class="section">
         <div class="container">
+
+            <div class="notification is-success">
+
+                <p>Notifikasi: Data ini hanya dilihat oleh anda dan hanya bisa diubah oleh anda</p>
+             
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
             <h1 class="title">Profil Saya</h1>
             <div class="columns">
                 <div class="column is-one-quarter">
@@ -26,16 +33,121 @@
                         <p><strong>Email:</strong> <%= admin.email %></p>
                         <p><strong>Username:</strong> <%= admin.username %></p>
                         <p><strong>Akses Sebagai:</strong> <%= admin.role %></p>
-                        <p><strong>Akun dibuat:</strong> <%= admin.createdAt %></p>
+                        <button class="is-small button is-danger" id="ubahPassButton">Ubah Password<i class="mx-1 fa-solid fa-key"></i></button>
+                        <!-- <p><strong>Akun dibuat:</strong> <%= admin.createdAt %></p> -->
                     </div>
                     <div class="buttons">
-                        <button class="button is-primary">Edit Profil</button>
-                        <button class="button is-danger">Hapus Akun</button>
+                        <button class="button is-primary" id="editButton">Edit Profil</button>
+                        <button class="button is-danger" id="hapusButton">Hapus Akun</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <script>
+        function closeNotification(button) {
+            // Mendapatkan parent dari tombol delete, yaitu notifikasi
+            var notification = button.parentNode;
+            // Menghapus notifikasi
+            notification.remove();
+        }
+    </script>
+    
+
+    <!-- Modal Hapus Akun -->
+    <div class="modal" id="hapusModal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Konfirmasi Hapus Akun</p>
+                <button class="delete" aria-label="close" id="closeHapusModal"></button>
+            </header>
+            <section class="modal-card-body">
+                <p>Anda yakin ingin menghapus akun ini?</p>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-danger" id="hapusAkun">Hapus</button>
+                <button class="button" id="batalHapus">Batal</button>
+            </footer>
+        </div>
+    </div>
+
+        <!-- Modal Edit Profil -->
+    <div class="modal" id="ubahPassModal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Ubah Password</p>
+                <button class="delete" aria-label="close" id="closeUbahPassModal"></button>
+            </header>
+            <section class="modal-card-body">
+                <form action="/adm/update_pass" method="POST">
+
+                
+                <!-- Isi formulir edit profil di sini -->
+
+                <div class="field">
+                    <input type="hidden" name="id_admin" value="<%= admin.id_admin %>">
+                    <label class="label">Masukkan Password Baru:</label>
+                    <div class="control">
+                        <!-- Input field untuk nama kriteria -->
+                        <input class="input" type="text" id="editNamaKriteria" name="newPassword" placeholder="edit username anda" value="<%= admin.username %>">
+                    </div>
+                </div>
+
+
+
+            </section>
+            <footer class="modal-card-foot">
+                <button type="submit" class="button is-success" id="simpanProfil">Ubah</button>
+                <button class="button" id="batalUbahPass">Batal</button>
+            </footer>
+        </form>
+        </div>
+    </div>
+
+    <!-- Modal Edit Profil -->
+    <div class="modal" id="editModal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Edit Profil</p>
+                <button class="delete" aria-label="close" id="closeEditModal"></button>
+            </header>
+            <section class="modal-card-body">
+                <!-- Isi formulir edit profil di sini -->
+                <div class="field">
+                    <label class="label">Nama Lengkap:</label>
+                    <div class="control">
+                        <!-- Input field untuk nama kriteria -->
+                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit nama lengkap" value="<%= admin.nama_lengkap %>">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Username:</label>
+                    <div class="control">
+                        <!-- Input field untuk nama kriteria -->
+                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit username anda" value="<%= admin.username %>">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Email:</label>
+                    <div class="control">
+                        <!-- Input field untuk nama kriteria -->
+                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" value="<%= admin.email %>" placeholder="gunakan email yang aktif">
+                    </div>
+                </div>
+
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success" id="simpanProfil">Edit</button>
+                <button class="button" id="batalEdit">Batal</button>
+            </footer>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -50,7 +162,67 @@
                     });
                 });
             }
+
+            const editButton = document.getElementById('editButton');
+            const hapusButton = document.getElementById('hapusButton');
+            const editModal = document.getElementById('editModal');
+            const hapusModal = document.getElementById('hapusModal');
+            const batalEdit = document.getElementById('batalEdit');
+            const closeEditModal = document.getElementById('closeEditModal');
+            const closeHapusModal = document.getElementById('closeHapusModal');
+            const batalHapus = document.getElementById('batalHapus');
+
+            editButton.addEventListener('click', () => {
+                editModal.classList.add('is-active');
+            });
+
+            hapusButton.addEventListener('click', () => {
+                hapusModal.classList.add('is-active');
+            });
+
+            [closeEditModal, batalEdit].forEach(element => {
+                element.addEventListener('click', () => {
+                    editModal.classList.remove('is-active');
+                });
+            });
+
+            [closeHapusModal, batalHapus].forEach(element => {
+                element.addEventListener('click', () => {
+                    hapusModal.classList.remove('is-active');
+                });
+            });
+
+            const hapusAkun = document.getElementById('hapusAkun');
+            hapusAkun.addEventListener('click', () => {
+                // Tambahkan logika untuk menghapus akun di sini
+                hapusModal.classList.remove('is-active');
+            });
+
+            const simpanProfil = document.getElementById('simpanProfil');
+            simpanProfil.addEventListener('click', () => {
+                // Tambahkan logika untuk menyimpan profil di sini
+                editModal.classList.remove('is-active');
+            });
         });
+    </script>
+
+    <script>
+        const ubahPassButton = document.getElementById('ubahPassButton');
+        const ubahPassModal = document.getElementById('ubahPassModal');
+
+        const batalUbahPass = document.getElementById('batalUbahPass');
+        const closeUbahPassModal = document.getElementById('closeUbahPassModal');
+
+        ubahPassButton.addEventListener('click', () => {
+            ubahPassModal.classList.add('is-active');
+        });
+
+        [closeUbahPassModal, batalUbahPass].forEach(element => {
+            element.addEventListener('click', () => {
+                ubahPassModal.classList.remove('is-active');
+            });
+        });
+
     </script>
 </body>
 </html>

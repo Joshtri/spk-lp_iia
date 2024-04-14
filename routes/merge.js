@@ -1,5 +1,5 @@
 const express = require('express');
-const {agamaController, pekerjaanController} = require('../controllers/mergeController')
+const {agamaController, pekerjaanController, tindakPidanaController} = require('../controllers/mergeController')
 const protect = require('../auth/protect');
 // const { kriteriaPage, addKriteriaPage } = require('../controllers/kriteriaController');
 const router = express.Router();
@@ -21,6 +21,16 @@ router.post('/post_pekerjaan', protect, pekerjaanController.create);
 router.post('/update_pekerjaan', pekerjaanController.update)
 // Tentukan rute DELETE untuk menghapus data pekerjaan berdasarkan ID
 router.delete('/delete_pekerjaan/:id_pekerjaan', pekerjaanController.delete);
+
+
+
+router.get('/data_tindak_pidana', tindakPidanaController.getPage);
+
+router.post('/post_tindak_pidana', tindakPidanaController.create);
+
+router.delete('/delete_tindak_pidana/:id_tindak_pidana', tindakPidanaController.delete);
+
+router.post('/update_tindak_pidana', tindakPidanaController.update);
 
 
 

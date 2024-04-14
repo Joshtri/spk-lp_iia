@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Narapidana</title>
-
+    <link rel="icon" href="/img/spk_logo.png" />
     <link rel="stylesheet" href="/vendor/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -86,6 +86,18 @@
                     <input class="input" required name="nama_narapidana" type="text">
                   </div>
 
+                  <div class="field">
+                    <label class="label">Nomor KTP:</label>
+                    <input class="input" required name="no_ktp" type="text" oninput="validateNIPLength(this)">
+                    <!-- Notifikasi teks untuk NIP -->
+                    <p id="nipNotification" class="help is-danger" style="display: none;">Nomor KTP harus terdiri dari 16 digit.</p>
+                    
+                    <div id="nipNotificationSuccess" class="help is-success" style="display: none;">
+                      Data NIP sudah 16 digit. Pastikan NIP sudah benar.sola
+                    </div>
+                  
+                  </div>
+
                     <div class="field">
                       <label class="label">Agama</label>
                       <div class="control">
@@ -125,17 +137,7 @@
             <div class="column is-half">
                 <div class="box">
 
-                  <div class="field">
-                    <label class="label">Nomor KTP:</label>
-                    <input class="input" required name="no_ktp" type="text" oninput="validateNIPLength(this)">
-                    <!-- Notifikasi teks untuk NIP -->
-                    <p id="nipNotification" class="help is-danger" style="display: none;">Nomor KTP harus terdiri dari 16 digit.</p>
-                    
-                    <div id="nipNotificationSuccess" class="help is-success" style="display: none;">
-                      Data NIP sudah 16 digit. Pastikan NIP sudah benar.
-                  </div>
-                  
-                </div>
+
                 
 
 
@@ -195,9 +197,27 @@
                         <div class="select">
                           <select name="register" required>
                             <option>-</option>
-                            <option value="B1">B1 (hukuman 5 tahun ke atas (sampai hukuman seumur hidup/hukuman mati) )</option>
-                            <option value="B2A">B2A (hukuman 2 tahun - 5 tahun)</option>
-                            <option value="B2B">B2B (Hukuman 10 bulan ke bawah)</option>
+                            <option value="hukuman mati (HM)">hukuman mati (HM)</option>
+                            <option value="hukuman seumur hidup (HSP)">hukuman seumur hidup (HSP)</option>
+                            <option value="B1 pidahan > 1 tahun < 3 tahun & 3 > keatas">B1 pidahan > 1 tahun < 3 tahun & 3 > keatas</option>
+                            <option value="B2A 4 tahun < 1 tahun (pidana diatas 4 bulan, kurang dari 1 tahun)">B2A 4 tahun < 1 tahun (pidana diatas 4 bulan, kurang dari 1 tahun)</option>
+                            <option value="B2B 3 bulan kebawah">B2B 3 bulan kebawah</option>
+                            <option value="B3/Subsider pidana pengganti denda">B3/Subsider pidana pengganti denda</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <div class="field">
+                      <label class="label">Jenis Kejahatan</label>
+                      <div class="control">
+                        <div class="select">
+                          <select name="tindak_pidana" required>
+                            <option value="">-</option>
+                            <% for(let i = 0; i < tindakPidanaData.length; i++) { %>
+                              <option value="<%= tindakPidanaData[i].id_tindak_pidana %>"><%= tindakPidanaData[i].jenis_tindak_pidana %></option>
+                            <% } %>
                           </select>
                         </div>
                       </div>

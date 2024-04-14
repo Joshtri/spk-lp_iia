@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const db = require('./utils/database');
 
 
@@ -34,7 +36,10 @@ app.use(
       
     })
 );
-  
+
+// Inisialisasi Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Middleware untuk mengatur sesi dan cookie
 app.use(cookieParser());
