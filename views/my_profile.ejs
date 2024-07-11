@@ -29,12 +29,12 @@
                 </div>
                 <div class="column">
                     <div class="content">
-                        <p><strong>Nama:</strong> <%= admin.nama_lengkap %></p>
-                        <p><strong>Email:</strong> <%= admin.email %></p>
-                        <p><strong>Username:</strong> <%= admin.username %></p>
-                        <p><strong>Akses Sebagai:</strong> <%= admin.role %></p>
+                        <p><strong>Nama:</strong> <%= user.nama_lengkap %></p>
+                        <p><strong>Email:</strong> <%= user.email %></p>
+                        <p><strong>Username:</strong> <%= user.username %></p>
+                        <p><strong>Akses Sebagai:</strong> <%= user.role %></p>
                         <button class="is-small button is-danger" id="ubahPassButton">Ubah Password<i class="mx-1 fa-solid fa-key"></i></button>
-                        <!-- <p><strong>Akun dibuat:</strong> <%= admin.createdAt %></p> -->
+                        <!-- <p><strong>Akun dibuat:</strong> <%= user.createdAt %></p> -->
                     </div>
                     <div class="buttons">
                         <button class="button is-primary" id="editButton">Edit Profil</button>
@@ -88,11 +88,11 @@
                 <!-- Isi formulir edit profil di sini -->
 
                 <div class="field">
-                    <input type="hidden" name="id_admin" value="<%= admin.id_admin %>">
+                    <input type="hidden" name="id_user" value="<%= user.id_user %>">
                     <label class="label">Masukkan Password Baru:</label>
                     <div class="control">
                         <!-- Input field untuk nama kriteria -->
-                        <input class="input" type="text" id="editNamaKriteria" name="newPassword" placeholder="edit username anda" value="<%= admin.username %>">
+                        <input class="input" type="text" id="editNamaKriteria" name="newPassword" placeholder="edit username anda" value="<%= user.username %>">
                     </div>
                 </div>
 
@@ -121,7 +121,7 @@
                     <label class="label">Nama Lengkap:</label>
                     <div class="control">
                         <!-- Input field untuk nama kriteria -->
-                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit nama lengkap" value="<%= admin.nama_lengkap %>">
+                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit nama lengkap" value="<%= user.nama_lengkap %>">
                     </div>
                 </div>
 
@@ -129,7 +129,7 @@
                     <label class="label">Username:</label>
                     <div class="control">
                         <!-- Input field untuk nama kriteria -->
-                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit username anda" value="<%= admin.username %>">
+                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit username anda" value="<%= user.username %>">
                     </div>
                 </div>
 
@@ -137,7 +137,7 @@
                     <label class="label">Email:</label>
                     <div class="control">
                         <!-- Input field untuk nama kriteria -->
-                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" value="<%= admin.email %>" placeholder="gunakan email yang aktif">
+                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" value="<%= user.email %>" placeholder="gunakan email yang aktif">
                     </div>
                 </div>
 

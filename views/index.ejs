@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= locals.title %></title>
-    <link rel="icon" href="/img/spk_logo.png" />
-    <link rel="stylesheet" href="vendor/bulma.min.css">
+
+    <%-include('partials/head') %>
+
+    <!-- pelengkap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 </head>
 <body>
@@ -38,7 +37,6 @@
 
 
     <div class="container">
-
         <style>
             .notification{
                 position: absolute;
@@ -49,14 +47,6 @@
 
         <div class="columns is-centered">
             <div class="column is-one-third">
-<!-- 
-                    <div class="notification is-success">
-                       
-
-                        
-                        <button class="delete" onclick="closeNotification(this)"></button>
-                    </div> -->
-               
 
                 <% if (messageLogin1 && messageLogin1.length > 0) { %>
                     <div class="notification is-danger mt-3">
@@ -84,8 +74,6 @@
                         <button class="delete" onclick="closeNotification(this)"></button>
                     </div>
                 <% } %>
-
-
 
                 <script>
                     function closeNotification(button) {
@@ -129,6 +117,7 @@
                         </div>
                     </div>
                 </form>
+                
             </div>
         </div>
     </div>

@@ -1,0 +1,46 @@
+<div id="modalTambahSub" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <div class="box">
+            <h2 class="title is-4">Tambah Sub Kriteria</h2> <!-- Judul "Tambah Agama" -->
+            <p class="has-background-danger-light">Note : Tambahkan sub kriteria pada kriteria yang ada</p>
+            <hr>
+            <!-- Form untuk menginput data -->
+            <form id="formTambahData" action="/data/subKriteria" method="POST">
+                <!-- Input fields -->
+                <div class="field">
+                    <label class="label">Nama Kriteria yang dituju:</label>
+                    <div class="control">
+                        <div class="select">
+                          <select name="kriteriaId" required>
+                            <option>-</option>
+                            <% for(let i = 0; i < kriteriaData.length; i++) { %>
+                                <option value="<%= kriteriaData[i].id_kriteria %>">C-<%= i + 1 %> | <%= kriteriaData[i].nama_kriteria %></option>
+                            <% } %>
+                          </select>
+                        </div>                    
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Nama Sub Kriteria:</label>
+                    <div class="control">
+                        <input class="input" type="text" name="nama_sub_kriteria" placeholder="masukkan sub kriteria" />                    
+                    </div>
+                </div>
+
+                <!-- <div class="field">
+                    <label class="label">Berikan bobot Sub Kriteria:</label>
+                    <div class="control">
+                        <input class="input" name="bobot_kriteria" type="number" placeholder="" />                    
+                    </div>
+                </div> -->
+                <!-- Tambahkan input fields lainnya sesuai kebutuhan -->
+                <!-- Tombol untuk menutup modal -->
+                <button type="button" id="btnCloseModalSub" class="mr-3 button is-light mt-3">Tutup</button>
+                <button type="submit" class="button is-success mt-3">Simpan</button>
+            </form>
+        </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+</div>

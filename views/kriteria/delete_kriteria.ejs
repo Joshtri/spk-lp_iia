@@ -1,0 +1,23 @@
+<div id="confirmationModal<%= kriteriaData[i].id_kriteria %>" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">Konfirmasi Hapus</p>
+            <button class="delete" aria-label="close" onclick="closeConfirmationModal('<%= kriteriaData[i].id_kriteria %>')"></button>
+        </header>
+        <section class="modal-card-body">
+            <p>Apakah Anda yakin ingin menghapus data ini?</p>
+        </section>
+        <footer class="modal-card-foot">
+            <!-- Form untuk mengirimkan request DELETE saat tombol "Ya" ditekan -->
+            <form id="deleteForm<%= kriteriaData[i].id_kriteria %>" action="/data/kriteria/<%= kriteriaData[i].id_kriteria %>?_method=DELETE" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="button is-danger">Ya</button>
+            </form>
+            
+            <!-- Tombol untuk menutup modal tanpa menghapus data -->
+            <button class="button mx-3" onclick="closeConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">Tidak</button>
+
+        </footer>
+    </div>
+</div>

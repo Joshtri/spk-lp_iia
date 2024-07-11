@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('partials/head'); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Masukkan stylesheet atau link eksternal lainnya di sini -->
+</head>
+<body>
+    <!-- Header dan bagian lainnya -->
+    <%-include('partials/header'); %>
+
+    <style>
+      .bulleted-list {
+        list-style-type: disc; /* Ganti dengan jenis simbol bullet yang diinginkan */
+        padding-left: 20px; /* Atur padding untuk indentasi bullet */
+      }
+  
+    </style>
+
+    <section class="section">
+      <div class="container mb-3">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul>
+              <li>
+                <a href="/dashboard">
+                  <span class="icon is-small">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                  </span>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="">
+                <a href="/data/data_narapidana">
+                  <span class="icon is-small">
+                    <i class="fas fa-book" aria-hidden="true"></i>
+                  </span>
+                  <span><%= title %></span>
+                </a>
+              </li>
+
+              <li class="is-active">
+                <a href="#">
+                  <span class="icon is-small">
+                    <i class="fa-solid fa-person" aria-hidden="true"></i>
+                  </span>
+                  <span>Detail Kriteria</span>
+                </a>
+              </li>
+            </ul>
+        </nav>
+        <hr>
+
+        <div class="mb-4">
+            <a href="/data/kriteria">
+                <button type="button" class="button is-warning is-small">Kembali</button>
+            </a>
+        </div>
+
+        <style>
+          .table-container {
+            width: 50%;
+            overflow-x: auto;
+          }
+        
+          .table {
+            width: 100%;
+            /* border-collapse: collapse; */
+            margin-top: 20px;
+          }
+        
+          .table th,
+          .table td {
+            padding: 10px;
+            /* border: 1px solid #ccc; */
+            text-align: left;
+          }
+        
+          .delete-icon {
+            color: #ff3860;
+            cursor: pointer;
+          }
+          
+        </style>
+        
+        <div>
+          <h2 class="title is-4">Detail Sub Kriteria</h2>
+          <div class="table-container">
+            <table class="table" style="border-width: 0;">
+              <thead>
+                <tr>
+                  <th>Sub Kriteria</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% kriteriaDetailSub.forEach(function(sub) { %>
+                  <tr>
+                    <td><%= sub.nama_sub_kriteria %></td>
+                    <td>
+
+                      <form action="/data/subKriteria_delete/<%= sub.id_sub_kriteria %>?_method=DELETE" method="POST" class="position-relative">
+                        <button type="submit" data-bs-toggle="tooltip" data-bs-title="Delete" class="button" onclick="confirmDelete()">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </form>
+                    </td>
+                    
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <script>
+          function confirmDelete() {
+              const confirmation = confirm("Are you sure you want to delete this item?");
+              if (confirmation) {
+                  // Submit form if user confirms
+                  document.getElementById("deleteForm").submit();
+              }
+          }
+        </script>
+        
+        
+        
+        
+        
+
+      </div>
+    </section>
+  
+</body>
+</html>

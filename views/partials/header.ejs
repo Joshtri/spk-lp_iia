@@ -20,18 +20,18 @@
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">Data</a>
                     <div class="navbar-dropdown">
-                        <a href="/data/data_narapidana" class="navbar-item">Data Narapidana</a>
+                        <a href="/data/narapidana" class="navbar-item">Data Narapidana</a>
 
-                        <a href="/data/data_kriteria" class="navbar-item">Data Kriteria</a>
+                        <a href="/data/kriteria" class="navbar-item">Data Kriteria</a>
 
                         
 
-                        <!-- <a href="/data/data_admin" class="navbar-item">Data Admin</a> -->
-                        <!-- <a href="/admin" class="navbar-item">Data Kewarganegaraan</a> -->
-                        <a href="/data/data_tindak_pidana" class="navbar-item">Data Tindak Pidana</a>
+                        <!-- <a href="/data/data_user" class="navbar-item">Data user</a> -->
+                        <!-- <a href="/user" class="navbar-item">Data Kewarganegaraan</a> -->
+                        <a href="/data/pidana" class="navbar-item">Data Tindak Pidana</a>
 
-                        <% if(admin) { %>
-                            <% if(admin.role === 'wali pemasyarakatan') { %>
+                        <% if(user) { %>
+                            <% if(user.role === 'wali pemasyarakatan') { %>
                                 <a href="/data/data_pekerjaan" class="navbar-item">Data Pekerjaan</a>
                             <% } %>
                         <% } %>

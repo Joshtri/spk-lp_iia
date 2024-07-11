@@ -8,13 +8,12 @@ exports.dashboardPage = (req,res)=>{
         title:"Dashboard pengguna"
     }
     // Dapatkan data admin dari session dan gunakan sesuai kebutuhan
-    const adminData = req.session.admin;
-
+    const adminData = req.session.user;
     const messageLoginSuccess = req.flash('loginSuccessInfo');
 
     res.render('dashboard',
     { 
-        admin: adminData,
+        user: adminData,
         locals, 
         messageLoginSuccess
     });

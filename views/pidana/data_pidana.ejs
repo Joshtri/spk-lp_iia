@@ -3,11 +3,12 @@
 <head>
     <%-include('partials/head'); %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    
 </head>
 <body>
-    <%-include('partials/header'); %>
 
+
+    <%-include('partials/header'); %>
     <div class="container mt-6">
 
         <nav class="breadcrumb" aria-label="breadcrumbs">
@@ -25,7 +26,7 @@
                   <span class="icon is-small">
                     <i class="fas fa-book" aria-hidden="true"></i>
                   </span>
-                  <span>Data Kriteria</span>
+                  <span>Data Tindak Pidana</span>
                 </a>
               </li>
             </ul>
@@ -41,7 +42,14 @@
                 <button class="delete" onclick="closeNotification(this)"></button>
             </div>
         <% } %>
-
+        <% if (messageUpdate && messageUpdate.length > 0) { %>
+            <div class="notification is-success">
+                <% messageUpdate.forEach(message => { %>
+                    <p><%= message %></p>
+                <% }) %>
+                <button class="delete" onclick="closeNotification(this)"></button>
+            </div>
+        <% } %>
         <% if (messageDelete && messageDelete.length > 0) { %>
             <div class="notification is-success">
                 <% messageDelete.forEach(message => { %>
@@ -51,15 +59,6 @@
             </div>
         <% } %>
 
-        <% if (messageUpdate && messageUpdate.length > 0) { %>
-            <div class="notification is-success">
-                <% messageUpdate.forEach(message => { %>
-                    <p><%= message %></p>
-                <% }) %>
-                <button class="delete" onclick="closeNotification(this)"></button>
-            </div>
-        <% } %>
-        
         <script>
             function closeNotification(button) {
                 // Mendapatkan parent dari tombol delete, yaitu notifikasi
@@ -68,18 +67,15 @@
                 notification.remove();
             }
         </script>
-        
-        
 
         <div class="field is-grouped">
-            <% if (user && user.role === 'wali pemasyarakatan') { %>
-            <button class="button is-small is-success is-light" id="btnTambahData">Tambah Data</button>
-            <button class="button mx-2 is-small is-link is-light" id="btnTambahSub">Tambah Sub Kriteria</button>
+            <% if(user && user.role == 'wali pemasyarakatan') { %>
+            <button class="button" id="btnTambahData">Tambah Data</button>
             <% } %>
 
             <div class="is-one-third is-flex ml-auto">
                 <p class="control is-expanded">
-                    <input class="input" id="searchInput" type="text" placeholder="Search">
+                    <input class="input" type="text" id="searchInput"  placeholder="Search">
                 </p>
                 <p class="control">
                     <button class="button is-info">
@@ -88,113 +84,126 @@
                 </p>
             </div>
         </div>
-
+        
         <div class="overflow-x-auto shadow-md rounded-lg mt-3">
             <table class="table is-fullwidth is-hoverable">
                 <thead>
                     <tr>
-                        <th class="has-text-left">No.</th>
-                        <th class="has-text-left">Nama Kriteria</th>
-                        <th class="has-text-left">Bobot Kriteria</th>
-                        <th class="has-text-left">Jenis Kriteria</th>
+                        <th>No.</th>
+                        <th>Jenis Tindak Pidana</th>
+                        <th class="has-text-centered">Pasal KUHP/UU</th>
 
                         <th class="has-text-centered">Action</th>
                     </tr>
                 </thead>
-                <tbody id="">
-                    <% for(let i = 0; i < kriteriaData.length; i++) { %>
-                    <tr>
-                        <td><%= (currentPage - 1) * itemsPerPage + i + 1 %></td>
-                        <td class="has-text-left" data-tooltip="sub kriteria : "><%= kriteriaData[i].nama_kriteria %></td>
-                        <td class="has-text-left"><%= kriteriaData[i].bobot_kriteria %></td>
-                        <td class="has-text-left"><%= kriteriaData[i].jenis_kriteria %></td>
+                <tbody  id="dataTable">
+                    <% for(let i = 0 ; i < tindakPidanaData.length; i++) { %>
+                        <tr>
+                            <td><%= i + 1%></td>
 
-                        <td class="has-text-centered">
-                            <button class="button">
-                                <a href="/data/subKriteria/<%= kriteriaData[i].id_kriteria %>" data-tooltip="Lihat sub kriteria" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
-                            </button>
+                            <!-- <td><%= tindakPidanaData[i].id_tindak_pidana %></td> -->
+                            <td><%= tindakPidanaData[i].jenis_tindak_pidana %></td>
+                            <td class="has-text-centered"><%= tindakPidanaData[i].pasal_kuhp %></td>
 
-                            <% if(user && user.role == 'wali pemasyarakatan') { %>
-
-                                
+                        
+                            <td class="has-text-centered">
+                                <% if(user && user.role == 'wali pemasyarakatan') { %>
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
-                                <button class="button" onclick="editKriteria('<%= kriteriaData[i].id_kriteria %>', '<%= kriteriaData[i].nama_kriteria %>')">
+                                <!-- Tambahkan tombol edit pada setiap baris tabel -->
+                                <button class="button" onclick="editTindakPidana('<%= tindakPidanaData[i].id_tindak_pidana %>', '<%= tindakPidanaData[i].jenis_tindak_pidana %>', '<%= tindakPidanaData[i].pasal_kuhp %>')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
 
                                 <!-- Fungsi JavaScript untuk menampilkan data kriteria pada modal -->
                                 <script>
-                                    function editKriteria(id, nama) {
+                                    function editTindakPidana(id, nama, pasal) {
                                         const modal = document.getElementById('modalEdit');
-                                        const inputId = document.getElementById('editIdKriteria');
-                                        const inputNama = document.getElementById('editNamaKriteria');
+                                        const inputId = document.getElementById('editIdTindakPidana');
+                                        const inputNama = document.getElementById('editJenisTindakPidana');
+                                        const inputPasalKuhp = document.getElementById('editPasalKuhp');
 
                                         // Set nilai id dan nama kriteria pada input di modal
                                         inputId.value = id;
                                         inputNama.value = nama;
+                                        inputPasalKuhp.value = pasal;
 
                                         // Tampilkan modal
                                         modal.classList.add('is-active');
                                     }
                                 </script>
-
-    
                                 <!-- Tombol untuk membuka modal konfirmasi -->
-                                <button class="button is-danger" onclick="openConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">
+                                <button class="button is-danger" onclick="openConfirmationModal('<%= tindakPidanaData[i].id_tindak_pidana %>')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
-
-
+                                
                                 <!-- Modal konfirmasi -->
-                                <div id="confirmationModal<%= kriteriaData[i].id_kriteria %>" class="modal">
+                                <div id="confirmationModal<%= tindakPidanaData[i].id_tindak_pidana %>" class="modal">
                                     <div class="modal-background"></div>
                                     <div class="modal-card">
                                         <header class="modal-card-head">
                                             <p class="modal-card-title">Konfirmasi Hapus</p>
-                                            <button class="delete" aria-label="close" onclick="closeConfirmationModal('<%= kriteriaData[i].id_kriteria %>')"></button>
+                                            <button class="delete" aria-label="close" onclick="closeConfirmationModal('<%= tindakPidanaData[i].id_tindak_pidana %>')"></button>
                                         </header>
                                         <section class="modal-card-body">
                                             <p>Apakah Anda yakin ingin menghapus data ini?</p>
                                         </section>
                                         <footer class="modal-card-foot">
                                             <!-- Form untuk mengirimkan request DELETE saat tombol "Ya" ditekan -->
-                                            <form id="deleteForm<%= kriteriaData[i].id_kriteria %>" action="/data/kriteria/<%= kriteriaData[i].id_kriteria %>?_method=DELETE" method="POST">
+                                            <form id="deleteForm<%= tindakPidanaData[i].id_tindak_pidana %>" action="/data/pidana/<%= tindakPidanaData[i].id_tindak_pidana %>?_method=DELETE" method="POST">
                                                 <input type="hidden" name="_method" value="DELETE">
                                                 <button type="submit" class="button is-danger">Ya</button>
                                             </form>
                                             
                                             <!-- Tombol untuk menutup modal tanpa menghapus data -->
-                                            <button class="button mx-3" onclick="closeConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">Tidak</button>
+                                            <button class="button mx-3" onclick="closeConfirmationModal('<%= tindakPidanaData[i].id_tindak_pidana %>')">Tidak</button>
 
                                         </footer>
                                     </div>
                                 </div>
-                            <% } %>
-                        </td>
-                    </tr>
-                    <% } %>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <% } %>
+                        
                     <!-- Other table data -->
                 </tbody>
             </table>
         </div>
 
+        <hr>
+        <!-- <div class="container mt-5 mb-5">
+
+
+        </div> -->
+        <!-- End Pagination -->
+
+
+
+        <!-- Bagian modal edit -->
         <div id="modalEdit" class="modal">
             <div class="modal-background"></div>
             <div class="modal-content">
                 <div class="box">
-                    <h2 class="title is-4">Edit Kriteria</h2>
+                    <h2 class="title is-4">Edit Tindak Pidana</h2>
                     <hr>
-                    <!-- Form untuk mengedit data kriteria -->
-                    <form id="formEditData" action="/data/edit_kriteria" method="POST">
-                        <!-- Input field untuk id kriteria (hidden) -->
-                        <input type="hidden" id="editIdKriteria" name="id_kriteria">
+                    <form id="formEditData" action="/data/update_pidana" method="POST">
+                        <!-- Input field untuk id tindak pidana (hidden) -->
+                        <input type="hidden" id="editIdTindakPidana" name="id_tindak_pidana">
+
                         <div class="field">
-                            <label class="label">Nama Kriteria:</label>
+                            <label class="label">Jenis Tindak Pidana:</label>
                             <div class="control">
-                                <!-- Input field untuk nama kriteria -->
-                                <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="Masukkan nama kriteria">
+                                <input class="input" type="text" id="editJenisTindakPidana" name="jenis_tindak_pidana" placeholder="Masukkan jenis Tindak Pidana" required>
                             </div>
                         </div>
+
+                        <div class="field">
+                            <label class="label">Pasal KUHP/UU:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="editPasalKuhp" name="pasal_kuhp" placeholder="Masukkan Pasal KUHP/UU" required>
+                            </div>
+                        </div>
+
                         <!-- Tombol untuk menutup modal -->
                         <button type="button" id="btnCloseModalEdit" class="mr-3 button is-light mt-3">Tutup</button>
                         <!-- Tombol untuk menyimpan perubahan -->
@@ -205,51 +214,48 @@
             <button class="modal-close is-large" aria-label="close"></button>
         </div>
 
+
+
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const btnCloseModalEdit = document.getElementById('btnCloseModalEdit');
                 const modalEdit = document.getElementById('modalEdit');
-        
+
                 btnCloseModalEdit.addEventListener('click', () => {
                     modalEdit.classList.remove('is-active');
                 });
             });
+
+
         </script>
 
-        <!-- modal untuk tambah data kriteria -->
-        <%-include('kriteria/add_kriteria'); %>
-        
-        <!-- modal untuk tambah data SUB kriteria -->
-        <%-include('kriteria/add_subkriteria'); %>
-          
-    </div>
 
-    <hr>
-    <div class="container mt-5 mb-5">
-        <!-- Pagination -->
-        <nav class="pagination" role="navigation" aria-label="pagination">
-            <a class="pagination-previous <%= currentPage === 1 ? 'is-disabled' : '' %>"
-                <% if (currentPage !== 1) { %>href="?page=<%= currentPage - 1 %>"<% } %>>Previous</a>
-            <a class="pagination-next <%= currentPage === totalPages ? 'is-disabled' : '' %>"
-                <% if (currentPage !== totalPages) { %>href="?page=<%= currentPage + 1 %>"<% } %>>Next page</a>
-            <ul class="pagination-list">
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                    <% if (i >= 1) { %> <!-- Ensure page number is not less than 1 -->
-                        <li>
-                            <a class="pagination-link <%= currentPage === i ? 'is-current' : '' %>"
-                                aria-label="Page <%= i %>" aria-current="<%= currentPage === i ? 'page' : '' %>"
-                                href="?page=<%= i %>"><%= i %></a>
-                        </li>
-                    <% } %>
-                <% } %>
-            </ul>
-        </nav>
+
+        <%-include('pidana/add_pidana'); %>
+     
+        <div class="container mt-5 mb-5">
+
+
+        </div>
+        <!-- End Pagination -->
     </div>
-    <!-- End Pagination -->
     
-
     <script src="/js/liveSearchBar.js"></script>
     <script src="/js/navdrop.js"></script>
+    
+    <script>
+        // Fungsi untuk membuka modal konfirmasi
+        function openConfirmationModal(id) {
+            const modal = document.getElementById('confirmationModal' + id);
+            modal.classList.add('is-active');
+        }
+
+        // Fungsi untuk menutup modal konfirmasi
+        function closeConfirmationModal(id) {
+            const modal = document.getElementById('confirmationModal' + id);
+            modal.classList.remove('is-active');
+        }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -265,37 +271,6 @@
                 modalTambah.classList.remove('is-active');
             });
         });
-
-        document.addEventListener('DOMContentLoaded',()=>{
-            const modalTambahSub = document.getElementById('modalTambahSub');
-            const btnTambahSub = document.getElementById('btnTambahSub');
-            const btnCloseModalSub = document.getElementById('btnCloseModalSub');
-        
-            btnTambahSub.addEventListener('click', () => {
-                modalTambahSub.classList.add('is-active');
-            });
-        
-            btnCloseModalSub.addEventListener('click', () => {
-                modalTambahSub.classList.remove('is-active');
-            });
-        });
-  </script>
-
-
-    <script>
-        // Fungsi untuk membuka modal konfirmasi
-        function openConfirmationModal(id) {
-            const modal = document.getElementById('confirmationModal' + id);
-            modal.classList.add('is-active');
-        }
-
-        // Fungsi untuk menutup modal konfirmasi
-        function closeConfirmationModal(id) {
-            const modal = document.getElementById('confirmationModal' + id);
-            modal.classList.remove('is-active');
-        }
     </script>
-  
-
 </body>
 </html>

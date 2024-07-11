@@ -3,23 +3,26 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Joshtri <stuffofyos1516@gmail.com>",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
+    "bulma": "0.9.4",
+    "bulma-tooltip": "^3.0.2",
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.9",
+    "eslint": "9.x",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "method-override": "^3.0.0",
@@ -28,6 +31,11 @@
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "redis": "^4.6.13"
+    "redis": "^4.6.13",
+    "sequelize": "^6.37.3"
+  },
+  "repository": "https://github.com/Joshtri/spk-lp_iia.git",
+  "devDependencies": {
+    "globals": "^15.8.0"
   }
 }

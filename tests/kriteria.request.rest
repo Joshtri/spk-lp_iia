@@ -1,0 +1,5 @@
+DELETE http://localhost:3000/data/kriteria/1
+
+
+###
+GET http://localhost:3000/data/kriteria/4
