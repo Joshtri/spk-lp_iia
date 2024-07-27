@@ -34,7 +34,7 @@
                   <span class="icon is-small">
                     <i class="fas fa-book" aria-hidden="true"></i>
                   </span>
-                  <span><%= title %></span>
+                  <span>Data Kriteria</span>
                 </a>
               </li>
 
@@ -43,7 +43,7 @@
                   <span class="icon is-small">
                     <i class="fa-solid fa-person" aria-hidden="true"></i>
                   </span>
-                  <span>Detail Kriteria</span>
+                  <span><%= title %> <small>(<%= kriteria.nama_kriteria %>)</small></span>
                 </a>
               </li>
             </ul>
@@ -58,12 +58,12 @@
 
         <style>
           .table-container {
-            width: 50%;
-            overflow-x: auto;
+            width: 60%;
+            /* overflow-x: auto; */
           }
         
           .table {
-            width: 100%;
+            /* width: 100%; */
             /* border-collapse: collapse; */
             margin-top: 20px;
           }
@@ -83,23 +83,24 @@
         </style>
         
         <div>
-          <h2 class="title is-4">Detail Sub Kriteria</h2>
+          <h2 class="title is-4">Detail Kriteria <small>(<%= kriteria.nama_kriteria%>)</small></h2>
           <div class="table-container">
             <table class="table" style="border-width: 0;">
               <thead>
                 <tr>
                   <th>Sub Kriteria</th>
-                  <th></th>
+                  <th>Bobot Sub Kriteria</th>
                 </tr>
               </thead>
               <tbody>
-                <% kriteriaDetailSub.forEach(function(sub) { %>
+                <% subKriteria.forEach(function(sub) { %>
                   <tr>
                     <td><%= sub.nama_sub_kriteria %></td>
+                    <td><%= sub.bobot_sub_kriteria %></td>
                     <td>
 
                       <form action="/data/subKriteria_delete/<%= sub.id_sub_kriteria %>?_method=DELETE" method="POST" class="position-relative">
-                        <button type="submit" data-bs-toggle="tooltip" data-bs-title="Delete" class="button" onclick="confirmDelete()">
+                        <button type="submit" data-bs-toggle="tooltip" data-bs-title="Delete" class="button is-danger is-light" onclick="confirmDelete()">
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </form>

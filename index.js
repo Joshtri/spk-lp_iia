@@ -17,6 +17,7 @@ import routeDashboard from './routes/dashboard.route.js';
 import routeKriteria from './routes/kriteria.route.js';
 import routeSubKriteria from './routes/subKriteria.route.js';
 import routePidana from './routes/pidana.route.js';
+import routePerhitungan from './routes/perhitungan.route.js';
 
 import db from './config/dbConfig.js';
 const app = express();
@@ -85,7 +86,7 @@ app.set("views", [
 
 // Menggunakan rute secara eksplisit untuk setiap grup rute
 app.use('/', routeLogin);
-app.use('/adm', routeDashboard);
+app.use('/adm', routeDashboard, routePerhitungan);
 app.use('/data',  routeUser, routeKriteria, routeNarapidana,routeSubKriteria,routePidana);
 
 

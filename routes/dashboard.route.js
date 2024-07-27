@@ -1,6 +1,7 @@
 import express from 'express';
 import { dashboardPage, myProfilePage } from '../controllers/dashboard.controller.js';
 import protect from '../config/auth/protect.js';
+import { deleteAccount, updatePassword } from '../controllers/user.controller.js';
 // const { dashboardPage, myProfilePage, totalKriteriaJSON, totalNarapidanaJSON } = require('../controllers/dashboardController');
 // const {isLoggedIn} = require('../config/auth/protect');
 
@@ -28,6 +29,10 @@ const router = express.Router();
 router.get('/dashboard', protect,dashboardPage)
 
 router.get('/profil_saya',protect, myProfilePage);
+router.post('/update_pass',updatePassword);
+
+// Route untuk menghapus akun
+router.delete('/delete_account', deleteAccount);
 // router.post('/update_pass',adminController.changePassword);
 // router.get('/getTotalKriteria',totalKriteriaJSON);
 

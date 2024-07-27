@@ -120,19 +120,19 @@
                     <% for (let i = 0; i < narapidanaData.length; i++) { %>
                         <% const narapidana = narapidanaData[i]; %>
                         <tr>
-                            <td><%= (currentPage - 1) * limit + i + 1 %></td>
+                            <td><%= (currentPage - 1) * itemsPerPage + i + 1 %></td>
                             <td><%= narapidana.nama_narapidana %></td>
                             <td><%= narapidana.register %></td>
                             <td><%= narapidana.no_ktp %></td>
                             <td><%= narapidana.nama_wali %></td>
                             <td>
                                 <button class="button">
-                                    <a href="/data/detail_narapidana/<%= narapidana.id_narapidana %>" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
+                                    <a href="/data/narapidana/<%= narapidana.id_narapidana %>" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
                                 </button>
 
 
                                 
-                                <% if (user && user.id_user === narapidana.id_wali) { %>
+                                <% if (user && user.id_user === narapidana.waliId) { %>
                                     <!-- Tambahkan tombol edit pada setiap baris tabel -->
                                     <div class="dropdown is-hoverable">
             
@@ -187,7 +187,7 @@
                                             </section>
                                             <footer class="modal-card-foot">
                                                 <!-- Form untuk mengirimkan request DELETE saat tombol "Ya" ditekan -->
-                                                <form id="deleteForm<%= narapidana.id_narapidana %>" action="/data/delete_narapidana/<%= narapidana.id_narapidana %>?_method=DELETE" method="POST">
+                                                <form id="deleteForm<%= narapidana.id_narapidana %>" action="/data/narapidana/<%= narapidana.id_narapidana %>?_method=DELETE" method="POST">
                                                     <input type="hidden" name="_method" value="DELETE">
                                                     <button type="submit" class="button is-danger">Ya</button>
                                                 </form>
@@ -214,20 +214,21 @@
 
     <hr>
     <div class="container mt-5 mb-5">
-
         <!-- Pagination -->
-        <nav class="pagination " role="navigation" aria-label="pagination">
-            <a class="pagination-previous  <% if (currentPage === 1) { %>is-disabled<% } %>"
+        <nav class="pagination" role="navigation" aria-label="pagination">
+            <a class="pagination-previous <%= currentPage === 1 ? 'is-disabled' : '' %>"
                 <% if (currentPage !== 1) { %>href="?page=<%= currentPage - 1 %>"<% } %>>Previous</a>
-            <a class="pagination-next  <% if (currentPage === totalPages) { %>is-disabled<% } %>"
+            <a class="pagination-next <%= currentPage === totalPages ? 'is-disabled' : '' %>"
                 <% if (currentPage !== totalPages) { %>href="?page=<%= currentPage + 1 %>"<% } %>>Next page</a>
             <ul class="pagination-list">
                 <% for (let i = 1; i <= totalPages; i++) { %>
-                    <li>
-                        <a class="pagination-link <% if (currentPage === i) { %>is-current<% } %>"
-                            aria-label="Page <%= i %>" aria-current="<%= currentPage === i ? 'page' : '' %>"
-                            href="?page=<%= i %>"><%= i %></a>
-                    </li>
+                    <% if (i >= 1) { %> <!-- Ensure page number is not less than 1 -->
+                        <li>
+                            <a class="pagination-link <%= currentPage === i ? 'is-current' : '' %>"
+                                aria-label="Page <%= i %>" aria-current="<%= currentPage === i ? 'page' : '' %>"
+                                href="?page=<%= i %>"><%= i %></a>
+                        </li>
+                    <% } %>
                 <% } %>
             </ul>
         </nav>
@@ -264,7 +265,7 @@
                     <% for (let i = 0; i < narapidanaData.length; i++) { %>
                         <% const narapidana = narapidanaData[i]; %>
                         <tr>
-                            <td><%= (currentPage - 1) * limit + i + 1 %></td>
+                            <td><%= (currentPage - 1) * itemsPerPage + i + 1 %></td>
                             <td><%= narapidana.nama_narapidana %></td>
                             <td><%= narapidana.register %></td>
                             <td><%= narapidana.no_ktp %></td>

@@ -18,14 +18,18 @@ import protect from '../config/auth/protect.js';
 router.get('/narapidana', protect,narapidanaController.narapidanaPage);
 router.get('/add_narapidana', protect,narapidanaController.addNarapidanaPage);
 
-// // Route to get the details of a specific narapidana by ID
-// router.get('/data_narapidana/:id', getNarapidanaDetailById);
+router.post('/narapidana', narapidanaController.createNarapidana);
+router.delete('/narapidana/:id', narapidanaController.deleteNarapidana);
+// Route untuk mendapatkan detail narapidana
+router.get('/narapidana/:id', narapidanaController.getDetailNarapidana);
+
+
+// Route to get the edit detail of a specific narapidana by ID
+router.get('/edit_narapidana/:id', narapidanaController.getEditNarapidana);
 
 // // Route to create a new narapidana
-// router.post('/data_narapidana', createNarapidana);
 
 // // Route to delete a narapidana by ID
-// router.delete('/data_narapidana/:id', deleteNarapidana);
 
 // // Route to update an existing narapidana by ID
 // router.put('/data_narapidana/:id', updateNarapidana);

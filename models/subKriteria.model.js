@@ -21,7 +21,11 @@ const Sub_Kriteria = db.define('Sub_Kriteria',{
           key: 'id_kriteria',
         },
         allowNull:false,
-    }
+    },
+    bobot_sub_kriteria:{
+        allowNull:false,
+        type: DataTypes.STRING(10)
+    },
 });
 
 Sub_Kriteria.belongsTo(Kriteria, {

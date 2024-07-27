@@ -54,3 +54,17 @@ export const deleteSubKriteria = async (id_sub_kriteria) => {
 };
 
 
+export const totalSubKriteria = async (kriteriaId) => {
+  try {
+      // Menghitung jumlah sub_kriteria dengan kondisi where kriteriaId
+      const count = await Sub_Kriteria.count({
+          where: {
+              kriteriaId: kriteriaId
+          }
+      });
+
+      return count;
+  } catch (error) {
+      throw error;
+  }
+};

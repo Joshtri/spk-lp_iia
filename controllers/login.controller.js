@@ -7,7 +7,7 @@ import { login } from "../services/user.services.js";
 
 export const loginPage = (req, res) => {
     const title ="Login";
-    const messageLogin1 = req.flash('loginFail');
+    const messageLogin1 = req.flash('messageProtect');
     const messageLogin2 = req.flash('loginFail2');
     const messageRegister = req.flash('infoRegister');
     res.render('index', {

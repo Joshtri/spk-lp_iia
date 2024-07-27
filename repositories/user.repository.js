@@ -66,3 +66,36 @@ export const findUserByUsernameAndPassword = async (username, password) => {
         throw new Error(`Error finding user: ${error.message}`);
     }
 };
+
+
+export const updateUserPassword = async (userId, newPassword) => {
+    try {
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Update password
+        user.password = newPassword;
+
+        await user.save();
+
+        return user;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteUserById = async (userId) => {
+    try {
+        const deletedUser = await User.destroy({
+            where: {
+                id_user: userId
+            }
+        });
+        return deletedUser;
+    } catch (error) {
+        throw error;
+    }
+};

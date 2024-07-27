@@ -1,128 +1,5 @@
-// import {
-//   fetchNarapidanaPageData,
-//   fetchNarapidanaDetail,
-//   addNarapidana,
-//   removeNarapidanaById,
-//   modifyNarapidanaById,
-//   fetchAllPekerjaan,
-//   fetchAllTindakPidana,
-// } from "../services/narapidana.services.js";
-
-// export const narapidanaPage = async (req, res) => {
-//   const page = req.query.page || 1;
-//   const adminData = req.session.admin;
-
-//   try {
-//     const { narapidanaData, totalPages, currentPage, limit } =
-//       await fetchNarapidanaPageData(page);
-
-//     const messagePost = req.flash("tambahInfo");
-//     const messageUpdate = req.flash("updateInfo");
-//     const messageDelete = req.flash("deleteInfo");
-
-//     res.render("data_narapidana", {
-//       title: "Data Narapidana",
-//       narapidanaData,
-//       currentPage,
-//       totalPages,
-//       limit,
-//       admin: adminData,
-//       messagePost,
-//       messageDelete, 
-//       messageUpdate,
-//     });
-//   } catch (err) {
-//     req.flash("error", "Terjadi kesalahan saat mengambil data narapidana");
-//     res.redirect("/");
-//   }
-// };
-
-// export const getNarapidanaDetailById = async (req, res) => {
-//   const idNarapidana = req.params.id;
-//   const adminData = req.session.admin;
-
-//   try {
-//     const narapidanaData = await fetchNarapidanaDetail(idNarapidana);
-//     res.render("detail_narapidana", {
-//       title: "Detail Narapidana",
-//       narapidana: narapidanaData,
-//       admin: adminData,
-//     });
-//   } catch (err) {
-//     req.flash("error", "Terjadi kesalahan saat mengambil detail narapidana");
-//     res.redirect("/");
-//   }
-// };
-
-// export const createNarapidana = async (req, res) => {
-//   const newNarapidana = req.body;
-
-//   try {
-//     await addNarapidana(newNarapidana);
-//     req.flash("tambahInfo", "Data narapidana berhasil ditambahkan");
-//     res.redirect("/data_narapidana");
-//   } catch (err) {
-//     req.flash("error", "Terjadi kesalahan saat menambahkan narapidana");
-//     res.redirect("/data_narapidana");
-//   }
-// };
-
-// export const deleteNarapidana = async (req, res) => {
-//   const idNarapidana = req.params.id;
-
-//   try {
-//     await removeNarapidanaById(idNarapidana);
-//     req.flash("deleteInfo", "Data narapidana berhasil dihapus");
-//     res.redirect("/data_narapidana");
-//   } catch (err) {
-//     req.flash("error", "Terjadi kesalahan saat menghapus narapidana");
-//     res.redirect("/data_narapidana");
-//   }
-// };
-
-// export const updateNarapidana = async (req, res) => {
-//   const idNarapidana = req.params.id;
-//   const updatedNarapidana = req.body;
-
-//   try {
-//     await modifyNarapidanaById(updatedNarapidana, idNarapidana);
-//     req.flash("updateInfo", "Data narapidana berhasil diperbarui");
-//     res.redirect("/data_narapidana");
-//   } catch (err) {
-//     req.flash("error", "Terjadi kesalahan saat memperbarui narapidana");
-//     res.redirect("/data_narapidana");
-//   }
-// };
-
-// export const getPekerjaanList = async (req, res) => {
-//   try {
-//     const pekerjaanData = await fetchAllPekerjaan();
-//     res.json(pekerjaanData);
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ error: "Terjadi kesalahan saat mengambil data pekerjaan" });
-//   }
-// };
-
-// export const getTindakPidanaList = async (req, res) => {
-//   try {
-//     const tindakPidanaData = await fetchAllTindakPidana();
-//     res.json(tindakPidanaData);
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({ error: "Terjadi kesalahan saat mengambil data tindak pidana" });
-//   }
-// };
-
-
 import * as narapidanaService from '../services/narapidana.services.js'
-
-
 import * as pidanaService from '../services/pidana.services.js'
-
-
 
 
 export const narapidanaPage = async (req, res) => {
@@ -149,7 +26,8 @@ export const narapidanaPage = async (req, res) => {
             messageUpdate,
             messageDelete,
             currentPage,
-            totalPages
+            totalPages,
+            itemsPerPage // Pass itemsPerPage to the template
         });
     } catch (error) {
         console.error(error);
@@ -172,5 +50,99 @@ export const addNarapidanaPage = async(req,res)=>{
         });
     } catch (error) {
         throw  error
+    }
+};
+
+export const createNarapidana = async (req, res) => {
+    try {
+        let narapidanaData = req.body;
+
+        // Calculate age from tanggal_lahir
+        const birthDate = new Date(narapidanaData.tanggal_lahir);
+        let age = new Date().getFullYear() - birthDate.getFullYear();
+        const monthDiff = new Date().getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && new Date().getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        // Add age to narapidanaData
+        narapidanaData.umur = age;
+
+        // Create new narapidana record
+        const newNarapidana = await narapidanaService.createNarapidana(narapidanaData);
+
+        // Flash success message and redirect
+        await req.flash('tambahInfo', 'Tambah data narapidana berhasil.');
+        res.redirect('/data/narapidana');
+    } catch (error) {
+        throw error;
+    }
+};
+
+
+export const deleteNarapidana = async(req,res)=>{
+    try {
+        const id = req.params.id;
+        const resultDelete = await narapidanaService.deleteNarapidana(id);
+    
+        if (resultDelete) {
+          // res.status(200).json({ message: 'Kriteria deleted successfully' });
+          await req.flash('deleteInfo', 'Data Narapidana berhasil dihapus.')
+          res.redirect('/data/narapidana')
+        } else {
+          await req.flash('deleteInfo', 'Data Narapidana tidak ditemukan dan gagal dihapus.')
+          res.redirect('/data/narapidana')
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getDetailNarapidana = async (req, res) => {
+    const title = "Detail Narapidana";
+    const userData = req.session.user; // Dapatkan data user dari session
+  
+    try {
+      const { id } = req.params; // Ambil ID dari parameter request
+      const narapidana = await narapidanaService.getNarapidanaById(id); // Panggil service untuk mendapatkan detail narapidana
+  
+      if (!narapidana) {
+        return res.status(404).json({ error: 'Narapidana not found' });
+      }
+  
+      // Render view detail_narapidana dengan data narapidana dan user
+      res.render('detail_narapidana', {
+        title,
+        user: userData,
+        narapidana
+      });
+    } catch (error) {
+      console.error('Error in getDetailNarapidana:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+
+export const getEditNarapidana = async (req, res) => {
+    const title = "Edit Narapidana";
+    const userData = req.session.user; // Dapatkan data user dari session
+  
+    try {
+      const { id } = req.params; // Ambil ID dari parameter request
+      const narapidana = await narapidanaService.getNarapidanaById(id); // Panggil service untuk mendapatkan detail narapidana
+  
+      if (!narapidana) {
+        return res.status(404).json({ error: 'Narapidana not found' });
+      }
+  
+      // Render view detail_narapidana dengan data narapidana dan user
+      res.render('edit_narapidana', {
+        title,
+        user: userData,
+        narapidana
+      });
+    } catch (error) {
+      console.error('Error in getDetailNarapidana:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
 };

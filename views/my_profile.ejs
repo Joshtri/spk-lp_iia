@@ -59,17 +59,20 @@
     <div class="modal" id="hapusModal">
         <div class="modal-background"></div>
         <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Konfirmasi Hapus Akun</p>
-                <button class="delete" aria-label="close" id="closeHapusModal"></button>
-            </header>
-            <section class="modal-card-body">
-                <p>Anda yakin ingin menghapus akun ini?</p>
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button is-danger" id="hapusAkun">Hapus</button>
-                <button class="button" id="batalHapus">Batal</button>
-            </footer>
+            <form action="/adm/delete_account/?_method=DELETE" method="POST"> <!-- Tambahkan action dan method POST -->
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Konfirmasi Hapus Akun</p>
+                    <button class="delete" aria-label="close" id="closeHapusModal"></button>
+                </header>
+                <section class="modal-card-body">
+                    <p>Anda yakin ingin menghapus akun ini?</p>
+                </section>
+                <input type="hidden" name="id_user" value="<%= user.user_id %>"> <!-- Pastikan nama atributnya sesuai dengan yang Anda harapkan -->
+                <footer class="modal-card-foot">
+                    <button class="button is-danger" type="submit" id="hapusAkun">Hapus</button>
+                    <button class="button" id="batalHapus">Batal</button>
+                </footer>
+            </form>
         </div>
     </div>
 
@@ -84,8 +87,9 @@
             <section class="modal-card-body">
                 <form action="/adm/update_pass" method="POST">
 
-                
+                <p class="has-background-danger-light mb-2">Note : <strong>saat mengubah password,akan otomatis logout dan kembali ke login</strong></p>
                 <!-- Isi formulir edit profil di sini -->
+                <hr>
 
                 <div class="field">
                     <input type="hidden" name="id_user" value="<%= user.id_user %>">
@@ -101,9 +105,9 @@
             </section>
             <footer class="modal-card-foot">
                 <button type="submit" class="button is-success" id="simpanProfil">Ubah</button>
+            </form>
                 <button class="button" id="batalUbahPass">Batal</button>
             </footer>
-        </form>
         </div>
     </div>
 

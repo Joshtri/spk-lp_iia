@@ -75,7 +75,7 @@
         <div class="columns is-multiline">
             <div class="column is-half">
                 <div class="box">
-                  <form action="/data/post_narapidana" method="post">
+                  <form action="/data/narapidana" method="post">
 
                   <div class="field">
                     <label class="label">Nama Narapidana:</label>
@@ -84,12 +84,12 @@
 
                   <div class="field">
                     <label class="label">Nomor KTP:</label>
-                    <input class="input" required name="no_ktp" type="text" oninput="validateNIPLength(this)">
+                    <input class="input" required name="no_ktp" type="number" oninput="validateNIPLength(this)">
                     <!-- Notifikasi teks untuk NIP -->
                     <p id="nipNotification" class="help is-danger" style="display: none;">Nomor KTP harus terdiri dari 16 digit.</p>
                     
                     <div id="nipNotificationSuccess" class="help is-success" style="display: none;">
-                      Data NIP sudah 16 digit. Pastikan NIP sudah benar.sola
+                      Data NIP sudah 16 digit. Pastikan NIP sudah benar.
                     </div>
                   
                   </div>
@@ -132,19 +132,26 @@
             
             <div class="column is-half">
                 <div class="box">
-
-
-                
-
-
-
                   <div class="field">
                     <label class="label">Pekerjaan Semula</label>
                     <div class="control">
                       <div class="select">
                         <select name="pekerjaan_semula" required>
                           <option value="">-</option>
-
+                          <option value="Belum Bekerja">Belum Bekerja</option>
+                          <option value="Mengurus Rumah Tangga">Mengurus Rumah Tangga</option>
+                          <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                          <option value="Pensiunan">Pensiunan</option>
+                          <option value="PNS">PNS</option>
+                          <option value="POLRI">POLRI</option>
+                          <option value="TNI">TNI</option>
+                          <option value="WIRASWASTA">WIRASWASTA</option>
+                          <option value="SWASTA">SWASTA</option>
+                          <option value="Pegawai BUMN">Pegawai BUMN</option>
+                          <option value="Pekerja Lepas">Pekerja Lepas</option>
+                          <option value="Petani/peternak/pekebun">Petani/peternak/pekebun</option>
+                          <option value="Nelayan">Nelayan</option>
+                          <option value="Industri">Industri</option>
                         </select>
                       </div>
                     </div>
@@ -155,10 +162,11 @@
                       <label class="label">Status Narapidana</label>
                       <div class="control">
                         <div class="select">
-                          <select name="status_narapidana">
+                          <select name="register">
                             <option>-</option>
-                            <option value="menjalani masa tahanan">Menjalani Masa Tahanan</option>
-                            <option value="cuti menjelang bebas">Cuti Menjelang Bebas</option>
+                            <option value="B1">B1</option>
+                            <option value="B2A">B2A</option>
+                            <option value="B2B">B2B</option>
                           </select>
                         </div>
                       </div>
@@ -207,7 +215,7 @@
                       <label class="label">Jenis Kejahatan</label>
                       <div class="control">
                         <div class="select">
-                          <select name="tindak_pidana" required>
+                          <select name="tindakPidanaId" required>
                             <option value="">-</option>
                             <% for(let i = 0; i < tindakPidanaData.length; i++) { %>
                               <option value="<%= tindakPidanaData[i].id_tindak_pidana %>"><%= tindakPidanaData[i].jenis_tindak_pidana %></option>
@@ -234,7 +242,7 @@
                     
 
                     <% if(user) { %>
-                    <input type="hidden" name="nama_wali" value="<%= user.id_user %>" required>
+                    <input type="hidden" name="waliId" value="<%= user.id_user %>" required>
                     <% } %>
                     
                 </div>

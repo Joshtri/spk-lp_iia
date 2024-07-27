@@ -6,7 +6,7 @@ export const totalNarapidana = async()=>{
   try {
     return await Narapidana.count();
   } catch (error) {
-    throw new error;
+    throw  error;
   }
 }
 
@@ -14,7 +14,7 @@ export const createNarapidana = async(narapidanaData)=>{
   try {
     return await Narapidana.create(narapidanaData);
   } catch (error) {
-    throw new error;
+    throw  error;
   }
 }
 

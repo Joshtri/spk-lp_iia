@@ -21,12 +21,12 @@ config({ path: path.resolve(process.cwd(), envFile) });
 // );
 
 const db = new Sequelize({
-    host: "localhost",
-    username: "root",
-    password: "",
-    database:"db_spk_lp_ii_sequelize",
-    dialect: 'mysql',
-    dialectModule: mysql2, // Use mysql2 as the dialect module
+  host: process.env.DB_HOST,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database:process.env.DB_NAME,
+  dialect: process.env.DB_DIALECT,
+  dialectModule: mysql2, // Use mysql2 as the dialect module
     // benchmark: true,
     // port: process.env.DB_PORT
 

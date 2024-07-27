@@ -46,3 +46,24 @@ export const login = async (username, password) => {
         throw new Error(`Login failed: ${error.message}`);
     }
 };
+
+
+export const updatePassword = async (userId, newPassword) => {
+    try {
+        // Panggil repository untuk melakukan update password
+        const updatedUser = await userRepository.updateUserPassword(userId, newPassword);
+
+        return updatedUser;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteUserById = async (userId) => {
+    try {
+        const deletedUser = await userRepository.deleteUserById(userId);
+        return deletedUser;
+    } catch (error) {
+        throw error;
+    }
+};

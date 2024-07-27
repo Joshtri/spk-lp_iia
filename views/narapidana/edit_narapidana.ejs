@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Narapidana</title>
-    <link rel="icon" href="/img/spk_logo.png" />
-    <link rel="stylesheet" href="/vendor/bulma.min.css">
+    <%-include('partials/head'); %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Masukkan stylesheet atau link eksternal lainnya di sini -->
 </head>
@@ -25,7 +21,7 @@
                   </a>
                 </li>
                 <li class="">
-                  <a href="/data/data_narapidana">
+                  <a href="/data/narapidana">
                     <span class="icon is-small">
                       <i class="fas fa-book" aria-hidden="true"></i>
                     </span>
@@ -58,7 +54,7 @@
 
             
             <div class="mb-4">
-                <a href="/data/data_narapidana">
+                <a href="/data/narapidana">
                     <button type="button" class="button is-warning is-small">Kembali</button>
                 </a>
 
@@ -194,9 +190,7 @@
                             <label class="label">Pekerjaan Semula:</label>
                             <select name="pekerjaan_semula" class="select input" id="pekerjaanSelect" required>
                                 <option value="">-</option>
-                                <% for(let i = 0; i < pekerjaanData.length; i++) { %>
-                                  <option value="<%= pekerjaanData[i].id_pekerjaan %>"><%= pekerjaanData[i].nama_pekerjaan %></option>
-                                <% } %>
+
                             </select>
                         </div>
 
