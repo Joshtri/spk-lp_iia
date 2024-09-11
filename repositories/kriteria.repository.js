@@ -59,3 +59,5 @@ export const getKriteriaById = async (id) => {
     throw error;
   }
 };
+
+//get Kriteria only without page Number.

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('partials/head'); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+    <%-include('partials/header'); %>
+    <section class="section">
+        <div class="container">
+            <h1 class="title"><%= title %></h1>
+            
+            <!-- Matriks Ternormalisasi -->
+            <div class="card mt-4">
+                <header class="card-header">
+                    <p class="card-header-title">Matriks Normalisasi Terbobot(R)</p>
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <table class="table is-fullwidth is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Nama Alternatif</th>
+                                    <% kriteriaData.forEach((kriteria) => { %>
+                                        <th class="has-text-centered"><%= kriteria.nama_kriteria %></th>
+                                    <% }) %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% penilaianData.forEach((row, index) => { %>
+                                    <tr>
+                                        <td><%= index + 1 %></td>
+                                        <td><%= row.narapidana.nama_narapidana %></td>
+                            
+                                        <!-- Display normalized values for each criterion -->
+                                        <% row.normalized.forEach((nilai, kIndex) => { %>
+                                            <td class="has-text-centered"><%= nilai %></td>
+                                        <% }) %>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                            
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div style="float: inline-end;">
+                <a href="/adm/normalized-matrix" class="button is-success mt-4">Lanjutkan</a>
+            </div>
+
+        </div>
+    </section>
+</body>
+</html>

@@ -1,6 +1,9 @@
-import Sub_Kriteria from '../models/subKriteria.model.js';
+
 import * as subKriteriaService from '../services/subKriteria.services.js';
 import * as kriteriaService from '../services/kriteria.services.js'
+
+import Sub_Kriteria from "../models/subKriteria.model.js";
+import Kriteria from "../models/kriteria.model.js";
 
 
 export const getDetailKriteria = async(req,res)=>{
@@ -95,3 +98,42 @@ export const deleteSubKriteria = async (req, res) => {
 };
 
 
+
+
+// export const getAllSubKriteria = async (req, res) => {
+//     try {
+//         const subKriteriaData = await Sub_Kriteria.findAll({
+//             include: [{
+//                 model: Kriteria,
+//                 attributes: ['nama_kriteria']
+//             }]
+//         });
+
+//         res.render('data_subKriteria', { subKriteriaData });
+//     } catch (error) {
+//         console.error("Error fetching Sub_Kriteria with Kriteria:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// };
+
+export const getAllSubKriteria = async(req, res) => {
+    const userData = req.session.user;
+    try {
+        const title = "Data Sub-Kriteria"
+        const subKriteriaData = await Sub_Kriteria.findAll({
+            include: [{
+                model: Kriteria, // Join dengan tabel Kriteria
+                attributes: ['nama_kriteria'], // Ambil kolom nama_kriteria
+            }]
+        });
+
+        // Debug: Print hasil query
+        console.log(JSON.stringify(subKriteriaData, null, 2)); // Lihat hasil di terminal/console
+
+        // Mengirim data ke view
+        res.render('data_subKriteria', { subKriteriaData, user:userData, title});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Gagal mengambil data sub-kriteria' });
+    }
+};

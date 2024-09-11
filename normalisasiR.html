@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normalisasi Matriks Keputusan</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hasil Normalisasi Matriks Keputusan</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Alternatif</th>
+                <th>Kriteria 1</th>
+                <th>Kriteria 2</th>
+                <th>Kriteria 3</th>
+                <th>Kriteria 4</th>
+                <th>Kriteria 5</th>
+                <th>Kriteria 6</th>
+            </tr>
+        </thead>
+        <tbody id="normalizedMatrixBody">
+            <!-- Data matriks normalisasi akan ditambahkan di sini -->
+        </tbody>
+    </table>
+
+    <script>
+        // Data statis untuk matriks keputusan (alternatif dan nilai kriteria)
+        const penilaianData = [
+            { nama: 'Egidius S Berek', kriteria_nilai: [0.7, 0.5, 0.3, 1.1, 1.1, 0.4] },
+            { nama: 'Caytano Lopes', kriteria_nilai: [1, 1, 1, 5, 4, 3] },
+        ];
+
+        // Fungsi untuk menghitung dan menormalisasi matriks keputusan
+        const calculateNormalizedMatrix = (data) => {
+            const numberOfCriteria = data[0].kriteria_nilai.length;
+            const divisors = Array(numberOfCriteria).fill(0);
+
+            // Menghitung jumlah kuadrat dan menghitung pembagi untuk setiap kriteria
+            data.forEach(row => {
+                row.kriteria_nilai.forEach((val, index) => {
+                    divisors[index] += Math.pow(val, 2);
+                });
+            });
+            const sqrtDivisors = divisors.map(sum => Math.sqrt(sum));
+
+            // Menormalisasi setiap nilai kriteria
+            return data.map(row => ({
+                nama: row.nama,
+                normalizedValues: row.kriteria_nilai.map((val, index) => (val / sqrtDivisors[index]).toFixed(6))
+            }));
+        };
+
+        // Fungsi untuk menampilkan Matriks Normalisasi
+        const displayNormalizedMatrix = (normalizedData) => {
+            const tableBody = document.getElementById('normalizedMatrixBody');
+            normalizedData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td>` + 
+                               row.normalizedValues.map(val => `<td>${val}</td>`).join('');
+                tableBody.appendChild(tr);
+            });
+        };
+
+        // Alur lengkap normalisasi
+        const runNormalization = () => {
+            const normalizedMatrix = calculateNormalizedMatrix(penilaianData);
+            displayNormalizedMatrix(normalizedMatrix);
+        };
+
+        // Jalankan normalisasi saat halaman dimuat
+        window.onload = runNormalization;
+    </script>
+</body>
+</html>

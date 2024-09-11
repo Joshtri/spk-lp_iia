@@ -1,3 +1,4 @@
+import Narapidana from '../models/narapidana.model.js';
 import * as narapidanaService from '../services/narapidana.services.js'
 import * as pidanaService from '../services/pidana.services.js'
 
@@ -145,4 +146,37 @@ export const getEditNarapidana = async (req, res) => {
       console.error('Error in getDetailNarapidana:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
+};
+
+
+// Handle form submission and update narapidana data
+export const updateNarapidana = async (req, res) => {
+  try {
+      const id = req.params.id;
+      const { nama_narapidana, agama, tempat_lahir, tanggal_lahir, alamat_lengkap, no_ktp, pekerjaan_semula, pendidikan_terakhir, register, sisa_masa_tahanan } = req.body;
+
+      const [updated] = await Narapidana.update({
+          nama_narapidana,
+          agama,
+          tempat_lahir,
+          tanggal_lahir,
+          alamat_lengkap,
+          no_ktp,
+          pekerjaan_semula,
+          pendidikan_terakhir,
+          register,
+          sisa_masa_tahanan
+      }, {
+          where: { id_narapidana: id }
+      });
+
+      if (!updated) {
+          return res.status(404).send('Narapidana not found');
+      }
+
+      res.redirect('/data/narapidana'); // Redirect to the list or detail page after update
+  } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+  }
 };

@@ -27,3 +27,11 @@ export const deleteSubKriteria = async(id)=>{
         throw error;
     }
 };
+
+export const getSubKriteria = async()=>{
+    try {
+        return await subKriteriaRepository.getSubKriteria();
+    } catch (error) {
+        throw error;
+    }
+}

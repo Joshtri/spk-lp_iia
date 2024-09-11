@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('partials/head'); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+</head>
+<body>
+    <%-include('partials/header'); %>
+
+    <div class="container mt-6">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul>
+              <li>
+                <a href="/adm/dashboard">
+                  <span class="icon is-small">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                  </span>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="is-active">
+                <a href="/data/data_penilaian">
+                  <span class="icon is-small">
+                    <i class="fas fa-book" aria-hidden="true"></i>
+                  </span>
+                  <span>Data Penilaian</span>
+                </a>
+              </li>
+              <li class="is-active">
+                <a href="#">
+                  <span class="icon is-small">
+                    <i class="fas fa-book" aria-hidden="true"></i>
+                  </span>
+                  <span>Tambah Penilaian</span>
+                </a>
+              </li>
+            </ul>
+        </nav>
+
+        <div class="field is-grouped">
+            <a href="/data/penilaian">
+                <button class="button is-warning is-small">Kembali</button>
+            </a>
+            <!-- <div class="is-one-third is-flex ml-auto">
+                <p class="control is-expanded">
+                    <input class="input" type="text" placeholder="Search">
+                </p>
+            </div> -->
+        </div>
+
+        <div class="columns is-full mt-4">
+          <div class="column is-full">
+              <div class="box">
+                  <form action="/data/penilaian" method="post">
+                      <div class="field">
+                        <label for="" class="label">Penilaian pada periode : </label>
+                        <div class="control">
+                          <div class="select">
+                            <select name="periodeId" id="">
+                              <option>-</option>
+                              <% periodeData.forEach(function(periode) { %>
+                                <option value="<%= periode.id_periode %>"><%= periode.tahun_periode %> | <%= periode.periode_penilaian %></option>
+                              <% }) %>
+
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="field">
+                          <label class="label">Nama Narapidana</label>
+                          <div class="control">
+                              <div class="select">
+                                  <select name="narapidanaId" required>
+                                      <option>-</option>
+                                      <% narapidanaData.forEach(function(narapidana) { %>
+                                        <option value="<%= narapidana.id_narapidana %>"><%= narapidana.nama_narapidana %></option>
+                                      <% }) %>
+                                  </select>
+                              </div>
+                          </div>
+                      </div> 
+      
+                      <hr class="navbar-divider">
+      
+                      <p class="is-size-4 mb-5"> <strong>Beri penilaian :</strong></p>
+      
+                      <ul>
+                        <% kriteriaData.forEach(function(kriteria) { %>
+                          <div class="field">
+                              <label class="label"><%= kriteria.nama_kriteria %></label>
+                              <div class="control">
+                                  <!-- Use array syntax for the kriteriaId -->
+                                  <input type="hidden" class="input is-small mb-4" value="<%= kriteria.id_kriteria %>" name="kriteriaId[]">
+                              
+                                  <!-- Dropdown to select the sub-kriteria -->
+                                  <select name="subKriteriaId[]" class="input" onchange="updateNilaiKriteria(this)">
+                                      <option value="">Pilih Sub-Kriteria</option>
+                          
+                                      <!-- Loop through subKriteriaData and only show sub-kriteria that matches the current kriteria -->
+                                      <% subKriteriaData.forEach(function(subKriteria) { %>
+                                          <% if (subKriteria.kriteriaId === kriteria.id_kriteria) { %>
+                                              <option value="<%= subKriteria.id_sub_kriteria %>" data-bobot="<%= subKriteria.bobot_sub_kriteria %>">
+                                                  <%= subKriteria.bobot_sub_kriteria %> | <%= subKriteria.nama_sub_kriteria %>
+                                              </option>
+                                          <% } %>
+                                      <% }) %>
+                                  </select>
+                      
+                                  <!-- Hidden input to store the selected nilai_kriteria (bobot_sub_kriteria) -->
+                                  <input type="hidden" class="input" name="nilai_kriteria[]" value="">
+                              </div>
+                          </div>
+                      <% }) %>
+                      
+                      
+                      </ul>
+      
+                      <div class="is-flex is-justify-content-center">
+                          <button type="submit" class="button is-success">Simpan</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+      
+    </div>
+
+    <script>
+      function updateNilaiKriteria(selectElement) {
+        // Get the selected option
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+    
+        // Get the data-bobot value from the selected option
+        const bobotSubKriteria = selectedOption.getAttribute('data-bobot');
+    
+        // Find the corresponding hidden input for nilai_kriteria
+        const hiddenInput = selectElement.parentElement.querySelector('input[name="nilai_kriteria[]"]');
+    
+        // Set the value of the hidden input to the bobot_sub_kriteria
+        hiddenInput.value = bobotSubKriteria || '';
+      }
+    </script>
+    
+    
+</body>
+</html>

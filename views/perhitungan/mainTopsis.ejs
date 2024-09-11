@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('partials/head'); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+</head>
+<body>
+    <%-include('partials/header'); %>
+
+    <section class="section">
+        <div class="container mb-5">
+            <nav class="breadcrumb" aria-label="breadcrumbs">
+                <ul>
+                  <li>
+                    <a href="/adm/dashboard">
+                      <span class="icon is-small">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                      </span>
+                      <span>Dashboard</span>
+                    </a>
+                  </li>
+        
+                  <li class="is-active">
+                    <a href="#">
+                      <span class="icon is-small">
+                        <i class="fa-solid fa-calculator"></i>
+                      </span>   
+                      <span>Perhitungan TOPSIS</span>
+                    </a>
+                  </li>
+                </ul>
+            </nav>
+    
+            <hr>
+            <div class="mb-4">
+                <a href="/adm/dashboard">
+                    <button type="button" class="button is-warning is-small">Kembali</button>
+                </a>
+            </div>
+
+            <!-- Matriks Keputusan -->
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">Matriks Keputusan</p>
+                    <button class="card-header-icon" aria-label="more options" data-target="decision-matrix">
+                        <span class="icon">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </header>
+                <div class="card-content" id="decision-matrix">
+                    <div class="content">
+                        <table class="table is-fullwidth is-hoverable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama</th>
+                                    <% kriteriaData.forEach(function(kriteria, index) { %>
+                                        <th>C<%= index + 1 %></th>
+                                    <% }) %>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% penilaianData.forEach(function(penilaian, index) { %>
+                                <tr>
+                                    <td><%= index + 1 %></td>
+                                    <td><%= penilaian.narapidana.nama_narapidana %></td>
+                                    <% penilaian.kriteria_nilai.forEach(function(nilai) { %>
+                                        <td><%= nilai %></td>
+                                    <% }) %>
+        
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Matriks Ternormalisasi -->
+            <div class="card mt-4">
+                <header class="card-header">
+                    <p class="card-header-title">Bobot Kriteria (W)</p>
+                    <button class="card-header-icon" aria-label="more options" data-target="normalized-matrix">
+                        <span class="icon">
+                            <i class="fas fa-angle-down" aria-hidden="true"></i>
+                        </span>
+                    </button>
+                </header>
+                <div class="card-content" id="normalized-matrix">
+                    <div class="content">
+                        <table class="table-auto w-full border-collapse border border-gray-200">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <% kriteriaData.forEach(function(kriteria, index) { %>
+                                        <th>C<%= index + 1 %></th>
+                                    <% }) %>
+                                    <!-- Add more columns as needed -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <% kriteriaData.forEach(function(kriteria, index) { %>
+                                        <td class="border border-gray-300 p-2"><%= kriteria.bobot_kriteria %></td>
+                                    <% }) %> 
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <div style="float: inline-end;">
+                <a href="/adm/normalized-matrix" class="button is-success mt-4">Lanjutkan</a>
+            </div> 
+        </div>
+    </section>
+</body>
+</html>

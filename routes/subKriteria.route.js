@@ -1,5 +1,5 @@
 import express from 'express';
-import { createSubKriteria, deleteSubKriteria, getDetailKriteria, getKriteriaAndSubKriteria } from '../controllers/subKriteria.controller.js';
+import { createSubKriteria, deleteSubKriteria, getDetailKriteria, getKriteriaAndSubKriteria, getAllSubKriteria } from '../controllers/subKriteria.controller.js';
 import protect from '../config/auth/protect.js';
 
 const router = express.Router();
@@ -9,6 +9,11 @@ router.post('/subKriteria', protect, createSubKriteria);
 router.delete('/subKriteria_delete/:id', deleteSubKriteria);
 
 router.get('/subKriteria/:id', getKriteriaAndSubKriteria)
+
+
+router.get('/subkriteria', getAllSubKriteria);
+
+
 // router.get('/kriteria/:id', protect,getKriteriaById);
 
 // router.get('/add_kriteria', protect, getAddKriteriaPage);

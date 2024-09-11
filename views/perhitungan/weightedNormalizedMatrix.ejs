@@ -1,0 +1,45 @@
+<h1><%= title %></h1>
+
+<h2>Matriks Normalisasi (R)</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nama Narapidana</th>
+            <% kriteriaData.forEach(kriteria => { %>
+                <th><%= kriteria.nama_kriteria %> (Bobot: <%= kriteria.bobot_kriteria %>)</th>
+            <% }); %>
+        </tr>
+    </thead>
+    <tbody>
+        <% matrixData.normalized.forEach(item => { %>
+            <tr>
+                <td><%= item.nama %></td>
+                <% item.normalized.forEach(nilai => { %>
+                    <td><%= nilai %></td>
+                <% }); %>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>
+
+<h2>Matriks Ternormalisasi Terbobot (V)</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Nama Narapidana</th>
+            <% kriteriaData.forEach(kriteria => { %>
+                <th><%= kriteria.nama_kriteria %> (Bobot: <%= kriteria.bobot_kriteria %>)</th>
+            <% }); %>
+        </tr>
+    </thead>
+    <tbody>
+        <% matrixData.weighted.forEach(item => { %>
+            <tr>
+                <td><%= item.nama %></td>
+                <% item.weighted_kriteria.forEach(nilai => { %>
+                    <td><%= nilai.toFixed(6) %></td>
+                <% }); %>
+            </tr>
+        <% }); %>
+    </tbody>
+</table>

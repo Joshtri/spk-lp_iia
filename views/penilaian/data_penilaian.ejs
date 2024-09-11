@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('partials/head'); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <%- include('partials/header'); %>
+    <div class="container mt-6">
+        <!-- Breadcrumbs and Notifications -->
+        <!-- Existing code remains unchanged -->
+
+        <div class="field is-grouped">
+            <% if(user && user.role == 'wali pemasyarakatan') { %>
+            <a class="button" href="/data/add_penilaian">Tambah Data</a>
+            <% } %>
+            <div class="is-one-third is-flex ml-auto">
+                <p class="control is-expanded">
+                    <input class="input" type="text" id="searchInput" placeholder="Search">
+                </p>
+                <p class="control">
+                    <button class="button is-info">Search</button>
+                </p>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto shadow-md rounded-lg mt-3">
+            <div class="table-container">
+                <table class="table is-fullwidth is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <% kriteriaData.forEach(function(kriteria, index) { %>
+                                <th>C<%= index + 1 %></th>
+                            <% }) %>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% penilaianData.forEach(function(penilaian, index) { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= penilaian.narapidana.nama_narapidana %></td>
+                            <% penilaian.kriteria_nilai.forEach(function(nilai) { %>
+                                <td><%= nilai %></td>
+                            <% }) %>
+                            <td>
+                                <!-- Edit Button with Form -->
+                                <a class="button is-warning" href="/data/edit_penilaian/<%= penilaian.id_penilaian %>">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a>
+                                <!-- Delete Button with Form -->
+                                <form action="/data/delete_penilaian/<%= penilaian.narapidana.id_narapidana %>" method="POST" style="display: inline;">
+                                    <button class="button is-danger" type="submit">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr>
+    </div>
+
+    <script src="/js/liveSearchBar.js"></script>
+    <script src="/js/navdrop.js"></script>
+</body>
+</html>

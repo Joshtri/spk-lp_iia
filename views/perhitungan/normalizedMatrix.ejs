@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('partials/head')%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+</head>
+<body>
+
+    <%-include('partials/header') %>
+    
+    <section class="section">
+        <div class="container">
+            <h1 class="title has-text-centered"><%= title %></h1>
+
+
+
+
+
+            <nav class="breadcrumb" aria-label="breadcrumbs">
+                <ul>
+                  <li>
+                    <a href="/adm/dashboard">
+                      <span class="icon is-small">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                      </span>
+                      <span>Dashboard</span>
+                    </a>
+                  </li>
+                  <li class="is-active">
+                    <a href="#">
+                      <span class="icon is-small">
+                        <i class="fas fa-book" aria-hidden="true"></i>
+                      </span>
+                      <span>Perhitungan TOPSIS (Lanjutan)</span>
+                    </a>
+                  </li>
+                </ul>
+            </nav>
+            <hr class="navbar-divider mb-3"/>
+            
+            <!-- Tabel Matriks Normalisasi (R) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Normalized Matrix (R)</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nama Narapidana</th>
+                            <% kriteriaData.forEach(kriteria => { %>
+                                <th><%= kriteria.nama_kriteria %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% matrixData.normalized.forEach(row => { %>
+                            <tr>
+                                <td><%= row.nama %></td>
+                                <% row.normalized.forEach(value => { %>
+                                    <td><%= Number(value).toFixed(6) %></td>
+                                <% }) %>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Matriks Ternormalisasi Terbobot (V) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Matriks Ternormalisasi Terbobot (V)</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <% kriteriaData.forEach(kriteria => { %>
+                                <th><%= kriteria.nama_kriteria %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% matrixData.weighted.forEach(row => { %>
+                            <tr>
+                                <td><%= row.nama %></td>
+                                <% row.weighted_kriteria.forEach(value => { %>
+                                    <td><%= value.toFixed(6) %></td>
+                                <% }) %>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Solusi Ideal Positif (MAX) dan Negatif (MIN) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Solusi Ideal Positif (MAX) dan Negatif (MIN)</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Kriteria</th>
+                            <th>Solusi Ideal Positif (MAX)</th>
+                            <th>Solusi Ideal Negatif (MIN)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% kriteriaData.forEach((kriteria, index) => { %>
+                            <tr>
+                                <td><%= kriteria.nama_kriteria %></td>
+                                <td><%= matrixData.idealPositive[index].toFixed(6) %></td>
+                                <td><%= matrixData.idealNegative[index].toFixed(6) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Jarak ke Solusi Ideal -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Jarak ke Solusi Ideal</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nama Narapidana</th>
+                            <th>Jarak ke Solusi Ideal Positif</th>
+                            <th>Jarak ke Solusi Ideal Negatif</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% matrixData.distances.forEach(row => { %>
+                            <tr>
+                                <td><%= row.nama %></td>
+                                <td><%= row.distanceToPositive.toFixed(6) %></td>
+                                <td><%= row.distanceToNegative.toFixed(6) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Skor Preferensi (V) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Skor Preferensi (V)</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nama Narapidana</th>
+                            <th>Skor Preferensi</th>
+                            <th>Peringkat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% matrixData.preferences.forEach((item, index) => { %>
+                            <tr>
+                                <td><%= item.nama %></td>
+                                <td><%= item.preferenceScore.toFixed(6) %></td>
+                                <td><%= index + 1 %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <%-include('partials/footer') %>
+</body>
+</html>

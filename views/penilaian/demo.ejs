@@ -1,0 +1,71 @@
+<style>
+    .table-container {
+    margin: 20px auto;
+    width: 80%;
+}
+
+table.decision-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+table.decision-matrix th, table.decision-matrix td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+table.decision-matrix th {
+    background-color: #009688;
+    color: white;
+}
+
+table.decision-matrix tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+table.decision-matrix tbody tr:nth-child(even) {
+    background-color: #fff;
+}
+
+table.decision-matrix th, table.decision-matrix td {
+    width: auto;
+    padding: 10px;
+}
+
+table.decision-matrix th:first-child, 
+table.decision-matrix td:first-child {
+    width: 50px;
+}
+
+table.decision-matrix td:nth-child(2) {
+    text-align: left;
+}
+
+</style>
+
+<div class="table-container">
+    <table class="decision-matrix">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <% kriteriaData.forEach(function(kriteria, index) { %>
+                    <th>C<%= index + 1 %> - <%= kriteria.nama_kriteria %></th>
+                <% }) %>
+            </tr>
+        </thead>
+        <tbody>
+            <% penilaianData.forEach(function(penilaian, index) { %>
+            <tr>
+                <td><%= index + 1 %></td>
+                <td><%= penilaian.narapidana.nama_narapidana %></td>
+                <% penilaian.kriteria_nilai.forEach(function(nilai) { %>
+                    <td><%= nilai %></td>
+                <% }) %>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>

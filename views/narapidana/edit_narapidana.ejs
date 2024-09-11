@@ -44,13 +44,14 @@
 
             <div class="mb-3">
                 <h1 class="title">Edit Data Narapidana</h1>
-                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.nama_wali %></p>
+                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.User.nama_lengkap %></p>
                 <p class="has-text-weight-bold is-text ">Data dibuat: <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
                 <p class="has-text-weight-bold is-text ">Data diperbarui: <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
 
             </div>
             
-            <form action="/data/update_narapidana/<%= narapidana.id_narapidana %>" method="POST">
+            <form action="/data/narapidana/<%= narapidana.id_narapidana %>" method="POST">
+                <input type="hidden" name="_method" value="PUT">
 
             
             <div class="mb-4">
@@ -190,6 +191,20 @@
                             <label class="label">Pekerjaan Semula:</label>
                             <select name="pekerjaan_semula" class="select input" id="pekerjaanSelect" required>
                                 <option value="">-</option>
+                                <option value="Belum Bekerja">Belum Bekerja</option>
+                                <option value="Mengurus Rumah Tangga">Mengurus Rumah Tangga</option>
+                                <option value="Pelajar/Mahasiswa">Pelajar/Mahasiswa</option>
+                                <option value="Pensiunan">Pensiunan</option>
+                                <option value="PNS">PNS</option>
+                                <option value="POLRI">POLRI</option>
+                                <option value="TNI">TNI</option>
+                                <option value="WIRASWASTA">WIRASWASTA</option>
+                                <option value="SWASTA">SWASTA</option>
+                                <option value="Pegawai BUMN">Pegawai BUMN</option>
+                                <option value="Pekerja Lepas">Pekerja Lepas</option>
+                                <option value="Petani/peternak/pekebun">Petani/peternak/pekebun</option>
+                                <option value="Nelayan">Nelayan</option>
+                                <option value="Industri">Industri</option>
 
                             </select>
                         </div>

@@ -44,7 +44,7 @@
 
             <div class="mb-3">
                 <h1 class="title">Detail Data Narapidana</h1>
-                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.nama_wali %></p>
+                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.User.nama_lengkap %></p>
                 <p class="has-text-weight-bold is-text ">Data dibuat : <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
                 <p class="has-text-weight-bold is-text ">Data diperbarui : <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
             </div>
@@ -106,7 +106,7 @@
 
                         <div class="field">
                             <label class="label">Pekerjaan Semula:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.nama_pekerjaan %>">
+                            <input class="input" disabled type="text" value="<%= narapidana.pekerjaan_semula %>">
                         </div>
   
                         <div class="field">
@@ -116,7 +116,7 @@
 
                         <div class="field">
                             <label class="label">Jenis Kejahatan:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.jenis_tindak_pidana %>">
+                            <input class="input" disabled type="text" value="<%= narapidana.Tindak_Pidana.jenis_tindak_pidana %>">
                         </div>
 
   

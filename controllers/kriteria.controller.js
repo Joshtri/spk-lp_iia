@@ -1,3 +1,4 @@
+import Kriteria from '../models/kriteria.model.js';
 import * as kriteriaService from '../services/kriteria.services.js';
 
 
@@ -75,5 +76,35 @@ export const getKriteriaById = async (req, res) => {
     // res.json(kriteria);
   } catch (error) {
     res.status(404).json({ message: error.message });
+  }
+};
+
+// Handle the update of kriteria data
+// Handle the update of kriteria data
+export const updateKriteria = async (req, res) => {
+  try {
+      const { id_kriteria, nama_kriteria } = req.body;
+
+      // Check if id_kriteria and nama_kriteria are provided
+      if (!id_kriteria || !nama_kriteria) {
+          return res.status(400).send('Bad Request: Missing fields');
+      }
+
+      // Update kriteria data
+      const [updated] = await Kriteria.update({
+          nama_kriteria
+      }, {
+          where: { id_kriteria }
+      });
+
+      if (!updated) {
+          return res.status(404).send('Kriteria not found');
+      }
+
+      // Redirect or send a response after update
+      res.redirect('/data/kriteria'); // Adjust the redirect path as needed
+  } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
   }
 };

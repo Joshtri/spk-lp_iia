@@ -25,6 +25,7 @@
     "eslint": "9.x",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
+    "mathjs": "^13.1.1",
     "method-override": "^3.0.0",
     "mysql2": "^3.9.3",
     "nodemon": "^3.1.0",

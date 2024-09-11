@@ -1,0 +1,51 @@
+<form id="formEditPenilaian" action="/data/update_penilaian" method="POST">
+    <input type="hidden" name="id_penilaian" value="<%= penilaian.id_penilaian %>">
+    <div class="field">
+        <label class="label">Narapidana:</label>
+        <div class="control">
+            <select class="input" name="narapidanaId">
+                <% narapidanaData.forEach(narapidana => { %>
+                    <option value="<%= narapidana.id_narapidana %>" <%= penilaian.narapidanaId === narapidana.id_narapidana ? 'selected' : '' %>><%= narapidana.nama_narapidana %></option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">Kriteria:</label>
+        <div class="control">
+            <select class="input" name="kriteriaId">
+                <% kriteriaData.forEach(kriteria => { %>
+                    <option value="<%= kriteria.id_kriteria %>" <%= penilaian.kriteriaId === kriteria.id_kriteria ? 'selected' : '' %>><%= kriteria.nama_kriteria %></option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">Nilai Kriteria:</label>
+        <div class="control">
+            <input class="input" type="text" name="nilai_kriteria" value="<%= penilaian.nilai_kriteria %>">
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">Sub Kriteria:</label>
+        <div class="control">
+            <select class="input" name="subKriteriaId">
+                <% subKriteriaData.forEach(subKriteria => { %>
+                    <option value="<%= subKriteria.id_sub_kriteria %>" <%= penilaian.subKriteriaId === subKriteria.id_sub_kriteria ? 'selected' : '' %>><%= subKriteria.nama_sub_kriteria %></option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+    <div class="field">
+        <label class="label">Periode:</label>
+        <div class="control">
+            <select class="input" name="periodeId">
+                <% periodeData.forEach(periode => { %>
+                    <option value="<%= periode.id_periode %>" <%= penilaian.periodeId === periode.id_periode ? 'selected' : '' %>><%= periode.nama_periode %></option>
+                <% }) %>
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="button is-success">Simpan</button>
+    <a href="/data/penilaian" class="button is-light">Batal</a>
+</form>

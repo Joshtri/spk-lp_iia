@@ -32,7 +32,8 @@ router.get('/edit_narapidana/:id', narapidanaController.getEditNarapidana);
 // // Route to delete a narapidana by ID
 
 // // Route to update an existing narapidana by ID
-// router.put('/data_narapidana/:id', updateNarapidana);
+router.post('/narapidana/:id', narapidanaController.updateNarapidana);
+
 
 // // Route to get the list of all pekerjaan
 // router.get('/pekerjaan', getPekerjaanList);

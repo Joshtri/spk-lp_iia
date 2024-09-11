@@ -2,39 +2,42 @@ import { DataTypes } from "sequelize";
 import db from "../config/dbConfig.js";
 import Kriteria from "./kriteria.model.js";
 
-
-const Sub_Kriteria = db.define('Sub_Kriteria',{
-    id_sub_kriteria:{
-        autoIncrement:true,
+const Sub_Kriteria = db.define('Sub_Kriteria', {
+    id_sub_kriteria: {
+        autoIncrement: true,
         primaryKey: true,
         type: DataTypes.INTEGER,
-        allowNull:false
+        allowNull: false
     },
-    nama_sub_kriteria:{
-        allowNull:false,
+    nama_sub_kriteria: {
+        allowNull: false,
         type: DataTypes.STRING(50)
     },
-    kriteriaId:{
+    kriteriaId: {
         type: DataTypes.INTEGER,
         references: {
-          model: Kriteria,
-          key: 'id_kriteria',
+            model: Kriteria,
+            key: 'id_kriteria',
         },
-        allowNull:false,
+        allowNull: false,
     },
-    bobot_sub_kriteria:{
-        allowNull:false,
+    bobot_sub_kriteria: {
+        allowNull: false,
         type: DataTypes.STRING(10)
     },
 });
 
-Sub_Kriteria.belongsTo(Kriteria, {
-    foreignKey: 'kriteriaId',
-    onDelete: 'CASCADE'
-});
+
+Kriteria.hasMany(Sub_Kriteria,{foreignKey: `kriteriaId`})
+Sub_Kriteria.belongsTo(Kriteria, {foreignKey: 'kriteriaId'})
+// Sub_Kriteria.belongsTo(Kriteria, {
+//     foreignKey: 'kriteriaId', // foreignKey harus sesuai dengan yang ada di database
+//     onDelete: 'CASCADE',
+//     onUpdate: 'CASCADE',
+// });
+
 
 export default Sub_Kriteria;
-
 
 // Singkronisasi dengan basis data
 (async () => {

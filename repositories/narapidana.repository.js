@@ -1,5 +1,7 @@
 import db from '../config/dbConfig.js';
 import Narapidana from '../models/narapidana.model.js';
+import TindakPidana from '../models/pidana.model.js';
+import User from '../models/user.model.js';
 
 
 export const totalNarapidana = async()=>{
@@ -22,10 +24,23 @@ export const createNarapidana = async(narapidanaData)=>{
 
 export const getNarapidana = async (skip, limit) => {
   try {
-      const { rows: narapidanaData, count: totalItems } = await Narapidana.findAndCountAll({
-          offset: skip,
-          limit: limit,
-      });
+    const { rows: narapidanaData, count: totalItems } = await Narapidana.findAndCountAll({
+      offset: skip,
+      limit: limit,
+      include: [
+        {
+          model: User,
+          attributes: ['nama_lengkap'],
+        },
+        // Tambahkan objek include untuk tabel lainnya jika diperlukan
+        // Contoh:
+        // {
+        //   model: Kriteria,
+        //   as: 'kriteria',
+        //   attributes: ['nama_kriteria'],
+        // },
+      ],
+    });
       return { narapidanaData, totalItems };
   } catch (error) {
       throw new Error(error.message);
@@ -35,7 +50,22 @@ export const getNarapidana = async (skip, limit) => {
 
 export const getNarapidanaById = async (id) => {
   try {
-    return await Narapidana.findByPk(id);
+    const narapidana = await Narapidana.findByPk(id, {
+      include: [
+        {
+          model: TindakPidana,
+          attributes: ['jenis_tindak_pidana']
+        },
+        {
+          model: User,
+          attributes: ['nama_lengkap'], // Contoh atribut yang ingin diambil dari User
+        },
+      ]
+    });
+
+    console.log(JSON.stringify(narapidana));
+
+    return narapidana;
   } catch (error) {
     throw error;
   }

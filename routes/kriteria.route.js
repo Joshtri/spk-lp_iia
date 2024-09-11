@@ -3,7 +3,8 @@ import {
   createKriteria,
   deleteKriteria,
   getKriteriaById,
-  kriteriaPage
+  kriteriaPage,
+  updateKriteria
 } from '../controllers/kriteria.controller.js';
 import protect from '../config/auth/protect.js';
 
@@ -16,6 +17,6 @@ router.get('/kriteria/:id', protect,getKriteriaById);
 
 // router.get('/add_kriteria', protect, getAddKriteriaPage);
 // router.get('/edit_kriteria/:id_kriteria', protect, putEditKriteria);
-// router.post('/update_kriteria/:id_kriteria', putEditKriteria);
+router.post('/update_kriteria', updateKriteria);
 
 export default router;

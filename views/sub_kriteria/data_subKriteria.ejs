@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('partials/head'); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+<body>
+    <%-include('partials/header'); %>
+
+    <div class="container mt-6">
+
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul>
+              <li>
+                <a href="/adm/dashboard">
+                  <span class="icon is-small">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                  </span>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="is-active">
+                <a href="#">
+                  <span class="icon is-small">
+                    <i class="fas fa-book" aria-hidden="true"></i>
+                  </span>
+                  <span>Data Sub Kriteria (ReadOnly)</span>
+                </a>
+              </li>
+            </ul>
+        </nav>
+
+        <hr>
+
+        <script>
+            function closeNotification(button) {
+                // Mendapatkan parent dari tombol delete, yaitu notifikasi
+                var notification = button.parentNode;
+                // Menghapus notifikasi
+                notification.remove();
+            }
+        </script>
+        
+        
+
+        <div class="field is-grouped">
+            <% if (user && user.role === 'wali pemasyarakatan') { %>
+                <p class="has-background-danger-light">Silahkan melakukan pengisian sub kriteria / kriteria pada menu data kriteria di navigasi</p>
+            <% } %>
+
+            <div class="is-one-third is-flex ml-auto">
+                <p class="control is-expanded">
+                    <input class="input" id="searchInput" type="text" placeholder="Search">
+                </p>
+                <p class="control">
+                    <button class="button is-info">
+                        Search
+                    </button>
+                </p>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto shadow-md rounded-lg mt-3">
+            <table class="table is-fullwidth is-hoverable">
+                <thead>
+                    <tr>
+                        <th class="has-text-left">No.</th>
+                        <th class="has-text-left">Nama Kriteria</th>
+                        <th class="has-text-left">Bobot Kriteria</th>
+                        <th class="has-text-left">Nama Kriteria</th>
+
+                    </tr>
+                </thead>
+                <tbody id="">
+                    <% for(let i = 0; i < subKriteriaData.length; i++) { %>
+                    <tr>
+                        <td><%= i + 1 %></td>
+                        <td class="has-text-left" ><%= subKriteriaData[i].nama_sub_kriteria %></td>
+                        <td class="has-text-left"><%= subKriteriaData[i].bobot_sub_kriteria %></td>
+                        <td class="has-text-left"><%= subKriteriaData[i].Kriterium.nama_kriteria %></td>
+
+
+                    </tr>
+                    <% } %>
+                    <!-- Other table data -->
+                </tbody>
+            </table>
+        </div>
+
+
+
+
+          
+    </div>
+
+    <hr>
+
+
+    <script src="/js/liveSearchBar.js"></script>
+    <script src="/js/navdrop.js"></script>
+
+
+  
+
+</body>
+</html>
