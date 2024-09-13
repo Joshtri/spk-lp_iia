@@ -6,8 +6,8 @@ import methodOverride from 'method-override';
 import session from 'express-session';
 import flash from 'connect-flash';
 import { fileURLToPath } from 'url';
-import { createClient } from 'redis';
-import connectRedis from 'connect-redis';
+// import { createClient } from 'redis';
+// import connectRedis from 'connect-redis';
 
 import MongoStore from 'connect-mongo';
 import connectDB from './config/mongoConfig.js';
@@ -33,7 +33,7 @@ connectDB();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
+// app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 // const RedisStore = connectRedis(session);
 // const client = createClient({
 //   password: "FtB023d7IlaGW4gQHJHJqQBrmjQxG2lK",
