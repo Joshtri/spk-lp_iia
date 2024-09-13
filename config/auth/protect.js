@@ -3,7 +3,7 @@
 const protect = (req, res, next) => {
   if (req.session.user) {
       // Tampilkan data admin dari session di console
-      console.log('Data user:', req.session.user);
+      // console.log('Data user:', req.session.user);
       // Jika admin sudah login, lanjutkan ke middleware berikutnya atau ke endpoint yang diminta
       next();
   } else {
