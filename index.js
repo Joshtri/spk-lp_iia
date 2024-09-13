@@ -33,6 +33,7 @@ connectDB();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 // const RedisStore = connectRedis(session);
 // const client = createClient({
 //   password: "FtB023d7IlaGW4gQHJHJqQBrmjQxG2lK",
@@ -70,7 +71,6 @@ app.use(express.static(path.join(__dirname, "/public")));
 // app.use('/bulma-tooltip', express.static(path.join(__dirname, 'node_modules/bulma-tooltip/dist/css/')));
 
 //use this as top path for accessing package.
-app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
 // app.use('/bulma-t')
 // Middleware untuk mengatur sesi dan cookie
