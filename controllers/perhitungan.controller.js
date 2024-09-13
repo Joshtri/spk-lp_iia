@@ -4,7 +4,7 @@ import Narapidana from '../models/narapidana.model.js';
 import Penilaian from "../models/penilaian.model.js";
 import Periode from "../models/periode.model.js";
 import Sub_Kriteria from '../models/subKriteria.model.js';
-import * as math from 'mathjs';
+// import * as math from 'mathjs';
 
 // Controller to fetch data
 export const MainPerhitunganPage = async (req, res) => {
