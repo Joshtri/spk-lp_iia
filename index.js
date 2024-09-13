@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import bodyParser from 'body-parser';
+// import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 import session from 'express-session';
