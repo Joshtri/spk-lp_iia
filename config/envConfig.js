@@ -3,7 +3,7 @@ import { config } from "dotenv";
 import path from "path";
 
 // Determine which .env file to load
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'production';
 const envFile = env === 'production' ? '.env.production' : '.env.development';
 
 // Load environment variables from the appropriate .env file

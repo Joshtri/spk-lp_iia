@@ -5,13 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOPSIS Calculation</title>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        .card-header {
+            background-color: #f5f5f5;
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 8px 8px 0 0;
+        }
+        .card-header-title {
+            font-size: 1.5em;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .table th {
+            background-color: #f2f2f2;
+        }
+        .table is-hoverable tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .mt-4 {
+            margin-top: 1.5rem;
+        }
+    </style>
 </head>
 <body>
 
 <!-- Decision Matrix -->
-<div class="card-content" id="decision-matrix">
-    <div class="content">
-        <h2>Matriks Keputusan (X)</h2>
+<div class="card" id="decision-matrix">
+    <div class="card-header">
+        <p class="card-header-title">Matriks Keputusan (X)</p>
+    </div>
+    <div class="card-content">
         <table class="table is-fullwidth is-hoverable">
             <thead>
                 <tr>
@@ -29,223 +70,201 @@
 
 <!-- Normalized Matrix -->
 <div class="card mt-4">
-    <header class="card-header">
+    <div class="card-header">
         <p class="card-header-title">Matriks Ternormalisasi (R)</p>
-    </header>
-    <div class="card-content" id="normalized-matrix">
-        <div class="content">
-            <table class="table is-fullwidth is-hoverable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <% kriteriaData.forEach(function(kriteria, index) { %>
-                            <th>C<%= index + 1 %></th>
-                        <% }) %>
-                    </tr>
-                </thead>
-                <tbody id="normalizedMatrixBody"></tbody>
-            </table>
-        </div>
+    </div>
+    <div class="card-content">
+        <table class="table is-fullwidth is-hoverable">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <% kriteriaData.forEach(function(kriteria, index) { %>
+                        <th>C<%= index + 1 %></th>
+                    <% }) %>
+                </tr>
+            </thead>
+            <tbody id="normalizedMatrixBody"></tbody>
+        </table>
     </div>
 </div>
 
 <!-- Weighted Normalized Matrix -->
 <div class="card mt-4">
-    <header class="card-header">
+    <div class="card-header">
         <p class="card-header-title">Matriks Ternormalisasi Terbobot (V)</p>
-    </header>
-    <div class="card-content" id="weighted-matrix">
-        <div class="content">
-            <table class="table is-fullwidth is-hoverable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <% kriteriaData.forEach(function(kriteria, index) { %>
-                            <th>C<%= index + 1 %></th>
-                        <% }) %>
-                    </tr>
-                </thead>
-                <tbody id="weightedMatrixBody"></tbody>
-            </table>
-        </div>
+    </div>
+    <div class="card-content">
+        <table class="table is-fullwidth is-hoverable">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <% kriteriaData.forEach(function(kriteria, index) { %>
+                        <th>C<%= index + 1 %></th>
+                    <% }) %>
+                </tr>
+            </thead>
+            <tbody id="weightedMatrixBody"></tbody>
+        </table>
     </div>
 </div>
 
 <!-- TOPSIS Calculation Result (Closeness Coefficient) -->
 <div class="card mt-4">
-    <header class="card-header">
+    <div class="card-header">
         <p class="card-header-title">Hasil TOPSIS (Nilai Preferensi)</p>
-    </header>
-    <div class="card-content" id="topsis-result">
-        <div class="content">
-            <table class="table is-fullwidth is-hoverable">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <th>Nilai Preferensi (V<sub>i</sub>)</th>
-                    </tr>
-                </thead>
-                <tbody id="topsisResultBody"></tbody>
-            </table>
-        </div>
+    </div>
+    <div class="card-content">
+        <table class="table is-fullwidth is-hoverable">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Nilai Preferensi (V<sub>i</sub>)</th>
+                </tr>
+            </thead>
+            <tbody id="topsisResultBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Ideal Solutions -->
+<div class="card mt-4">
+    <div class="card-header">
+        <p class="card-header-title">Solusi Ideal</p>
+    </div>
+    <div class="card-content">
+        <p><strong>Nilai Ideal Terbaik (A+):</strong> <span id="idealBestValues"></span></p>
+        <p><strong>Nilai Ideal Terburuk (A-):</strong> <span id="idealWorstValues"></span></p>
     </div>
 </div>
 
 <script>
-// Static data for decision matrix (alternatives and criteria scores)
-const penilaianData = [
-    { nama: 'Egidius S Berek', kriteria_nilai: [34	,34	,12,	2,	34,	21] },
-    { nama: 'Caytano Lopes', kriteria_nilai: [	34,	34,	12,	34,	34,	21] },
+    // Static data for decision matrix (alternatives and criteria scores)
+    const penilaianData = [
+        { nama: 'Egidius S Berek', kriteria_nilai: [34, 34, 12, 2, 34, 21] },
+        { nama: 'Caytano Lopes', kriteria_nilai: [34, 34, 12, 34, 34, 21] },
+        { nama: 'Caytano ERR', kriteria_nilai: [2, 32, 2, 1, 4, 2] },
+    ];
 
-];
+    // Static data for weights of the criteria
+    const bobotKriteria = [25, 15, 20, 10, 15, 15];
 
-// Static data for weights of the criteria
-const bobotKriteria = [25, 15, 20, 10, 15, 15];
-
-// Generate the Decision Matrix
-const displayDecisionMatrix = () => {
-    const tableBody = document.getElementById('decisionMatrixBody');
-    penilaianData.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td>` + 
-                       row.kriteria_nilai.map(val => `<td>${val}</td>`).join('');
-        tableBody.appendChild(tr);
-    });
-};
-
-// Calculate and normalize the decision matrix
-const calculateNormalizedMatrix = (data) => {
-    const numberOfCriteria = data[0].kriteria_nilai.length;
-    const divisors = Array(numberOfCriteria).fill(0);
-
-    // Sum squares and calculate divisors for each criterion
-    data.forEach(row => {
-        row.kriteria_nilai.forEach((val, index) => {
-            divisors[index] += Math.pow(val, 2);
+    // Generate the Decision Matrix
+    const displayDecisionMatrix = () => {
+        const tableBody = document.getElementById('decisionMatrixBody');
+        penilaianData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td>` + 
+                        row.kriteria_nilai.map(val => `<td>${val}</td>`).join('');
+            tableBody.appendChild(tr);
         });
-    });
-    const sqrtDivisors = divisors.map(sum => Math.sqrt(sum));
+    };
 
-    // Normalize each criterion value
-    return data.map(row => {
-        return {
-            nama: row.nama,
-            normalizedValues: row.kriteria_nilai.map((val, index) => (val / sqrtDivisors[index]).toFixed(6))
-        };
-    });
-};
+    // Calculate and normalize the decision matrix
+    const calculateNormalizedMatrix = (data) => {
+        try {
+            const numberOfCriteria = data[0].kriteria_nilai.length;
+            const divisors = Array(numberOfCriteria).fill(0);
 
-// Display the Normalized Matrix
-const displayNormalizedMatrix = (normalizedData) => {
-    const tableBody = document.getElementById('normalizedMatrixBody');
-    normalizedData.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td>` + 
-                       row.normalizedValues.map(val => `<td>${val}</td>`).join('');
-        tableBody.appendChild(tr);
-    });
-};
+            // Sum squares and calculate divisors for each criterion
+            data.forEach(row => {
+                row.kriteria_nilai.forEach((val, index) => {
+                    divisors[index] += Math.pow(val, 2);
+                });
+            });
+            const sqrtDivisors = divisors.map(sum => Math.sqrt(sum));
 
-// Calculate the weighted normalized matrix
-const calculateWeightedMatrix = (normalizedData, weights) => {
-    return normalizedData.map(row => {
-        return {
-            nama: row.nama,
-            weightedValues: row.normalizedValues.map((val, index) => (val * weights[index] / 100).toFixed(6))
-        };
-    });
-};
+            // Normalize each criterion value
+            return data.map(row => {
+                return {
+                    nama: row.nama,
+                    normalizedValues: row.kriteria_nilai.map((val, index) => (val / sqrtDivisors[index]).toFixed(6))
+                };
+            });
+        } catch (error) {
+            console.error('Error calculating normalized matrix:', error);
+            return [];
+        }
+    };
 
-// Display the Weighted Normalized Matrix
-const displayWeightedMatrix = (weightedData) => {
-    const tableBody = document.getElementById('weightedMatrixBody');
-    weightedData.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td>` + 
-                       row.weightedValues.map(val => `<td>${val}</td>`).join('');
-        tableBody.appendChild(tr);
-    });
-};
-
-// Calculate the ideal best (A+) and ideal worst (A-) solutions
-const calculateIdealSolutions = (weightedData) => {
-    const numberOfCriteria = weightedData[0].weightedValues.length;
-    const idealBest = Array(numberOfCriteria).fill(-Infinity);
-    const idealWorst = Array(numberOfCriteria).fill(Infinity);
-
-    weightedData.forEach(row => {
-        row.weightedValues.forEach((val, index) => {
-            val = parseFloat(val);
-            idealBest[index] = Math.max(idealBest[index], val);
-            idealWorst[index] = Math.min(idealWorst[index], val);
+    // Display the Normalized Matrix
+    const displayNormalizedMatrix = (normalizedData) => {
+        const tableBody = document.getElementById('normalizedMatrixBody');
+        normalizedData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td>` + 
+                        row.normalizedValues.map(val => `<td>${val}</td>`).join('');
+            tableBody.appendChild(tr);
         });
-    });
+    };
 
-    return { idealBest, idealWorst };
-};
+    // Calculate the weighted normalized matrix
+    const calculateWeightedMatrix = (normalizedData, weights) => {
+        try {
+            return normalizedData.map(row => {
+                return {
+                    nama: row.nama,
+                    weightedValues: row.normalizedValues.map((val, index) => (val * weights[index] / 100).toFixed(6))
+                };
+            });
+        } catch (error) {
+            console.error('Error calculating weighted matrix:', error);
+            return [];
+        }
+    };
 
-// Calculate the distance from the ideal solutions
-const calculateDistance = (weightedData, idealSolutions) => {
-    const { idealBest, idealWorst } = idealSolutions;
-
-    return weightedData.map(row => {
-        let distanceToBest = 0;
-        let distanceToWorst = 0;
-
-        row.weightedValues.forEach((val, index) => {
-            val = parseFloat(val);
-            distanceToBest += Math.pow(val - idealBest[index], 2);
-            distanceToWorst += Math.pow(val - idealWorst[index], 2);
+    // Display the Weighted Normalized Matrix
+    const displayWeightedMatrix = (weightedData) => {
+        const tableBody = document.getElementById('weightedMatrixBody');
+        weightedData.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td>` + 
+                        row.weightedValues.map(val => `<td>${val}</td>`).join('');
+            tableBody.appendChild(tr);
         });
+    };
 
-        return {
-            nama: row.nama,
-            distanceToBest: Math.sqrt(distanceToBest),
-            distanceToWorst: Math.sqrt(distanceToWorst)
-        };
-    });
-};
+    // Calculate the ideal best (A+) and ideal worst (A-) solutions
+    const calculateIdealSolutions = (weightedData) => {
+        try {
+            const numberOfCriteria = weightedData[0].weightedValues.length;
+            const idealBest = Array(numberOfCriteria).fill(-Infinity);
+            const idealWorst = Array(numberOfCriteria).fill(Infinity);
 
-// Calculate the closeness coefficient (preference value)
-const calculateClosenessCoefficient = (distances) => {
-    return distances.map(row => {
-        const preferenceValue = (row.distanceToWorst / (row.distanceToBest + row.distanceToWorst)).toFixed(6);
-        return { nama: row.nama, preferenceValue };
-    });
-};
+            weightedData.forEach(row => {
+                row.weightedValues.forEach((val, index) => {
+                    const numericVal = parseFloat(val);
+                    if (numericVal > idealBest[index]) idealBest[index] = numericVal;
+                    if (numericVal < idealWorst[index]) idealWorst[index] = numericVal;
+                });
+            });
 
-// Display the final result (Closeness Coefficient)
-const displayTOPSISResult = (results) => {
-    const tableBody = document.getElementById('topsisResultBody');
-    results.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${index + 1}</td><td>${row.nama}</td><td>${row.preferenceValue}</td>`;
-        tableBody.appendChild(tr);
-    });
-};
+            return {
+                idealBest: idealBest.map(val => val.toFixed(6)),
+                idealWorst: idealWorst.map(val => val.toFixed(6))
+            };
+        } catch (error) {
+            console.error('Error calculating ideal solutions:', error);
+            return { idealBest: [], idealWorst: [] };
+        }
+    };
 
-// Full TOPSIS calculation flow
-const runTOPSIS = () => {
+    // Display the Ideal Solutions
+    const displayIdealSolutions = (idealSolutions) => {
+        document.getElementById('idealBestValues').innerText = idealSolutions.idealBest.join(', ');
+        document.getElementById('idealWorstValues').innerText = idealSolutions.idealWorst.join(', ');
+    };
+
+    // Call functions to display data
     displayDecisionMatrix();
-    const normalizedMatrix = calculateNormalizedMatrix(penilaianData);
-    displayNormalizedMatrix(normalizedMatrix);
-
-    const weightedMatrix = calculateWeightedMatrix(normalizedMatrix, bobotKriteria);
-    displayWeightedMatrix(weightedMatrix);
-
-    const idealSolutions = calculateIdealSolutions(weightedMatrix);
-    const distances = calculateDistance(weightedMatrix, idealSolutions);
-
-    const closenessCoefficients = calculateClosenessCoefficient(distances);
-    displayTOPSISResult(closenessCoefficients);
-};
-
-// Run the TOPSIS calculation when the page loads
-window.onload = runTOPSIS;
+    const normalizedData = calculateNormalizedMatrix(penilaianData);
+    displayNormalizedMatrix(normalizedData);
+    const weightedData = calculateWeightedMatrix(normalizedData, bobotKriteria);
+    displayWeightedMatrix(weightedData);
+    const idealSolutions = calculateIdealSolutions(weightedData);
+    displayIdealSolutions(idealSolutions);
 </script>
-
 </body>
 </html>

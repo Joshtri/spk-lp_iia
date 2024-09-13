@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <%-include('partials/head')%>
+    
+</head>
+<body>
+
+
+    <%-include('partials/header'); %>
+
+    
+
+    <section class="section">
+        <div class="container">
+            <nav class="breadcrumb" aria-label="breadcrumbs">
+                <ul>
+                  <li>
+                    <a href="/adm/dashboard">
+                      <span class="icon is-small">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                      </span>
+                      <span>Dashboard</span>
+                    </a>
+                  </li>
+                  <li class="is-active">
+                    <a href="#">
+                      <span class="icon is-small">
+                        <i class="fas fa-book" aria-hidden="true"></i>
+                      </span>
+                      <span>Data Sub Kriteria</span>
+                    </a>
+                  </li>
+                  <li class="is-active">
+                    <a href="#">
+                      <span class="icon is-small">
+                        <i class="fas fa-book" aria-hidden="true"></i>
+                      </span>
+                      <span>Edit Sub Kriteria</span>
+                    </a>
+                  </li>
+                </ul>
+            </nav>
+
+            <hr class="navbar-divider">
+
+            
+            <div class="mb-4">
+                <a href="/data/subKriteria">
+                    <button type="button" class="button is-warning is-small">Kembali</button>
+                </a>
+            </div>
+
+
+
+            <div class="columns is-centered">
+                <div class="column is-half">
+                    <h1 class="title has-text-centered">Edit Sub Kriteria</h1>
+
+                    <form action="/data/subKriteria/update/<%= subKriteria.id_sub_kriteria %>" method="POST" class="box">
+                        <div class="field">
+                            <label class="label">Nama Sub Kriteria</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="text" name="nama_sub_kriteria" value="<%= subKriteria.nama_sub_kriteria %>" required>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-tag"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Bobot Sub Kriteria</label>
+                            <div class="control has-icons-left">
+                                <input class="input" type="number" step="0.01" name="bobot_sub_kriteria" value="<%= subKriteria.bobot_sub_kriteria %>" required>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-balance-scale"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Kriteria</label>
+                            <div class="control has-icons-left">
+                                <input class="input is-static" type="text" value="<%= subKriteria.Kriterium.nama_kriteria %>" disabled>
+                                <span class="icon is-small is-left">
+                                    <i class="fas fa-list"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped is-grouped-centered">
+                            <div class="control">
+                                <button class="button is-success" type="submit">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                    <span>Perbarui</span>
+                                </button>
+                            </div>
+                            <div class="control">
+                                <a class="button is-light" href="/data/subKriteria">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                    <span>Batal</span>
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Font Awesome for icons (optional) -->
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js"></script>
+</body>
+</html>

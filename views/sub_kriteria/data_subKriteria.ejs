@@ -25,7 +25,7 @@
                   <span class="icon is-small">
                     <i class="fas fa-book" aria-hidden="true"></i>
                   </span>
-                  <span>Data Sub Kriteria (ReadOnly)</span>
+                  <span>Data Sub Kriteria</span>
                 </a>
               </li>
             </ul>
@@ -69,6 +69,7 @@
                         <th class="has-text-left">Nama Kriteria</th>
                         <th class="has-text-left">Bobot Kriteria</th>
                         <th class="has-text-left">Nama Kriteria</th>
+                        <th class="has-text-left">Aksi</th>
 
                     </tr>
                 </thead>
@@ -79,8 +80,11 @@
                         <td class="has-text-left" ><%= subKriteriaData[i].nama_sub_kriteria %></td>
                         <td class="has-text-left"><%= subKriteriaData[i].bobot_sub_kriteria %></td>
                         <td class="has-text-left"><%= subKriteriaData[i].Kriterium.nama_kriteria %></td>
-
-
+             
+                        <td>
+                            <a class="button is-link" href="/data/subKriteria/edit/<%= subKriteriaData[i].id_sub_kriteria %>">Edit</a>
+                        </td>
+                    
                     </tr>
                     <% } %>
                     <!-- Other table data -->
@@ -90,11 +94,29 @@
 
 
 
-
           
     </div>
 
     <hr>
+
+    <!-- <script>
+        function openEditModal(id) {
+            const modal = document.getElementById('editSubKriteriaModal');
+            fetch(`/data/sub-kriteria/${id}/edit`)
+                .then(response => response.text())
+                .then(html => {
+                    modal.querySelector('.modal-card').innerHTML = html;
+                    modal.classList.add('is-active');
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('editSubKriteriaModal');
+            modal.classList.remove('is-active');
+        }
+
+    </script> -->
 
 
     <script src="/js/liveSearchBar.js"></script>

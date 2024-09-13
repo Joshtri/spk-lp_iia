@@ -9,6 +9,8 @@ import { fileURLToPath } from 'url';
 import { createClient } from 'redis';
 import connectRedis from 'connect-redis';
 
+import MongoStore from 'connect-mongo';
+import connectDB from './config/mongoConfig.js';
 
 import routeLogin from './routes/login.route.js';
 import routeNarapidana from './routes/narapidana.route.js';
@@ -25,6 +27,8 @@ import routePeriode from './routes/periode.route.js';
 import db from './config/dbConfig.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,9 +56,13 @@ app.use(
     resave: false,
     saveUninitialized: true,
     name: 'spk_lp_iia',
-
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI, // Replace with your MongoDB connection string
+      collectionName: 'sessions'
+    })
   })
 );
+
 // Menyediakan akses ke file statis di folder 'public'
 app.use(express.static(path.join(__dirname, "/public")));
 

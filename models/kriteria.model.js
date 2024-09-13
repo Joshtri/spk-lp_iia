@@ -14,7 +14,7 @@ const Kriteria = db.define('Kriteria', {
     },
     bobot_kriteria: {
         allowNull: false,
-        type: DataTypes.STRING(10)
+        type:  DataTypes.INTEGER
     },
     jenis_kriteria: {
         type: DataTypes.ENUM('benefit', 'cost'),

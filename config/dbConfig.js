@@ -20,28 +20,30 @@ config({ path: path.resolve(process.cwd(), envFile) });
 //     }
 // );
 
-const db = new Sequelize({
-  host: process.env.DB_HOST,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  database:process.env.DB_NAME,
-  dialect: process.env.DB_DIALECT,
-  dialectModule: mysql2, // Use mysql2 as the dialect module
-    // benchmark: true,
-    // port: process.env.DB_PORT
-
-});
 // const db = new Sequelize({
-//     host: process.env.DB_HOST,
-//     username: process.env.DB_USER,
-//     password: process.env.DB_PASS,
-//     database:process.env.DB_NAME,
-//     dialect: 'mysql',
-//     dialectModule: mysql2, // Use mysql2 as the dialect module
+//   host: process.env.DB_HOST,
+//   username: process.env.DB_USER,
+//   password: process.env.DB_PASS,
+//   database:process.env.DB_NAME,
+//   dialect: process.env.DB_DIALECT,
+//   dialectModule: mysql2, // Use mysql2 as the dialect module
 //     // benchmark: true,
 //     // port: process.env.DB_PORT
 
 // });
+
+
+const db = new Sequelize({
+    host: process.env.DB_HOST,
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database:process.env.DB_NAME,
+    dialect: 'mysql',
+    dialectModule: mysql2, // Use mysql2 as the dialect module
+    // benchmark: true,
+    port: process.env.DB_PORT
+
+});
 
 
 try {

@@ -137,3 +137,49 @@ export const getAllSubKriteria = async(req, res) => {
         res.status(500).json({ error: 'Gagal mengambil data sub-kriteria' });
     }
 };
+
+
+
+// Controller to render the edit page with subKriteria data
+export const getEditSubKriteriaPage = async (req, res) => {
+    const userData = req.session.user;
+    const title = "Edit Sub-Kriteria Page"
+    try {
+        const subKriteria = await Sub_Kriteria.findByPk(req.params.id, {
+            include: Kriteria,
+        });
+
+        if (!subKriteria) {
+            return res.status(404).send('Sub Kriteria not found');
+        }
+
+        res.render('edit_SubKriteria', { subKriteria, title, user:userData});
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+
+// Update sub_kriteria
+// Controller to handle the form submission and update the sub_kriteria
+export const updateSubKriteria = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nama_sub_kriteria, bobot_sub_kriteria } = req.body;
+
+        const subKriteria = await Sub_Kriteria.findByPk(id);
+
+        if (!subKriteria) {
+            return res.status(404).send('Sub Kriteria not found');
+        }
+
+        await subKriteria.update({
+            nama_sub_kriteria,
+            bobot_sub_kriteria,
+        });
+
+        res.redirect('/data/subKriteria');
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};

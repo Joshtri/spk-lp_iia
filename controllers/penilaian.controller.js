@@ -41,23 +41,25 @@ import Sub_Kriteria from '../models/subKriteria.model.js';
 // Controller to fetch data
 export const penilaianPage = async (req, res) => {
     try {
-        const title = "Data penilaian"
+        const title = "Data Penilaian";
         const messagePost = req.flash("tambahInfo");
         const messageUpdate = req.flash("updateInfo");
         const messageDelete = req.flash("deleteInfo");
         const userData = req.session.user;
+
+        const periodeData = await Periode.findAll();
 
         // Fetch all kriteria
         const kriteriaData = await Kriteria.findAll({
             attributes: ['id_kriteria', 'nama_kriteria']
         });
 
-        // Fetch penilaian data with related narapidana and criteria values
+        // Fetch penilaian data with related narapidana, periode, and criteria values
         const penilaianData = await Narapidana.findAll({
             include: [
                 {
                     model: Penilaian,
-                    include: [Kriteria]
+                    include: [Kriteria, { model: Periode }] // Include Periode
                 }
             ]
         });
@@ -66,6 +68,7 @@ export const penilaianPage = async (req, res) => {
         const matrixData = penilaianData.map((narapidana) => {
             return {
                 narapidana,
+                periode: narapidana.Penilaians.length > 0 ? narapidana.Penilaians[0].Periode : null,
                 kriteria_nilai: kriteriaData.map((kriteria) => {
                     const nilaiKriteria = narapidana.Penilaians.find(
                         (penilaian) => penilaian.kriteriaId === kriteria.id_kriteria
@@ -77,9 +80,8 @@ export const penilaianPage = async (req, res) => {
 
         res.render("data_penilaian", {
             penilaianData: matrixData,
-            kriteriaData: kriteriaData,
+            kriteriaData,
             title,
-            // kriteriaData,
             messagePost,
             messageUpdate,
             messageDelete,
@@ -90,6 +92,7 @@ export const penilaianPage = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
 
 
 
@@ -159,8 +162,9 @@ export const createPenilaian = async (req, res) => {
             });
         }
 
-        return res.status(201).json({ message: "Penilaian created successfully." });
+        // return res.status(201).json({ message: "Penilaian created successfully." });
 
+        res.redirect('/data/penilaian')
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal server error." });
@@ -279,3 +283,17 @@ export const updatePenilaian = async (req, res) => {
         return res.status(500).json({ message: "Internal server error." });
     }
 };
+
+export const destroyAllPenilaian = async (req, res) => {
+    try {
+        // Delete all records in the Penilaian table
+        await Penilaian.destroy({ where: {} });
+        req.flash('success', 'All penilaian data has been successfully deleted.');
+        res.redirect('/data/penilaian');
+    } catch (error) {
+        console.error('Error deleting all penilaian data:', error);
+        req.flash('error', 'Failed to delete all penilaian data.');
+        res.redirect('/data/penilaian');
+    }
+};
+

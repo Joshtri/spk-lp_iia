@@ -10,6 +10,31 @@
         <!-- Breadcrumbs and Notifications -->
         <!-- Existing code remains unchanged -->
 
+
+        
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul>
+              <li>
+                <a href="/adm/dashboard">
+                  <span class="icon is-small">
+                    <i class="fas fa-home" aria-hidden="true"></i>
+                  </span>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="is-active">
+                <a href="#">
+                  <span class="icon is-small">
+                    <i class="fas fa-book" aria-hidden="true"></i>
+                  </span>
+                  <span>Data Penilaian</span>
+                </a>
+              </li>
+            </ul>
+        </nav>
+
+        <hr>
+
         <div class="field is-grouped">
             <% if(user && user.role == 'wali pemasyarakatan') { %>
             <a class="button" href="/data/add_penilaian">Tambah Data</a>
@@ -24,6 +49,32 @@
             </div>
         </div>
 
+                    <!-- Dropdown for Destroy All Data -->
+
+        <div class="dropdown is-hoverable is-right is-small">
+            <div class="dropdown-trigger">
+                <button class="button is-danger is-small" aria-haspopup="true" aria-controls="dropdown-menu-destroy">
+                    <span>More Actions</span>
+                    <span class="icon is-small">
+                        <i class="fas fa-caret-down" aria-hidden="true"></i>
+                    </span>
+                </button>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu-destroy" role="menu">
+                <div class="dropdown-content">
+                    <!-- Destroy All Data Button -->
+                    <form action="/data/destroy_all_penilaian" method="POST" style="margin-left: 40px;" onsubmit="return confirm('Are you sure you want to delete all data?');">
+                        <button class="dropdown-item button is-small ml-5" type="submit">
+                            <i class="fa-solid fa-trash"></i> Destroy All
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        
+
         <div class="overflow-x-auto shadow-md rounded-lg mt-3">
             <div class="table-container">
                 <table class="table is-fullwidth is-hoverable">
@@ -31,6 +82,7 @@
                         <tr>
                             <th>No</th>
                             <th>Nama</th>
+                            <th>Periode</th>
                             <% kriteriaData.forEach(function(kriteria, index) { %>
                                 <th>C<%= index + 1 %></th>
                             <% }) %>
@@ -42,12 +94,19 @@
                         <tr>
                             <td><%= index + 1 %></td>
                             <td><%= penilaian.narapidana.nama_narapidana %></td>
+                            <td>
+                                <% if (penilaian.periode) { %>
+                                    <%= penilaian.periode.id_periode %> - <%= penilaian.periode.tahun_periode %>
+                                <% } else { %>
+                                    beri penilaian terlebih dulu
+                                <% } %>
+                            </td>
                             <% penilaian.kriteria_nilai.forEach(function(nilai) { %>
                                 <td><%= nilai %></td>
                             <% }) %>
                             <td>
                                 <!-- Edit Button with Form -->
-                                <a class="button is-warning" href="/data/edit_penilaian/<%= penilaian.id_penilaian %>">
+                                <a class="button is-warning" href="/data/edit_penilaian/<%= penilaian.narapidana.id_narapidana %>">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                                 <!-- Delete Button with Form -->
@@ -61,6 +120,7 @@
                         <% }) %>
                     </tbody>
                 </table>
+                
             </div>
         </div>
 
