@@ -51,19 +51,31 @@
         <% } %>
 
         <div class="columns is-centered">
-            <div class="column ">
+            <div class="column is-10"> <!-- Ubah lebar kolom -->
                 <div class="card">
-                    <div class="card-content">
-                        <% if (user) { %>
-                            <h5 class="title is-4">Selamat datang, <%= user.nama_lengkap %> <small class="is-size-6">(<%= user.role %>)</small></h5>
-                        <% } else { %>
-                            <p>No user data available</p>
-                        <% } %>
-                        <p class="subtitle is-6">di Website Sistem Pendukung Keputusan pemberian hak pembebasan bersyarat kepada narapidana dengan menggunakan metode TOPSIS.</p>
+                    <!-- Background Image -->
+                    <div class="card-content has-background" style="background-image: url('/img/tampilan depan.jpg'); background-size: cover; background-position: center; min-height: 300px;">
+                        
+                        <!-- Overlay Background for Text -->
+                        <div class="overlay p-5" style="background-color: rgba(0, 0, 0, 0.5); border-radius: 8px;">
+                            <% if (user) { %>
+                                <h5 class="title is-4 has-text-white">
+                                    Selamat datang, <%= user.nama_lengkap %> <small class="is-size-6">(<%= user.role %>)</small>
+                                </h5>
+                            <% } else { %>
+                                <p class="has-text-white">No user data available</p>
+                            <% } %>
+                            <p class="subtitle is-6 has-text-white">
+                                di Website Sistem Pendukung Keputusan pemberian hak pembebasan bersyarat kepada narapidana dengan menggunakan metode TOPSIS.
+                            </p>
+                        </div>
+        
                     </div>
                 </div>
             </div>
         </div>
+        
+        
 
         <div class="tabs is-toggle is-toggle-rounded">
             <ul>
