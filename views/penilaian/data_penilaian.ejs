@@ -106,12 +106,12 @@
                             <% }) %>
                             <td>
                                 <!-- Edit Button with Form -->
-                                <a class="button is-warning" href="/data/edit_penilaian/<%= penilaian.narapidana.id_narapidana %>">
+                                <a class="button is-warning is-small" href="/data/edit_penilaian/<%= penilaian.narapidana.id_narapidana %>">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                                 <!-- Delete Button with Form -->
                                 <form action="/data/delete_penilaian/<%= penilaian.narapidana.id_narapidana %>" method="POST" style="display: inline;">
-                                    <button class="button is-danger" type="submit">
+                                    <button class="button is-danger is-small" type="submit">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </form>
