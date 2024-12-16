@@ -89,28 +89,28 @@ export const MainPerhitunganPage = async (req, res) => {
 // Controller untuk mengambil dan menampilkan matriks normalisasi
 // Controller untuk mengambil dan menampilkan matriks normalisasi
 
-const normalizeMatrix = (decisionMatrix) => {
-    const numberOfCriteria = decisionMatrix[0].kriteria_nilai.length;
-    const divisors = Array(numberOfCriteria).fill(0);
+// const normalizeMatrix = (decisionMatrix) => {
+//     const numberOfCriteria = decisionMatrix[0].kriteria_nilai.length;
+//     const divisors = Array(numberOfCriteria).fill(0);
 
-    decisionMatrix.forEach(row => {
-        row.kriteria_nilai.forEach((val, index) => {
-            divisors[index] += Math.pow(parseFloat(val) || 0, 2);
-        });
-    });
+//     decisionMatrix.forEach(row => {
+//         row.kriteria_nilai.forEach((val, index) => {
+//             divisors[index] += Math.pow(parseFloat(val) || 0, 2);
+//         });
+//     });
 
-    const sqrtDivisors = divisors.map(sum => Math.sqrt(sum));
+//     const sqrtDivisors = divisors.map(sum => Math.sqrt(sum));
 
-    return decisionMatrix.map(row => {
-        return {
-            nama: row.nama,
-            normalized: row.kriteria_nilai.map((val, index) => {
-                const normalizedValue = (parseFloat(val) || 0) / (sqrtDivisors[index] || 1); // Prevent division by zero
-                return isNaN(normalizedValue) ? 0 : normalizedValue; // Ensure no NaN values
-            })
-        };
-    });
-};
+//     return decisionMatrix.map(row => {
+//         return {
+//             nama: row.nama,
+//             normalized: row.kriteria_nilai.map((val, index) => {
+//                 const normalizedValue = (parseFloat(val) || 0) / (sqrtDivisors[index] || 1); // Prevent division by zero
+//                 return isNaN(normalizedValue) ? 0 : normalizedValue; // Ensure no NaN values
+//             })
+//         };
+//     });
+// };
 
 // const calculateIdealSolutions = (weightedNormalizedMatrix, kriteriaData) => {
 //     const numberOfCriteria = weightedNormalizedMatrix[0].weighted_kriteria.length;
@@ -161,126 +161,127 @@ const normalizeMatrix = (decisionMatrix) => {
 //     return { idealPositive, idealNegative };
 // };
 
-const calculateIdealSolutions = (weightedNormalizedMatrix) => {
-    // Kriteria Data statis
-    const kriteriaData = [
-        { jenis_kriteria: 'benefit' }, // Pembinaan
-        { jenis_kriteria: 'cost' },    // Sikap
-        { jenis_kriteria: 'benefit' }, // Penilaian
-        { jenis_kriteria: 'cost' },    // Kelakuan
-        { jenis_kriteria: 'benefit' }, // Aturan
-        { jenis_kriteria: 'cost' }     // Narkoba
-    ];
+// const calculateIdealSolutions = (weightedNormalizedMatrix) => {
+//     // Kriteria Data statis
+//     const kriteriaData = [
+//         { jenis_kriteria: 'benefit' }, // Pembinaan
+//         { jenis_kriteria: 'cost' },    // Sikap
+//         { jenis_kriteria: 'benefit' }, // Penilaian
+//         { jenis_kriteria: 'cost' },    // Kelakuan
+//         { jenis_kriteria: 'benefit' }, // Aturan
+//         { jenis_kriteria: 'cost' }     // Narkoba
+//     ];
 
-    const numberOfCriteria = weightedNormalizedMatrix[0].weighted_kriteria.length;
+//     const numberOfCriteria = weightedNormalizedMatrix[0].weighted_kriteria.length;
 
-    // Inisialisasi solusi ideal positif dan negatif menggunakan angka maksimum dan minimum
-    const idealPositive = Array(numberOfCriteria).fill(-Number.MAX_VALUE);
-    const idealNegative = Array(numberOfCriteria).fill(Number.MAX_VALUE);
+//     // Inisialisasi solusi ideal positif dan negatif menggunakan angka maksimum dan minimum
+//     const idealPositive = Array(numberOfCriteria).fill(-Number.MAX_VALUE);
+//     const idealNegative = Array(numberOfCriteria).fill(Number.MAX_VALUE);
 
-    // Temukan solusi ideal positif dan negatif
-    weightedNormalizedMatrix.forEach(row => {
-        row.weighted_kriteria.forEach((val, index) => {
-            const kriteriaType = kriteriaData[index].jenis_kriteria;
+//     // Temukan solusi ideal positif dan negatif
+//     weightedNormalizedMatrix.forEach(row => {
+//         row.weighted_kriteria.forEach((val, index) => {
+//             const kriteriaType = kriteriaData[index].jenis_kriteria;
 
-            // Periksa apakah nilai val adalah angka valid
-            if (isNaN(val) || val === Infinity || val === -Infinity) {
-                console.error(`Invalid value detected at kriteria ${index + 1}, skipping...`);
-                return; // Skip processing for invalid values
-            }
+//             // Periksa apakah nilai val adalah angka valid
+//             if (isNaN(val) || val === Infinity || val === -Infinity) {
+//                 console.error(`Invalid value detected at kriteria ${index + 1}, skipping...`);
+//                 return; // Skip processing for invalid values
+//             }
 
-            // Tentukan solusi ideal berdasarkan tipe kriteria
-            if (kriteriaType === 'benefit') {
-                if (val > idealPositive[index]) {
-                    idealPositive[index] = val;
-                }
-                if (val < idealNegative[index]) {
-                    idealNegative[index] = val;
-                }
-            } else if (kriteriaType === 'cost') {
-                if (val < idealPositive[index]) {
-                    idealPositive[index] = val;
-                }
-                if (val > idealNegative[index]) {
-                    idealNegative[index] = val;
-                }
-            }
-        });
-    });
+//             // Tentukan solusi ideal berdasarkan tipe kriteria
+//             if (kriteriaType === 'benefit') {
+//                 if (val > idealPositive[index]) {
+//                     idealPositive[index] = val;
+//                 }
+//                 if (val < idealNegative[index]) {
+//                     idealNegative[index] = val;
+//                 }
+//             } else if (kriteriaType === 'cost') {
+//                 if (val < idealPositive[index]) {
+//                     idealPositive[index] = val;
+//                 }
+//                 if (val > idealNegative[index]) {
+//                     idealNegative[index] = val;
+//                 }
+//             }
+//         });
+//     });
 
-    // Penanganan nilai default jika tidak ada perubahan dari nilai awal
-    idealPositive.forEach((val, index) => {
-        if (val === -Number.MAX_VALUE) {
-            console.warn(`Ideal Positive value for kriteria ${index + 1} remains at default. Setting to a safe default value.`);
-            idealPositive[index] = 1; // Set default value (adjust as necessary)
-        }
-    });
+//     // Penanganan nilai default jika tidak ada perubahan dari nilai awal
+//     idealPositive.forEach((val, index) => {
+//         if (val === -Number.MAX_VALUE) {
+//             console.warn(`Ideal Positive value for kriteria ${index + 1} remains at default. Setting to a safe default value.`);
+//             idealPositive[index] = 1; // Set default value (adjust as necessary)
+//         }
+//     });
 
-    idealNegative.forEach((val, index) => {
-        if (val === Number.MAX_VALUE) {
-            console.warn(`Ideal Negative value for kriteria ${index + 1} remains at default. Setting to a safe default value.`);
-            idealNegative[index] = 1; // Set default value (adjust as necessary)
-        }
-    });
+//     idealNegative.forEach((val, index) => {
+//         if (val === Number.MAX_VALUE) {
+//             console.warn(`Ideal Negative value for kriteria ${index + 1} remains at default. Setting to a safe default value.`);
+//             idealNegative[index] = 1; // Set default value (adjust as necessary)
+//         }
+//     });
 
-    console.log(`Final Ideal Positive Solution: ${idealPositive}`);
-    console.log(`Final Ideal Negative Solution: ${idealNegative}`);
+//     console.log(`Final Ideal Positive Solution: ${idealPositive}`);
+//     console.log(`Final Ideal Negative Solution: ${idealNegative}`);
 
-    return { idealPositive, idealNegative };
-};
+//     return { idealPositive, idealNegative };
+// };
 
-// Contoh penggunaan
-const weightedNormalizedMatrix = [
-    { weighted_kriteria: [0.4, 0.5, 0.7, 0.6, 0.8, 0.9] },
-    { weighted_kriteria: [0.3, 0.6, 0.5, 0.4, 0.7, 0.6] },
-    { weighted_kriteria: [0.8, 0.7, 0.6, 0.5, 0.9, 0.4] }
-];
+// // Contoh penggunaan
+// const weightedNormalizedMatrix = [
+//     { weighted_kriteria: [0.4, 0.5, 0.7, 0.6, 0.8, 0.9] },
+//     { weighted_kriteria: [0.3, 0.6, 0.5, 0.4, 0.7, 0.6] },
+//     { weighted_kriteria: [0.8, 0.7, 0.6, 0.5, 0.9, 0.4] }
+// ];
 
-const result = calculateIdealSolutions(weightedNormalizedMatrix);
-console.log(result);
+// const result = calculateIdealSolutions(weightedNormalizedMatrix);
+// console.log(result);
 
 
 
-const calculateDistances = (weightedData, idealBest, idealWorst) => {
-    return weightedData.map(row => {
-        let distanceToBest = 0;
-        let distanceToWorst = 0;
+// const calculateDistances = (weightedData, idealBest, idealWorst) => {
+//     return weightedData.map(row => {
+//         let distanceToBest = 0;
+//         let distanceToWorst = 0;
 
-        row.weighted_kriteria.forEach((val, index) => {
-            val = parseFloat(val);
-            distanceToBest += Math.pow(val - idealBest[index], 2);
-            distanceToWorst += Math.pow(val - idealWorst[index], 2);
-        });
+//         row.weighted_kriteria.forEach((val, index) => {
+//             val = parseFloat(val);
+//             distanceToBest += Math.pow(val - idealBest[index], 2);
+//             distanceToWorst += Math.pow(val - idealWorst[index], 2);
+//         });
 
-        return {
-            nama: row.nama,
-            distanceToBest: Math.sqrt(distanceToBest),
-            distanceToWorst: Math.sqrt(distanceToWorst)
-        };
-    });
-};
+//         return {
+//             nama: row.nama,
+//             distanceToBest: Math.sqrt(distanceToBest),
+//             distanceToWorst: Math.sqrt(distanceToWorst)
+//         };
+//     });
+// };
 
-const calculatePreferences = (distances) => {
-    const preferences = distances.map((item) => {
-        const { distanceToBest, distanceToWorst } = item;
-        const totalDistance = distanceToBest + distanceToWorst;
+// const calculatePreferences = (distances) => {
+//     const preferences = distances.map((item) => {
+//         const { distanceToBest, distanceToWorst } = item;
+//         const totalDistance = distanceToBest + distanceToWorst;
 
-        return {
-            nama: item.nama,
-            preferenceScore: totalDistance === 0 ? 0 : distanceToWorst / totalDistance
-        };
-    });
+//         return {
+//             nama: item.nama,
+//             preferenceScore: totalDistance === 0 ? 0 : distanceToWorst / totalDistance
+//         };
+//     });
 
-    // Urutkan berdasarkan skor preferensi dari yang tertinggi ke terendah
-    preferences.sort((a, b) => b.preferenceScore - a.preferenceScore);
+//     // Urutkan berdasarkan skor preferensi dari yang tertinggi ke terendah
+//     preferences.sort((a, b) => b.preferenceScore - a.preferenceScore);
 
-    return preferences;
-};
+//     return preferences;
+// };
 
 // export const normalizedMatrixPage = async (req, res) => {
 //     try {
 //         const title = "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
 //         const userData = req.session.user;
+
 
 //         // Ambil data penilaian dengan data narapidana
 //         const penilaianData = await Penilaian.findAll({
@@ -377,114 +378,112 @@ const calculatePreferences = (distances) => {
 // };
 
 
-export const normalizedMatrixPage = async (req, res) => {
-    try {
-        const title = "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
-        const userData = req.session.user;
+// export const normalizedMatrixPage = async (req, res) => {
+//     try {
+//         const title = "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
+//         const userData = req.session.user;
         
-        // Ambil periodeId dari query string
-        const { periodeId } = req.query;
+//         // Ambil periodeId dari query string
+//         const { periodeId } = req.query;
 
-        // Ambil semua data periode
-        const periodeData = await Periode.findAll();
-        const kriteriaData = await Kriteria.findAll();
+//         // Ambil semua data periode
+//         const periodeData = await Periode.findAll();
+//         const kriteriaData = await Kriteria.findAll();
 
-        // Ambil data penilaian dengan data narapidana berdasarkan periodeId (jika ada)
-        const whereCondition = periodeId ? { periodeId: periodeId } : {}; // Jika periodeId ada, tambahkan kondisi where
-        const penilaianData = await Penilaian.findAll({
-            where: whereCondition, // filter berdasarkan periodeId jika dipilih
-            include: [{
-                model: Narapidana,
-                attributes: ['nama_narapidana'],
-            }]
-        });
+//         // Ambil data penilaian dengan data narapidana berdasarkan periodeId (jika ada)
+//         const whereCondition = periodeId ? { periodeId: periodeId } : {}; // Jika periodeId ada, tambahkan kondisi where
+//         const penilaianData = await Penilaian.findAll({
+//             where: whereCondition, // filter berdasarkan periodeId jika dipilih
+//             include: [{
+//                 model: Narapidana,
+//                 attributes: ['nama_narapidana'],
+//             }]
+//         });
 
-        const decisionMatrix = {};
+//         const decisionMatrix = {};
 
-        penilaianData.forEach((penilaian) => {
-            const nama = penilaian.Narapidana ? penilaian.Narapidana.nama_narapidana : 'Unknown';
+//         penilaianData.forEach((penilaian) => {
+//             const nama = penilaian.Narapidana ? penilaian.Narapidana.nama_narapidana : 'Unknown';
 
-            if (!decisionMatrix[nama]) {
-                decisionMatrix[nama] = {
-                    nama,
-                    kriteria_nilai: Array(kriteriaData.length).fill(0)
-                };
-            }
+//             if (!decisionMatrix[nama]) {
+//                 decisionMatrix[nama] = {
+//                     nama,
+//                     kriteria_nilai: Array(kriteriaData.length).fill(0)
+//                 };
+//             }
 
-            const kriteriaIndex = kriteriaData.findIndex(kriteria => kriteria.id_kriteria === penilaian.kriteriaId);
+//             const kriteriaIndex = kriteriaData.findIndex(kriteria => kriteria.id_kriteria === penilaian.kriteriaId);
 
-            if (kriteriaIndex !== -1) {
-                decisionMatrix[nama].kriteria_nilai[kriteriaIndex] = parseFloat(penilaian.nilai_kriteria) || 0;
-            }
-        });
+//             if (kriteriaIndex !== -1) {
+//                 decisionMatrix[nama].kriteria_nilai[kriteriaIndex] = parseFloat(penilaian.nilai_kriteria) || 0;
+//             }
+//         });
 
-        const decisionMatrixArray = Object.values(decisionMatrix);
+//         const decisionMatrixArray = Object.values(decisionMatrix);
 
-        if (decisionMatrixArray.length === 0) {
-            decisionMatrixArray.push({
-                nama: 'No Data',
-                kriteria_nilai: Array(kriteriaData.length).fill(0)
-            });
-        }
+//         if (decisionMatrixArray.length === 0) {
+//             decisionMatrixArray.push({
+//                 nama: 'No Data',
+//                 kriteria_nilai: Array(kriteriaData.length).fill(0)
+//             });
+//         }
 
-        // Matriks normalisasi (R)
-        const normalizedMatrix = normalizeMatrix(decisionMatrixArray);
+//         // Matriks normalisasi (R)
+//         const normalizedMatrix = normalizeMatrix(decisionMatrixArray);
 
-        // Matriks normalisasi terbobot (V)
-        const weightedNormalizedMatrix = normalizedMatrix.map((item) => {
-            return {
-                nama: item.nama,
-                weighted_kriteria: item.normalized.map((nilai, index) =>
-                    parseFloat(nilai) * parseFloat(kriteriaData[index]?.bobot_kriteria || 0)
-                )
-            };
-        });
+//         // Matriks normalisasi terbobot (V)
+//         const weightedNormalizedMatrix = normalizedMatrix.map((item) => {
+//             return {
+//                 nama: item.nama,
+//                 weighted_kriteria: item.normalized.map((nilai, index) =>
+//                     parseFloat(nilai) * parseFloat(kriteriaData[index]?.bobot_kriteria || 0)
+//                 )
+//             };
+//         });
 
-        // Solusi ideal positif dan negatif
-        const { idealPositive, idealNegative } = calculateIdealSolutions(weightedNormalizedMatrix, kriteriaData);
+//         // Solusi ideal positif dan negatif
+//         const { idealPositive, idealNegative } = calculateIdealSolutions(weightedNormalizedMatrix, kriteriaData);
 
-        // Jarak ke solusi ideal
-        const distances = calculateDistances(weightedNormalizedMatrix, idealPositive, idealNegative);
+//         // Jarak ke solusi ideal
+//         const distances = calculateDistances(weightedNormalizedMatrix, idealPositive, idealNegative);
 
-        // Skor preferensi (V)
-        const preferences = calculatePreferences(distances);
+//         // Skor preferensi (V)
+//         const preferences = calculatePreferences(distances);
 
-        const matrixData = {
-            normalized: normalizedMatrix,
-            weighted: weightedNormalizedMatrix,
-            distances: distances,
-            idealPositive: idealPositive,
-            idealNegative: idealNegative,
-            preferences: preferences
-        };
+//         const matrixData = {
+//             normalized: normalizedMatrix,
+//             weighted: weightedNormalizedMatrix,
+//             distances: distances,
+//             idealPositive: idealPositive,
+//             idealNegative: idealNegative,
+//             preferences: preferences
+//         };
 
-        // Logging for debugging
-        console.log("Normalized Matrix:", normalizedMatrix);
-        console.log("Weighted Normalized Matrix:", weightedNormalizedMatrix);
-        console.log('Kriteria Data:', kriteriaData);
-        console.log("Ideal Positive Solution:", idealPositive);
-        console.log("Ideal Negative Solution:", idealNegative);
-        console.log("Distances to Ideal Solutions:", distances);
-        console.log("Preferences:", preferences);
+//         // Logging for debugging
+//         console.log("Normalized Matrix:", normalizedMatrix);
+//         console.log("Weighted Normalized Matrix:", weightedNormalizedMatrix);
+//         console.log('Kriteria Data:', kriteriaData);
+//         console.log("Ideal Positive Solution:", idealPositive);
+//         console.log("Ideal Negative Solution:", idealNegative);
+//         console.log("Distances to Ideal Solutions:", distances);
+//         console.log("Preferences:", preferences);
 
-        // Render hasil
-        res.render("normalizedMatrix", {
-            kriteriaData,
-            matrixData,
-            title,
-            user: userData,
-            periodeData, 
-            selectedPeriodeId: periodeId || '' // untuk menampilkan periode yang dipilih
-        });
+//         // Render hasil
+//         res.render("normalizedMatrix", {
+//             kriteriaData,
+//             matrixData,
+//             title,
+//             user: userData,
+//             periodeData, 
+//             selectedPeriodeId: periodeId || '' // untuk menampilkan periode yang dipilih
+//         });
 
-    } catch (error) {
-        console.error('Error fetching normalized, weighted normalized matrix, ideal solutions, and preferences:', error);
-        res.status(500).send("Internal Server Error");
-    }
-};
+//     } catch (error) {
+//         console.error('Error fetching normalized, weighted normalized matrix, ideal solutions, and preferences:', error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// };
 
-
-const AMBANG_BATAS = 0.5; // Contoh ambang batas, bisa disesuaikan
 
 // Controller to handle form submission and save preference data
 export const saveHasilPerhitungan = async (req, res) => {
@@ -530,6 +529,7 @@ export const saveHasilPerhitungan = async (req, res) => {
 };
 
 
+//source code jadi.
 export const hasilPerhitunganPage = async(req,res)=>{
     const userData = req.session.user;
 
@@ -671,72 +671,255 @@ export const deleteHasilPerhitungan = async (req, res) => {
 };
 
 
-// Controller untuk mengambil dan menampilkan Matriks Ternormalisasi Terbobot
-// Controller untuk mengambil dan menampilkan Matriks Ternormalisasi Terbobot
-export const weightedNormalizedMatrixPage = async (req, res) => {
+export const normalizedMatrixPage = async (req, res) => {
     try {
-        const title = "Weighted Normalized Matrix (V)";
+        const title = "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
         const userData = req.session.user;
 
-        // Mengambil data penilaian
+        // Ambil periodeId dari query string
+        const { periodeId } = req.query;
+
+        // Ambil semua data periode dan kriteria
+        const periodeData = await Periode.findAll();
+        const kriteriaData = await Kriteria.findAll();
+
+        // Ambil data penilaian dengan data narapidana berdasarkan periodeId (jika ada)
+        const whereCondition = periodeId ? { periodeId: periodeId } : {}; // Jika periodeId ada, tambahkan kondisi where
         const penilaianData = await Penilaian.findAll({
+            where: whereCondition,
             include: [{
                 model: Narapidana,
                 attributes: ['nama_narapidana'],
             }]
         });
 
-        // Mengambil data kriteria
-        const kriteriaData = await Kriteria.findAll();
+        // Buat matriks keputusan
+        const decisionMatrix = {};
+        penilaianData.forEach((penilaian) => {
+            const nama = penilaian.Narapidana ? penilaian.Narapidana.nama_narapidana : 'Unknown';
 
-        // Pastikan kriteriaData dan penilaianData ada
-        if (!kriteriaData || !kriteriaData.length) {
-            console.error("Kriteria data is empty or undefined");
-            return res.status(500).send("Data kriteria tidak ditemukan");
-        }
-        
-        if (!penilaianData || !penilaianData.length) {
-            console.error("Penilaian data is empty or undefined");
-            return res.status(500).send("Data penilaian tidak ditemukan");
-        }
-        
-        // Membuat matriks normalisasi dari penilaianData
-        const decisionMatrix = penilaianData.map((item) => {
-            const nilaiKriteria = item.nilai_kriteria || {};
-            return {
-                nama: item.Narapidana.nama_narapidana,
-                kriteria_nilai: kriteriaData.map((kriteria) => {
-                    return nilaiKriteria[kriteria.id_kriteria] || 0;
-                })
-            };
+            if (!decisionMatrix[nama]) {
+                decisionMatrix[nama] = {
+                    nama,
+                    kriteria_nilai: Array(kriteriaData.length).fill(0)
+                };
+            }
+
+            const kriteriaIndex = kriteriaData.findIndex(kriteria => kriteria.id_kriteria === penilaian.kriteriaId);
+            if (kriteriaIndex !== -1) {
+                decisionMatrix[nama].kriteria_nilai[kriteriaIndex] = parseFloat(penilaian.nilai_kriteria) || 0;
+            }
         });
 
-        // Normalisasi matriks (R)
-        const normalizedMatrix = normalizeMatrix(decisionMatrix);
+        const decisionMatrixArray = Object.values(decisionMatrix);
 
-        // Matriks Ternormalisasi Terbobot (V)
+        // Normalisasi Matriks (R)
+        const normalizedMatrix = normalizeMatrix(decisionMatrixArray);
+
+        // Matriks Normalisasi Terbobot (V)
         const weightedNormalizedMatrix = normalizedMatrix.map((item) => {
             return {
                 nama: item.nama,
-                weighted_kriteria: item.normalized.map((val, index) => {
-                    const bobot = kriteriaData[index].bobot_kriteria;
-                    const nilai = parseFloat(val) || 0; // Pastikan nilai adalah angka
-                    return (nilai * bobot).toFixed(6);
-                })
+                weighted_kriteria: item.normalized.map((nilai, index) =>
+                    parseFloat(nilai) * parseFloat(kriteriaData[index]?.bobot_kriteria || 0)
+                )
             };
         });
-        
 
-        // Render halaman matriks normalisasi terbobot
-        res.render("weightedNormalizedMatrix", {
+        // Solusi Ideal Positif dan Negatif
+        const { idealPositive, idealNegative } = calculateIdealSolutions(weightedNormalizedMatrix, kriteriaData);
+
+        // Jarak ke Solusi Ideal
+        const distances = calculateDistances(weightedNormalizedMatrix, idealPositive, idealNegative);
+
+        // Skor Preferensi
+        const preferences = calculatePreferences(distances);
+
+        const matrixData = {
+            normalized: normalizedMatrix,
+            weighted: weightedNormalizedMatrix,
+            distances: distances,
+            idealPositive: idealPositive,
+            idealNegative: idealNegative,
+            preferences: preferences
+        };
+
+        console.log("DEBUG: Normalized Matrix:", normalizedMatrix);
+        console.log("DEBUG: Weighted Normalized Matrix:", weightedNormalizedMatrix);
+        console.log("DEBUG: Ideal Positive Solution:", idealPositive);
+        console.log("DEBUG: Ideal Negative Solution:", idealNegative);
+        console.log("DEBUG: Distances to Ideal Solutions:", distances);
+        console.log("DEBUG: Preferences:", preferences);
+
+        // Render hasil ke template
+        res.render("normalizedMatrix", {
             kriteriaData,
-            penilaianData: weightedNormalizedMatrix,
+            matrixData,
             title,
             user: userData,
+            periodeData,
+            selectedPeriodeId: periodeId || '' // untuk menampilkan periode yang dipilih
         });
-
     } catch (error) {
-        console.error('Error fetching weighted normalized matrix:', error);
+        console.error('Error fetching normalized matrix and preferences:', error);
         res.status(500).send("Internal Server Error");
     }
 };
+
+// Helper Functions
+
+/**
+ * Normalisasi Matriks
+ */
+const normalizeMatrix = (decisionMatrix) => {
+    const criteriaCount = decisionMatrix[0]?.kriteria_nilai?.length || 0;
+    const criteriaSums = Array(criteriaCount).fill(0);
+
+    decisionMatrix.forEach((item) => {
+        item.kriteria_nilai.forEach((value, index) => {
+            criteriaSums[index] += Math.pow(value, 2);
+        });
+    });
+
+    const normalizedMatrix = decisionMatrix.map((item) => {
+        return {
+            nama: item.nama,
+            normalized: item.kriteria_nilai.map((value, index) =>
+                criteriaSums[index] > 0 ? value / Math.sqrt(criteriaSums[index]) : 0
+            )
+        };
+    });
+
+    return normalizedMatrix;
+};
+
+/**
+ * Hitung Solusi Ideal Positif dan Negatif
+ */
+const calculateIdealSolutions = (weightedMatrix, kriteriaData) => {
+    const criteriaCount = kriteriaData.length;
+    const idealPositive = Array(criteriaCount).fill(-Infinity);
+    const idealNegative = Array(criteriaCount).fill(Infinity);
+
+    weightedMatrix.forEach((item) => {
+        item.weighted_kriteria.forEach((value, index) => {
+            if (value > idealPositive[index]) idealPositive[index] = value;
+            if (value < idealNegative[index]) idealNegative[index] = value;
+        });
+    });
+
+    return { idealPositive, idealNegative };
+};
+
+/**
+ * Hitung Jarak ke Solusi Ideal
+ */
+const calculateDistances = (weightedMatrix, idealPositive, idealNegative) => {
+    return weightedMatrix.map((item) => {
+        const distanceToPositive = Math.sqrt(
+            item.weighted_kriteria.reduce((sum, value, index) => {
+                return sum + Math.pow(value - idealPositive[index], 2);
+            }, 0)
+        );
+
+        const distanceToNegative = Math.sqrt(
+            item.weighted_kriteria.reduce((sum, value, index) => {
+                return sum + Math.pow(value - idealNegative[index], 2);
+            }, 0)
+        );
+
+        return {
+            nama: item.nama,
+            distanceToPositive,
+            distanceToNegative
+        };
+    });
+};
+
+/**
+ * Hitung Skor Preferensi
+ */
+const calculatePreferences = (distances) => {
+    return distances.map((item) => {
+        const preference = item.distanceToPositive + item.distanceToNegative === 0
+            ? 0
+            : item.distanceToNegative / (item.distanceToPositive + item.distanceToNegative);
+
+        return {
+            nama: item.nama,
+            preference
+        };
+    }).sort((a, b) => b.preference - a.preference); // Urutkan berdasarkan preferensi
+};
+
+
+
+// Controller untuk mengambil dan menampilkan Matriks Ternormalisasi Terbobot
+// Controller untuk mengambil dan menampilkan Matriks Ternormalisasi Terbobot
+// export const weightedNormalizedMatrixPage = async (req, res) => {
+//     try {
+//         const title = "Weighted Normalized Matrix (V)";
+//         const userData = req.session.user;
+
+//         // Mengambil data penilaian
+//         const penilaianData = await Penilaian.findAll({
+//             include: [{
+//                 model: Narapidana,
+//                 attributes: ['nama_narapidana'],
+//             }]
+//         });
+
+//         // Mengambil data kriteria
+//         const kriteriaData = await Kriteria.findAll();
+
+//         // Pastikan kriteriaData dan penilaianData ada
+//         if (!kriteriaData || !kriteriaData.length) {
+//             console.error("Kriteria data is empty or undefined");
+//             return res.status(500).send("Data kriteria tidak ditemukan");
+//         }
+        
+//         if (!penilaianData || !penilaianData.length) {
+//             console.error("Penilaian data is empty or undefined");
+//             return res.status(500).send("Data penilaian tidak ditemukan");
+//         }
+        
+//         // Membuat matriks normalisasi dari penilaianData
+//         const decisionMatrix = penilaianData.map((item) => {
+//             const nilaiKriteria = item.nilai_kriteria || {};
+//             return {
+//                 nama: item.Narapidana.nama_narapidana,
+//                 kriteria_nilai: kriteriaData.map((kriteria) => {
+//                     return nilaiKriteria[kriteria.id_kriteria] || 0;
+//                 })
+//             };
+//         });
+
+//         // Normalisasi matriks (R)
+//         const normalizedMatrix = normalizeMatrix(decisionMatrix);
+
+//         // Matriks Ternormalisasi Terbobot (V)
+//         const weightedNormalizedMatrix = normalizedMatrix.map((item) => {
+//             return {
+//                 nama: item.nama,
+//                 weighted_kriteria: item.normalized.map((val, index) => {
+//                     const bobot = kriteriaData[index].bobot_kriteria;
+//                     const nilai = parseFloat(val) || 0; // Pastikan nilai adalah angka
+//                     return (nilai * bobot).toFixed(6);
+//                 })
+//             };
+//         });
+        
+
+//         // Render halaman matriks normalisasi terbobot
+//         res.render("weightedNormalizedMatrix", {
+//             kriteriaData,
+//             penilaianData: weightedNormalizedMatrix,
+//             title,
+//             user: userData,
+//         });
+
+//     } catch (error) {
+//         console.error('Error fetching weighted normalized matrix:', error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// };

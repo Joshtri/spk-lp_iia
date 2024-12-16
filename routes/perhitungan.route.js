@@ -8,9 +8,9 @@ const router = express.Router();
 
 
 router.get('/main_topsis', perhitunganController.MainPerhitunganPage);
-router.get('/normalized-matrix', perhitunganController2.normalizedMatrixPage);
+router.get('/normalized-matrix', perhitunganController.normalizedMatrixPage);
 router.post('/simpan-perhitungan', perhitunganController.saveHasilPerhitungan)
-router.get('/weighted-normalized-matrix', perhitunganController.weightedNormalizedMatrixPage)
+// router.get('/weighted-normalized-matrix', perhitunganController.weightedNormalizedMatrixPage)
 router.get('/data/hasil_perhitungan', perhitunganController.hasilPerhitunganPage)
 router.post("/data/delete_hasil_perhitungan/:id", perhitunganController.deleteHasilPerhitungan);
 
