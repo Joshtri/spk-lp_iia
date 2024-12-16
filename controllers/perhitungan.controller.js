@@ -4,6 +4,7 @@ import Narapidana from '../models/narapidana.model.js';
 import Penilaian from "../models/penilaian.model.js";
 import Periode from "../models/periode.model.js";
 import Sub_Kriteria from '../models/subKriteria.model.js';
+import PDFDocument from 'pdfkit';
 
 
 // Controller to fetch data
@@ -555,6 +556,94 @@ export const hasilPerhitunganPage = async(req,res)=>{
         throw error;
     }
 }
+
+
+/**
+ * Ekspor data hasil perhitungan ke PDF berdasarkan periode
+ */
+export const exportPDFByPeriode = async (req, res) => {
+    const { periode } = req.query;
+
+    if (!periode) {
+        return res.status(400).send('Periode harus diberikan.');
+    }
+
+    try {
+        // Ambil data hasil perhitungan berdasarkan periode
+        const hasilPerhitunganData = await Hasil_Perhitungan.findAll({
+            where: {
+                '$Periode.periode_penilaian$': periode,
+            },
+            include: [
+                {
+                    model: Periode,
+                    attributes: ['tahun_periode', 'periode_penilaian'],
+                },
+            ],
+        });
+
+        if (!hasilPerhitunganData || hasilPerhitunganData.length === 0) {
+            return res.status(404).send('Data tidak ditemukan untuk periode ini.');
+        }
+
+        // Membuat dokumen PDF
+        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        const fileName = `Hasil_Perhitungan_${periode}.pdf`;
+
+        res.setHeader('Content-disposition', `attachment; filename="${fileName}"`);
+        res.setHeader('Content-type', 'application/pdf');
+
+        doc.pipe(res);
+
+        // Judul Dokumen
+        doc.font('Helvetica-Bold').fontSize(16).text(`Data Hasil Perhitungan (${periode})`, { align: 'center' });
+        doc.moveDown();
+
+        // Header Tabel
+        const tableTop = 150; // Posisi vertikal awal tabel
+        const columnWidths = [50, 150, 100, 100, 100]; // Lebar setiap kolom
+
+        doc.font('Helvetica-Bold').fontSize(10);
+        doc.text('No', 50, tableTop);
+        doc.text('Nama Narapidana', 100, tableTop);
+        doc.text('Nilai Preferensi', 250, tableTop);
+        doc.text('Periode', 350, tableTop);
+        doc.text('Status Bebas', 450, tableTop);
+
+        doc.moveTo(50, tableTop + 15)
+           .lineTo(550, tableTop + 15)
+           .stroke(); // Garis pembatas header
+
+        // Isi Tabel
+        let y = tableTop + 20; // Baris pertama setelah header
+
+        hasilPerhitunganData.forEach((data, index) => {
+            const periodeText = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
+            doc.font('Helvetica').fontSize(10);
+
+            // Menulis data dalam kolom
+            doc.text(index + 1, 50, y); // Nomor
+            doc.text(data.nama_napi, 100, y); // Nama Narapidana
+            doc.text(data.nilai_preferensi, 250, y); // Nilai Preferensi
+            doc.text(periodeText, 350, y); // Periode
+            doc.text(data.status_kelulusan, 450, y); // Status Bebas
+
+            // Garis horizontal antar baris
+            doc.moveTo(50, y + 15)
+               .lineTo(550, y + 15)
+               .stroke();
+
+            y += 20; // Pindah ke baris berikutnya
+        });
+
+        // Selesaikan Dokumen
+        doc.end();
+    } catch (error) {
+        console.error('Error saat membuat PDF:', error);
+        res.status(500).send('Terjadi kesalahan saat mengekspor PDF.');
+    }
+};
+
 
 
 // Controller to delete hasil perhitungan by ID
