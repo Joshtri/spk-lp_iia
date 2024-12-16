@@ -110,7 +110,7 @@
                                 <% if(user && user.role == 'wali pemasyarakatan') { %>
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
-                                <button class="button" onclick="editTindakPidana('<%= tindakPidanaData[i].id_tindak_pidana %>', '<%= tindakPidanaData[i].jenis_tindak_pidana %>', '<%= tindakPidanaData[i].pasal_kuhp %>')">
+                                <button class="button is-small" onclick="editTindakPidana('<%= tindakPidanaData[i].id_tindak_pidana %>', '<%= tindakPidanaData[i].jenis_tindak_pidana %>', '<%= tindakPidanaData[i].pasal_kuhp %>')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
 
@@ -132,7 +132,7 @@
                                     }
                                 </script>
                                 <!-- Tombol untuk membuka modal konfirmasi -->
-                                <button class="button is-danger" onclick="openConfirmationModal('<%= tindakPidanaData[i].id_tindak_pidana %>')">
+                                <button class="button is-danger is-small" onclick="openConfirmationModal('<%= tindakPidanaData[i].id_tindak_pidana %>')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                                 
