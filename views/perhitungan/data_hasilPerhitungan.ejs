@@ -61,6 +61,49 @@
                 </p>
             </div>
         </div>
+
+        <!-- <div class="field is-grouped">
+            <p class="control is-expanded">
+                <input class="input" type="text" id="searchInput" placeholder="Masukkan Periode">
+            </p>
+            <p class="control">
+                <button class="button is-primary" onclick="exportToPDF()">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
+            </p>
+        </div> -->
+
+        <%
+        // Set untuk menyimpan periode unik
+        const periodeUnik = new Set();
+    %>
+    
+    <div class="field is-grouped">
+        <p class="control is-expanded">
+            <!-- Dropdown untuk memilih periode -->
+            <div class="select is-fullwidth">
+                <select id="periodeSelect">
+                    <option value="" disabled selected>Pilih Periode</option>
+                    <% hasilPerhitunganData.forEach(data => {
+                        const periodeValue = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
+                        if (!periodeUnik.has(periodeValue)) {
+                            periodeUnik.add(periodeValue); %>
+                            <option value="<%= data.Periode.periode_penilaian %>">
+                                <%= periodeValue %>
+                            </option>
+                    <%  }
+                    }); %>
+                </select>
+            </div>
+        </p>
+        <p class="control">
+            <button class="button is-primary" onclick="exportToPDF()">
+                <i class="fas fa-file-pdf"></i> Export PDF
+            </button>
+        </p>
+    </div>
+    
+                
         
         <div class="overflow-x-auto shadow-md rounded-lg mt-3">
             <table class="table is-fullwidth is-hoverable">
@@ -68,9 +111,9 @@
                     <tr>
                         <th>No.</th>
                         <th>Nama Narapidana</th>
-                        <th >Nilai Preferensi</th>
-                        <th >Periode</th>
-                        <th >Status Bebas</th>
+                        <th>Nilai Preferensi</th>
+                        <th>Periode</th>
+                        <th>Status Bebas</th>
 
                         <th class="has-text-centered">Action</th>
                     </tr>
@@ -122,6 +165,7 @@
     
     <script src="/js/liveSearchBar.js"></script>
     <script src="/js/navdrop.js"></script>
+    <script src="/js/exportPDF.js"></script>
     
 </body>
 </html>
