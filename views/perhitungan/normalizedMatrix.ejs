@@ -154,28 +154,49 @@
                 </table>
             </div>
 
+            <hr />
+
             <!-- Tabel Skor Preferensi -->
             <h2 class="subtitle is-size-4 has-text-weight-semibold">Skor Preferensi (V)</h2>
-            <div class="table-container">
-                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th>Peringkat</th>
-                            <th>Nama Narapidana</th>
-                            <th>Skor Preferensi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% matrixData.preferences.forEach((row, index) => { %>
+            <form method="POST" action="/adm/simpan-perhitungan">
+                <!-- Input Tersembunyi untuk Periode -->
+                <input type="hidden" name="periodeId" value="<%= selectedPeriodeId %>">
+                <div class="table-container">
+                    <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                        <thead>
                             <tr>
-                                <td><%= index + 1 %></td>
-                                <td><%= row.nama %></td>
-                                <td><%= row.preference.toFixed(6) %></td>
+                                <th>Peringkat</th>
+                                <th>Nama Narapidana</th>
+                                <th>Skor Preferensi</th>
                             </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            <% matrixData.preferences.forEach((row, index) => { %>
+                                <tr>
+                                    <td><%= index + 1 %></td>
+                                    <td><%= row.nama %></td>
+                                    <td>
+                                        <%= row.preference.toFixed(6) %>
+                                        <!-- Input Tersembunyi untuk Setiap Preferensi -->
+                                        <input type="hidden" name="preferences[<%= index %>][nama]" value="<%= row.nama %>">
+                                        <input type="hidden" name="preferences[<%= index %>][preferenceScore]" value="<%= row.preference %>">
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tombol Submit -->
+                <div class="has-text-centered mt-5">
+                    <button class="button is-success" type="submit">
+                        <span class="icon">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span>Submit Hasil Perhitungan</span>
+                    </button>
+                </div>
+            </form>
 
         </div>
     </section>
