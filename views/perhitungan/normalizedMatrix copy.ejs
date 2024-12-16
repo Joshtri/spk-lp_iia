@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include('partials/head')%>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <%-include('partials/header') %>
+    
+    <section class="section">
+        <div class="container">
+            <h1 class="title has-text-centered"><%= title %></h1>
+
+            <div class="mb-4">
+                <a href="/adm/main_topsis">
+                    <button type="button" class="button is-warning is-small">Kembali</button>
+                </a>
+            </div>
+
+            <nav class="breadcrumb" aria-label="breadcrumbs">
+                <ul>
+                  <li>
+                    <a href="/adm/dashboard">
+                      <span class="icon is-small">
+                        <i class="fas fa-home" aria-hidden="true"></i>
+                      </span>
+                      <span>Dashboard</span>
+                    </a>
+                  </li>
+                  <li class="is-active">
+                    <a href="#">
+                      <span class="icon is-small">
+                        <i class="fas fa-book" aria-hidden="true"></i>
+                      </span>
+                      <span>Perhitungan TOPSIS (Lanjutan)</span>
+                    </a>
+                  </li>
+                </ul>
+            </nav>
+            <hr class="navbar-divider mb-3"/>
+
+            <form method="GET" action="/adm/normalized-matrix">
+                <label for="periodeId">Pilih Periode:</label>
+                <select name="periodeId" class="select" id="periodeId">
+                    <option value="">-- Pilih Periode --</option>
+                    <% 
+                    const periodeSet = new Set();
+                    periodeData.forEach(periode => {
+                        const periodeText = `${periode.tahun_periode} | ${periode.periode_penilaian}`;
+                        if (!periodeSet.has(periodeText)) {
+                            periodeSet.add(periodeText);
+                    %>
+                        <option value="<%= periode.id_periode %>"
+                            <% if (periode.id_periode == selectedPeriodeId) { %> selected <% } %>>
+                            <%= periodeText %>
+                        </option>
+                    <% } }); %>
+                </select>
+                <button class="button is-success ml-3" type="submit" data-tooltip="Tampilkan data berdasarkan periode yang mau dihitung">
+                    <i class="fa-solid fa-eye"></i>
+                    Tampilkan
+                </button>
+            </form>
+
+            <p id="tahunPeriode" class="mt-3 has-text-weight-bold is-size-5"></p>
+
+            <hr>
+
+            <!-- Tabel Matriks Normalisasi (R) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Normalized Matrix (R)</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nama Narapidana</th>
+                            <% kriteriaData.forEach(kriteria => { %>
+                                <th><%= kriteria.nama_kriteria %></th>
+                            <% }) %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% matrixData.normalized.forEach(row => { %>
+                            <tr>
+                                <td><%= row.nama %></td>
+                                <% row.normalized.forEach(value => { %>
+                                    <td><%= Number(value).toFixed(6) %></td>
+                                <% }) %>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Matriks Ternormalisasi Terbobot (V) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Matriks Ternormalisasi Terbobot (V)</h2>
+            <div class="table-container">
+                    <table class="table is-bordered is-striped is-hoverable is-fullwidth" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Nama</th>
+                                <% kriteriaData.forEach(kriteria => { %>
+                                    <th><%= kriteria.nama_kriteria %></th>
+                                <% }) %>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% matrixData.weighted.forEach(row => { %>
+                                <tr>
+                                    <td><%= row.nama %></td>
+                                    <% row.weighted_kriteria.forEach(value => { %>
+                                        <td><%= value.toFixed(6) %></td>
+                                    <% }) %>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+            </div>
+
+            <!-- Tabel Solusi Ideal Positif (MAX) dan Negatif (MIN) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Solusi Ideal Positif (MAX) dan Negatif (MIN)</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth" id="solutionTable">
+                    <thead>
+                        <tr>
+                            <th>Kriteria</th>
+                            <th>Solusi Ideal Positif (MAX)</th>
+                            <th>Solusi Ideal Negatif (MIN)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="solutionBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Jarak ke Solusi Ideal -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Jarak ke Solusi Ideal</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nama Narapidana</th>
+                            <th>Jarak ke Solusi Ideal Positif (D+)</th>
+                            <th>Jarak ke Solusi Ideal Negatif (D-)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="preferenceTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Tabel Skor Preferensi -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Skor Preferensi (V)</h2>
+            <div class="table-container">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Peringkat</th>
+                            <th>Nama Narapidana</th>
+                            <th>Skor Preferensi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingTableBody"></tbody>
+                </table>
+            </div>
+
+            <h2 class="subtitle is-size-5 has-text-weight-semibold">Periode yang dipilih : </h2>
+            <!-- Periode ID Input -->
+            <div style="width: 20%;">
+                <input type="text" class="input is-warning has-text-weight-bold"  name="periodeId" id="periodeIdInput" value="<%= selectedPeriodeId %>" required />
+            </div>
+
+            <!-- Button untuk Submit Data -->
+            <div class="has-text-centered mt-5">
+                <button class="button is-success" id="submitPerhitungan" type="button">
+                    <span class="icon">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span>Submit Hasil Perhitungan</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        // Bagian ini hanya untuk menampilkan tahun periode yang dipilih di paragraf
+        document.addEventListener("DOMContentLoaded", function() {
+            const periodeSelect = document.querySelector('#periodeId');
+            const tahunPeriodeParagraph = document.querySelector('#tahunPeriode');
+
+            periodeSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const tahunPeriode = selectedOption.text;
+                if (this.value) {
+                    tahunPeriodeParagraph.textContent = `Tahun Periode: ${tahunPeriode}`;
+                } else {
+                    tahunPeriodeParagraph.textContent = '';
+                }
+            });
+        });
+    </script>
+
+    <script>
+        // Seluruh perhitungan TOPSIS dilakukan setelah DOM siap
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ambil data dari server yang sudah dimasukkan lewat EJS
+            const weightedMatrix = <%- JSON.stringify(matrixData.weighted) %>;
+            const kriteriaList = <%- JSON.stringify(kriteriaData) %>;
+
+            console.log("DEBUG: Data weightedMatrix dari server:", weightedMatrix);
+            console.log("DEBUG: Data kriteria dari server:", kriteriaList);
+
+            // Ekstrak nama kriteria
+            const criteria = kriteriaList.map(k => k.nama_kriteria);
+            console.log("DEBUG: Daftar nama kriteria:", criteria);
+
+            // Konversi weightedMatrix menjadi format yang lebih mudah diolah
+            // Contoh: [{nama:'...', k1:val, k2:val,...},...]
+            const alternatives = weightedMatrix.map(item => {
+                const obj = { nama: item.nama };
+                criteria.forEach((c, i) => {
+                    obj[c] = item.weighted_kriteria[i];
+                });
+                return obj;
+            });
+
+            console.log("DEBUG: Data alternatives (setelah konversi):", alternatives);
+
+            // Hitung Solusi Ideal Positif (A+) dan Negatif (A-)
+            const maxSolution = {};
+            const minSolution = {};
+
+            criteria.forEach(criterion => {
+                const values = alternatives.map(a => a[criterion]);
+                maxSolution[criterion] = Math.max(...values);
+                minSolution[criterion] = Math.min(...values);
+            });
+
+            console.log("DEBUG: maxSolution (A+):", maxSolution);
+            console.log("DEBUG: minSolution (A-):", minSolution);
+
+            // Tampilkan Solusi Ideal ke Tabel
+            const solutionBody = document.getElementById('solutionBody');
+            criteria.forEach(criterion => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${criterion}</td>
+                    <td>${maxSolution[criterion].toFixed(6)}</td>
+                    <td>${minSolution[criterion].toFixed(6)}</td>
+                `;
+                solutionBody.appendChild(row);
+            });
+
+            // Hitung jarak ke solusi ideal dan preference
+            const preferenceData = alternatives.map(alt => {
+                const distanceToPositive = Math.sqrt(criteria.reduce((sum, criterion) => {
+                    return sum + Math.pow((alt[criterion] - maxSolution[criterion]), 2);
+                }, 0));
+
+                const distanceToNegative = Math.sqrt(criteria.reduce((sum, criterion) => {
+                    return sum + Math.pow((alt[criterion] - minSolution[criterion]), 2);
+                }, 0));
+
+                const preference = (distanceToPositive + distanceToNegative) === 0 
+                    ? 0 
+                    : (distanceToNegative / (distanceToPositive + distanceToNegative));
+
+                return {
+                    nama: alt.nama,
+                    distanceToPositive,
+                    distanceToNegative,
+                    preference
+                };
+            });
+
+            console.log("DEBUG: Data preference (sebelum sorting):", preferenceData);
+
+            // Tampilkan jarak ke solusi ideal (D+ dan D-) ke tabel
+            const preferenceTableBody = document.getElementById('preferenceTableBody');
+            preferenceData.forEach(data => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.nama}</td>
+                    <td>${data.distanceToPositive.toFixed(6)}</td>
+                    <td>${data.distanceToNegative.toFixed(6)}</td>
+                `;
+                preferenceTableBody.appendChild(row);
+            });
+
+            // Urutkan berdasarkan preferensi (V) dari terbesar ke terkecil
+            const sortedPreferences = [...preferenceData].sort((a, b) => b.preference - a.preference);
+
+            console.log("DEBUG: Data preference (setelah sorting):", sortedPreferences);
+
+            // Tampilkan Ranking ke tabel
+            const rankingTableBody = document.getElementById('rankingTableBody');
+            sortedPreferences.forEach((data, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${data.nama}</td>
+                    <td>${data.preference.toFixed(6)}</td>
+                `;
+                rankingTableBody.appendChild(row);
+            });
+
+            // Submit hasil perhitungan ke server
+            const submitButton = document.querySelector('#submitPerhitungan');
+            submitButton.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const periodeId = document.querySelector('#periodeIdInput').value;
+                if (!periodeId) {
+                    alert('Silakan pilih periode terlebih dahulu!');
+                    return;
+                }
+
+                const preferences = sortedPreferences.map(data => ({
+                    nama: data.nama,
+                    preferenceScore: parseFloat(data.preference.toFixed(6))
+                }));
+
+                console.log("DEBUG: Data yang akan di-submit ke server:", { preferences, periodeId });
+
+                fetch('/adm/simpan-perhitungan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ preferences, periodeId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Sukses:', data);
+                    alert('Data berhasil disimpan!');
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menyimpan data.');
+                });
+            });
+        });
+    </script>
+
+    <%-include('partials/footer') %>
+</body>
+</html>

@@ -3,11 +3,8 @@
 <head>
     <%-include('partials/head')%>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-
 </head>
 <body>
-
     <%-include('partials/header') %>
     
     <section class="section">
@@ -19,8 +16,6 @@
                     <button type="button" class="button is-warning is-small">Kembali</button>
                 </a>
             </div>
-
-
 
             <nav class="breadcrumb" aria-label="breadcrumbs">
                 <ul>
@@ -44,31 +39,27 @@
             </nav>
             <hr class="navbar-divider mb-3"/>
 
-
             <form method="GET" action="/adm/normalized-matrix">
                 <label for="periodeId">Pilih Periode:</label>
                 <select name="periodeId" class="select" id="periodeId">
                     <option value="">-- Pilih Periode --</option>
-                    <% periodeData.forEach(function(periode) { %>
+                    <% 
+                    periodeData.forEach(periode => { 
+                        const periodeText = `${periode.tahun_periode} | ${periode.periode_penilaian}`;
+                    %>
                         <option value="<%= periode.id_periode %>" 
-                            <% if (periode.id_periode == selectedPeriodeId) { %> selected <% } %>>
-                            <%= periode.tahun_periode %>
+                            <% if (periode.id_periode == selectedPeriodeId) { %> selected <% } %> >
+                            <%= periodeText %>
                         </option>
-                    <% }) %>
+                    <% }); %>
                 </select>
-                <button class="button is-success ml-3" type="submit" data-tooltip="Tampilkan data berdasarkan periode yang mau dihitung">
-                    <i class="fa-solid fa-eye"></i>
-                    Tampilkan
-                </button>
+                <button class="button is-success ml-3" type="submit">Tampilkan</button>
             </form>
 
-            <p id="tahunPeriode" class="mt-3 has-text-weight-bold is-size-5"></p>
+            <hr />
 
-            <hr>
-            
-            
             <!-- Tabel Matriks Normalisasi (R) -->
-            <h2 class="subtitle is-size-4 has-text-weight-semibold">Normalized Matrix (R)</h2>
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Matriks Normalisasi (R)</h2>
             <div class="table-container">
                 <table class="table is-bordered is-striped is-hoverable is-fullwidth">
                     <thead>
@@ -76,7 +67,7 @@
                             <th>Nama Narapidana</th>
                             <% kriteriaData.forEach(kriteria => { %>
                                 <th><%= kriteria.nama_kriteria %></th>
-                            <% }) %>
+                            <% }); %>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,43 +75,43 @@
                             <tr>
                                 <td><%= row.nama %></td>
                                 <% row.normalized.forEach(value => { %>
-                                    <td><%= Number(value).toFixed(6) %></td>
-                                <% }) %>
+                                    <td><%= value.toFixed(6) %></td>
+                                <% }); %>
                             </tr>
-                        <% }) %>
+                        <% }); %>
                     </tbody>
                 </table>
             </div>
 
-            <!-- Tabel Matriks Ternormalisasi Terbobot (V) -->
-            <h2 class="subtitle is-size-4 has-text-weight-semibold">Matriks Ternormalisasi Terbobot (V)</h2>
+            <!-- Tabel Matriks Normalisasi Terbobot (V) -->
+            <h2 class="subtitle is-size-4 has-text-weight-semibold">Matriks Normalisasi Terbobot (V)</h2>
             <div class="table-container">
-                    <table class="table is-bordered is-striped is-hoverable is-fullwidth" id="dataTable">
-                        <thead>
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <% kriteriaData.forEach(kriteria => { %>
+                                <th><%= kriteria.nama_kriteria %></th>
+                            <% }); %>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% matrixData.weighted.forEach(row => { %>
                             <tr>
-                                <th>Nama</th>
-                                <% kriteriaData.forEach(kriteria => { %>
-                                    <th><%= kriteria.nama_kriteria %></th>
-                                <% }) %>
+                                <td><%= row.nama %></td>
+                                <% row.weighted_kriteria.forEach(value => { %>
+                                    <td><%= value.toFixed(6) %></td>
+                                <% }); %>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <% matrixData.weighted.forEach(row => { %>
-                                <tr>
-                                    <td><%= row.nama %></td>
-                                    <% row.weighted_kriteria.forEach(value => { %>
-                                        <td><%= value.toFixed(6) %></td>
-                                    <% }) %>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
+                        <% }); %>
+                    </tbody>
+                </table>
             </div>
 
-            <!-- Tabel Solusi Ideal Positif (MAX) dan Negatif (MIN) -->
+            <!-- Tabel Solusi Ideal Positif dan Negatif -->
             <h2 class="subtitle is-size-4 has-text-weight-semibold">Solusi Ideal Positif (MAX) dan Negatif (MIN)</h2>
             <div class="table-container">
-                <table class="table is-bordered is-striped is-hoverable is-fullwidth" id="solutionTable">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>Kriteria</th>
@@ -128,8 +119,14 @@
                             <th>Solusi Ideal Negatif (MIN)</th>
                         </tr>
                     </thead>
-                    <tbody id="solutionBody">
-                        <!-- Data akan dimasukkan melalui JavaScript -->
+                    <tbody>
+                        <% kriteriaData.forEach((kriteria, index) => { %>
+                            <tr>
+                                <td><%= kriteria.nama_kriteria %></td>
+                                <td><%= matrixData.idealPositive[index].toFixed(6) %></td>
+                                <td><%= matrixData.idealNegative[index].toFixed(6) %></td>
+                            </tr>
+                        <% }); %>
                     </tbody>
                 </table>
             </div>
@@ -137,27 +134,30 @@
             <!-- Tabel Jarak ke Solusi Ideal -->
             <h2 class="subtitle is-size-4 has-text-weight-semibold">Jarak ke Solusi Ideal</h2>
             <div class="table-container">
-                <table class="table is-bordered is-striped is-hoverable is-fullwidth" id="preferenceTable">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>Nama Narapidana</th>
-                            <th>Jarak ke Solusi Ideal Positif</th>
-                            <th>Jarak ke Solusi Ideal Negatif</th>
+                            <th>Jarak ke Solusi Ideal Positif (D+)</th>
+                            <th>Jarak ke Solusi Ideal Negatif (D-)</th>
                         </tr>
                     </thead>
-                    <tbody id="preferenceBody">
-                        <!-- Data akan dimasukkan melalui JavaScript -->
+                    <tbody>
+                        <% matrixData.distances.forEach(row => { %>
+                            <tr>
+                                <td><%= row.nama %></td>
+                                <td><%= row.distanceToPositive.toFixed(6) %></td>
+                                <td><%= row.distanceToNegative.toFixed(6) %></td>
+                            </tr>
+                        <% }); %>
                     </tbody>
                 </table>
             </div>
 
-
-            <button id="cetakPDFButton" class="button is-primary">Cetak PDF</button>
-
-            <!-- Skor Preferensi (V) -->
+            <!-- Tabel Skor Preferensi -->
             <h2 class="subtitle is-size-4 has-text-weight-semibold">Skor Preferensi (V)</h2>
             <div class="table-container">
-                <table class="table is-bordered is-striped is-hoverable is-fullwidth" id="rankingTable">
+                <table class="table is-bordered is-striped is-hoverable is-fullwidth">
                     <thead>
                         <tr>
                             <th>Peringkat</th>
@@ -165,247 +165,20 @@
                             <th>Skor Preferensi</th>
                         </tr>
                     </thead>
-                    <tbody id="rankingBody">
-                        <!-- Data akan dimasukkan melalui JavaScript -->
+                    <tbody>
+                        <% matrixData.preferences.forEach((row, index) => { %>
+                            <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= row.nama %></td>
+                                <td><%= row.preference.toFixed(6) %></td>
+                            </tr>
+                        <% }); %>
                     </tbody>
                 </table>
-
-                <h2 class="subtitle is-size-5 has-text-weight-semibold">Periode yang dipilih : </h2>
-                <!-- Periode ID Input -->
-                <div style="width: 20%;">
-                                <!-- Paragraf untuk menampilkan tahun periode yang dipilih -->
-                    <input type="text" class="input is-warning  has-text-weight-bold"  name="periodeId" id="periodeId" value="<%= selectedPeriodeId %>" required />
-                </div>
-
-                
-
-                <!-- Button for Posting Data -->
-                <div class="has-text-centered mt-5">
-                    <button class="button is-success" id="submitPerhitungan" type="button">
-                        <span class="icon">
-                            <i class="fas fa-check"></i>
-                        </span>
-                        <span>Submit Hasil Perhitungan</span>
-                    </button>
-                </div>
             </div>
 
         </div>
-
-
-
-        <!-- Button for Adding New Data -->
     </section>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-    const periodeSelect = document.querySelector('#periodeId');
-    const tahunPeriodeParagraph = document.querySelector('#tahunPeriode');
-
-    // Event listener untuk mendeteksi perubahan pada dropdown
-    periodeSelect.addEventListener('change', function() {
-        // Dapatkan periode yang dipilih
-        const selectedOption = this.options[this.selectedIndex];
-
-        // Ambil teks tahun_periode dari option yang dipilih
-        const tahunPeriode = selectedOption.text;
-
-        // Jika ada yang dipilih, tampilkan tahun_periode
-        if (this.value) {
-            tahunPeriodeParagraph.textContent = `Tahun Periode: ${tahunPeriode}`;
-        } else {
-            tahunPeriodeParagraph.textContent = ''; // Kosongkan jika tidak ada yang dipilih
-        }
-    });
-});
-
-    </script>
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const table = document.getElementById('dataTable');
-            const rows = table.querySelectorAll('tbody tr');
-            
-            const weightedNormalizedMatrix = Array.from(rows).map(row => {
-                const cells = row.querySelectorAll('td');
-                return {
-                    nama: cells[0].innerText,
-                    pembinaan: parseFloat(cells[1].innerText),
-                    sikap: parseFloat(cells[2].innerText),
-                    penilai: parseFloat(cells[3].innerText),
-                    kelakuan: parseFloat(cells[4].innerText),
-                    aturan: parseFloat(cells[5].innerText),
-                    narkoba: parseFloat(cells[6].innerText)
-                };
-            });
-
-            // Menentukan solusi ideal positif dan negatif
-            const maxSolution = {
-                pembinaan: Math.max(...weightedNormalizedMatrix.map(alt => alt.pembinaan)),
-                sikap: Math.max(...weightedNormalizedMatrix.map(alt => alt.sikap)),
-                penilai: Math.max(...weightedNormalizedMatrix.map(alt => alt.penilai)),
-                kelakuan: Math.max(...weightedNormalizedMatrix.map(alt => alt.kelakuan)),
-                aturan: Math.max(...weightedNormalizedMatrix.map(alt => alt.aturan)),
-                narkoba: Math.max(...weightedNormalizedMatrix.map(alt => alt.narkoba))
-            };
-
-            const minSolution = {
-                pembinaan: Math.min(...weightedNormalizedMatrix.map(alt => alt.pembinaan)),
-                sikap: Math.min(...weightedNormalizedMatrix.map(alt => alt.sikap)),
-                penilai: Math.min(...weightedNormalizedMatrix.map(alt => alt.penilai)),
-                kelakuan: Math.min(...weightedNormalizedMatrix.map(alt => alt.kelakuan)),
-                aturan: Math.min(...weightedNormalizedMatrix.map(alt => alt.aturan)),
-                narkoba: Math.min(...weightedNormalizedMatrix.map(alt => alt.narkoba))
-            };
-
-            // Mengisi tabel solusi ideal
-            const solutionBody = document.getElementById('solutionBody');
-            const criteria = ['pembinaan', 'sikap', 'penilai', 'kelakuan', 'aturan', 'narkoba'];
-
-            criteria.forEach(criterion => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${criterion}</td>
-                    <td>${maxSolution[criterion].toFixed(6)}</td>
-                    <td>${minSolution[criterion].toFixed(6)}</td>
-                `;
-                solutionBody.appendChild(row);
-            });
-
-            // Menghitung jarak ke solusi ideal dan preferensi
-            const preferenceBody = document.getElementById('preferenceBody');
-            const preferenceData = weightedNormalizedMatrix.map(alt => {
-                const distanceToPositive = Math.sqrt(
-                    criteria.reduce((sum, criterion) => sum + Math.pow(alt[criterion] - maxSolution[criterion], 2), 0)
-                );
-                const distanceToNegative = Math.sqrt(
-                    criteria.reduce((sum, criterion) => sum + Math.pow(alt[criterion] - minSolution[criterion], 2), 0)
-                );
-                const preference = distanceToNegative / (distanceToNegative + distanceToPositive);
-                
-                return {
-                    nama: alt.nama,
-                    distanceToPositive,
-                    distanceToNegative,
-                    preference
-                };
-            });
-
-            // Mengisi tabel jarak dan preferensi
-            preferenceData.forEach(data => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${data.nama}</td>
-                    <td>${data.distanceToPositive.toFixed(6)}</td>
-                    <td>${data.distanceToNegative.toFixed(6)}</td>
-                    <td>${data.preference.toFixed(6)}</td>
-                `;
-                preferenceBody.appendChild(row);
-            });
-
-            // Menampilkan hasil perangkingan
-            const sortedPreferences = preferenceData.sort((a, b) => b.preference - a.preference);
-            const rankingBody = document.getElementById('rankingBody');
-
-            sortedPreferences.forEach((data, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${data.nama}</td>
-                    <td>${data.preference.toFixed(6)}</td>
-                `;
-                rankingBody.appendChild(row);
-            });
-
-            //buat ini tampilkan dalam bentuk tag input
-            const sortedPreferencesSave = preferenceData.sort((a, b) => b.preference - a.preference);
-            const rankingBodySave = document.getElementById('rankingBody');
-
-            // Bersihkan konten sebelumnya jika ada
-            rankingBodySave.innerHTML = '';
-
-            // Loop melalui sortedPreferences dan tampilkan dalam tag input
-            sortedPreferencesSave.forEach((data, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><input type="text" class="input is-link" value="${index + 1}" readonly /></td>
-                    <td><input type="text" class="input is-primary" name="preferences[${index}][nama]" value="${data.nama}" readonly /></td>
-                    <td><input type="text" class="input is-info" name="preferences[${index}][preferenceScore]" value="${data.preference.toFixed(6)}" readonly /></td>
-                `;
-                rankingBodySave.appendChild(row);
-            });
-
-            // const cetakPDF = preferenceData.sort((a, b) => b.preference - a.preference);
-
-            // sortedPreferences.forEach((data, index) => {
-            //     const row = document.createElement('tr');
-            //     row.innerHTML = `
-            //         <td>${index + 1}</td>
-            //         <td>${data.nama}</td>
-            //         <td>${data.preference.toFixed(6)}</td>
-            //     `;
-            //     rankingBody.appendChild(row);
-            // });
-            
-
-
-            console.log('Perangkingan:', sortedPreferences);
-        });
-    </script>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const submitButton = document.querySelector('#submitPerhitungan');
-
-    submitButton.addEventListener('click', function(event) {
-        event.preventDefault(); // Mencegah reload halaman
-
-        const periodeId = document.querySelector('#periodeId').value; // Ambil value periodeId
-        const preferences = [];
-
-        // Ambil semua data preferensi dari tabel
-        const rows = document.querySelectorAll('#rankingBody tr');
-        rows.forEach((row, index) => {
-            const nama = row.querySelector(`input[name="preferences[${index}][nama]"]`).value;
-            const preferenceScore = row.querySelector(`input[name="preferences[${index}][preferenceScore]"]`).value;
-
-            // Push ke array preferences
-            preferences.push({
-                nama: nama,  // Nama narapidana
-                preferenceScore: parseFloat(preferenceScore),  // Skor preferensi
-            });
-        });
-
-        // Kirim data ke backend
-        fetch('/adm/simpan-perhitungan', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ preferences, periodeId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Success:', data);
-            // Lakukan sesuatu jika berhasil
-            alert('Data berhasil disimpan!');
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-            // Lakukan sesuatu jika ada error
-            alert('Terjadi kesalahan saat menyimpan data.');
-        });
-    });
-});
-
-
-</script>
-
-    
 
     <%-include('partials/footer') %>
 </body>
