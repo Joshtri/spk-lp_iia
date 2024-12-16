@@ -9,8 +9,8 @@ import { fileURLToPath } from 'url';
 // import { createClient } from 'redis';
 // import connectRedis from 'connect-redis';
 
-import MongoStore from 'connect-mongo';
-import connectDB from './config/mongoConfig.js';
+// import MongoStore from 'connect-mongo';
+// import connectDB from './config/mongoConfig.js';
 
 import routeLogin from './routes/login.route.js';
 import routeNarapidana from './routes/narapidana.route.js';
@@ -28,7 +28,7 @@ import db from './config/dbConfig.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-connectDB();
+// connectDB();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,20 +49,18 @@ const __dirname = path.dirname(__filename);
 // Menggunakan method-override
 app.use(methodOverride('_method'));
 
-// Express Session
+// Express Session untuk Offline
 app.use(
   session({
-    proxy: true,
-    secret: 'secret',
+    secret: 'secret', // Ganti dengan string random untuk keamanan
     resave: false,
-    saveUninitialized: true,
-    name: 'spk_lp_iia',
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGODB_URI, // Replace with your MongoDB connection string
-      collectionName: 'sessions'
-    })
+    saveUninitialized: false, // Tidak menyimpan session kosong
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // Cookie berlaku selama 1 hari (24 jam)
+    },
   })
 );
+
 
 // Menyediakan akses ke file statis di folder 'public'
 app.use(express.static(path.join(__dirname, "/public")));
