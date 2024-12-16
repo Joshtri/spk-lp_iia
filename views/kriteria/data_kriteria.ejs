@@ -110,7 +110,7 @@
                         <td class="has-text-left"><%= kriteriaData[i].jenis_kriteria %></td>
 
                         <td class="has-text-centered">
-                            <button class="button">
+                            <button class="button is-small">
                                 <a href="/data/subKriteria/<%= kriteriaData[i].id_kriteria %>" data-tooltip="Lihat sub kriteria" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
                             </button>
 
@@ -118,7 +118,7 @@
 
                                 
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
-                                <button class="button" onclick="editKriteria('<%= kriteriaData[i].id_kriteria %>', '<%= kriteriaData[i].nama_kriteria %>')">
+                                <button class="button is-small" onclick="editKriteria('<%= kriteriaData[i].id_kriteria %>', '<%= kriteriaData[i].nama_kriteria %>')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
 
@@ -140,7 +140,7 @@
 
     
                                 <!-- Tombol untuk membuka modal konfirmasi -->
-                                <button class="button is-danger" onclick="openConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">
+                                <button class="button is-danger is-small" onclick="openConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
 
