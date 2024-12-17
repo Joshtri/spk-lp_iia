@@ -2,7 +2,6 @@ import { getTOPSISResult } from '../controllers/demo.controller.js';
 import * as perhitunganController from '../controllers/perhitungan.controller.js';
 import express from 'express';
 
-import * as perhitunganController2 from '../controllers/perhitunganDemo.controller.js'
 
 const router = express.Router();
 
