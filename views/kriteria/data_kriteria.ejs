@@ -118,26 +118,27 @@
 
                                 
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
-                                <button class="button is-small" onclick="editKriteria('<%= kriteriaData[i].id_kriteria %>', '<%= kriteriaData[i].nama_kriteria %>')">
+                                <button class="button is-small" onclick="editKriteria(
+                                    '<%= kriteriaData[i].id_kriteria %>',
+                                    '<%= kriteriaData[i].nama_kriteria %>',
+                                    '<%= kriteriaData[i].bobot_kriteria %>',
+                                    '<%= kriteriaData[i].jenis_kriteria %>'
+                                )">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
+                                
 
                                 <!-- Fungsi JavaScript untuk menampilkan data kriteria pada modal -->
                                 <script>
-                                    function editKriteria(id, nama) {
+                                    function editKriteria(id, nama, bobot, jenis) {
                                         const modal = document.getElementById('modalEdit');
-                                        const inputId = document.getElementById('editIdKriteria');
-                                        const inputNama = document.getElementById('editNamaKriteria');
-
-                                        // Set nilai id dan nama kriteria pada input di modal
-                                        inputId.value = id;
-                                        inputNama.value = nama;
-
-                                        // Tampilkan modal
+                                        document.getElementById('editIdKriteria').value = id;
+                                        document.getElementById('editNamaKriteria').value = nama;
+                                        document.getElementById('editBobotKriteria').value = bobot;
+                                        document.getElementById('editJenisKriteria').value = jenis;
                                         modal.classList.add('is-active');
                                     }
-                                </script>
-
+                                    </script>
     
                                 <!-- Tombol untuk membuka modal konfirmasi -->
                                 <button class="button is-danger is-small" onclick="openConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">
@@ -187,15 +188,38 @@
                     <!-- Form untuk mengedit data kriteria -->
                     <form id="formEditData" action="/data/update_kriteria" method="POST">
                         <input type="hidden" id="editIdKriteria" name="id_kriteria">
+                    
                         <div class="field">
                             <label class="label">Nama Kriteria:</label>
                             <div class="control">
                                 <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="Masukkan nama kriteria">
                             </div>
                         </div>
+                    
+                        <div class="field">
+                            <label class="label">Bobot Kriteria:</label>
+                            <div class="control">
+                                <input class="input" type="number" id="editBobotKriteria" name="bobot_kriteria" placeholder="Masukkan bobot kriteria" min="0">
+                            </div>
+                        </div>
+                    
+                        <div class="field">
+                            <label class="label">Jenis Kriteria:</label>
+                            <div class="control">
+                                <div class="select is-fullwidth">
+                                    <select id="editJenisKriteria" name="jenis_kriteria" required>
+                                        <option value="">-- Pilih Jenis --</option>
+                                        <option value="benefit">Benefit</option>
+                                        <option value="cost">Cost</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    
                         <button type="button" id="btnCloseModalEdit" class="mr-3 button is-light mt-3">Tutup</button>
                         <button type="submit" class="button is-success mt-3">Simpan</button>
                     </form>
+                    
                     
                 </div>
             </div>

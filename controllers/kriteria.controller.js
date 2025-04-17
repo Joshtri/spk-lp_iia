@@ -83,28 +83,28 @@ export const getKriteriaById = async (req, res) => {
 // Handle the update of kriteria data
 export const updateKriteria = async (req, res) => {
   try {
-      const { id_kriteria, nama_kriteria } = req.body;
+    const { id_kriteria, nama_kriteria, bobot_kriteria, jenis_kriteria } = req.body;
 
-      // Check if id_kriteria and nama_kriteria are provided
-      if (!id_kriteria || !nama_kriteria) {
-          return res.status(400).send('Bad Request: Missing fields');
-      }
+    if (!id_kriteria || !nama_kriteria || !bobot_kriteria || !jenis_kriteria) {
+      return res.status(400).send('Bad Request: Missing fields');
+    }
 
-      // Update kriteria data
-      const [updated] = await Kriteria.update({
-          nama_kriteria
-      }, {
-          where: { id_kriteria }
-      });
+    const [updated] = await Kriteria.update({
+      nama_kriteria,
+      bobot_kriteria,
+      jenis_kriteria
+    }, {
+      where: { id_kriteria }
+    });
 
-      if (!updated) {
-          return res.status(404).send('Kriteria not found');
-      }
+    if (!updated) {
+      return res.status(404).send('Kriteria not found');
+    }
 
-      // Redirect or send a response after update
-      res.redirect('/data/kriteria'); // Adjust the redirect path as needed
+    req.flash('updateInfo', '✅ Kriteria berhasil diperbarui!');
+    res.redirect('/data/kriteria');
   } catch (err) {
-      console.error(err);
-      res.status(500).send('Server Error');
+    console.error(err);
+    res.status(500).send('Server Error');
   }
 };

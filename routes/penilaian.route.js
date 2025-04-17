@@ -1,4 +1,4 @@
-import { addPenilaianPage, createPenilaian, deletePenilaian, destroyAllPenilaian, editPenilaianPage, penilaianPage, updatePenilaian } from '../controllers/penilaian.controller.js';
+import { addPenilaianPage, createPenilaian, deletePenilaian, destroyAllPenilaian, editPenilaianPage, penilaianByNarapidana, penilaianPage, updatePenilaian, updatePenilaianBatch } from '../controllers/penilaian.controller.js';
 import express from 'express';
 
 const router = express.Router();
@@ -22,6 +22,10 @@ router.post('/update_penilaian', updatePenilaian);
 
 router.post('/destroy_all_penilaian', destroyAllPenilaian);
 
+router.get('/penilaian/edit_narapidana/:narapidanaId', penilaianByNarapidana);
+
+
+router.post("/update_penilaian_batch", updatePenilaianBatch);
 
 
 export default router;

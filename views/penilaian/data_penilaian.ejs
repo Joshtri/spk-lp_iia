@@ -37,7 +37,7 @@
 
         <div class="field is-grouped">
             <% if(user && user.role == 'wali pemasyarakatan') { %>
-            <a class="button" href="/data/add_penilaian">Tambah Data</a>
+            <a class="button" href="/data/add_penilaian">Tambah Data Penilaian Alternatif</a>
             <% } %>
             <div class="is-one-third is-flex ml-auto">
                 <p class="control is-expanded">
@@ -106,7 +106,10 @@
                             <% }) %>
                             <td>
                                 <!-- Edit Button with Form -->
-                                <a class="button is-warning is-small" href="/data/edit_penilaian/<%= penilaian.narapidana.id_narapidana %>">
+                                <!-- <a class="button is-warning is-small" href="/data/edit_penilaian/<%= penilaian.narapidana.id_narapidana %>">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </a> -->
+                                <a class="button is-warning is-small" href="/data/penilaian/edit_narapidana/<%= penilaian.narapidana.id_narapidana %>">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                                 <!-- Delete Button with Form -->

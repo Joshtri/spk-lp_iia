@@ -52,8 +52,11 @@
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
                         <!-- <img src="https://via.placeholder.com/50" class="mr-2 rounded-full h-8"> -->
-                        <i class="fa-solid fa-user-tie has-text-black" style="background-color: #555f71;
-                        padding: 0.5rem 1rem; border-radius: 0.5rem;" class="mr-2 rounded-full h-8"></i>
+                        <% if (user) { 
+                            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama_lengkap || user.username)}&background=555f71&color=fff&bold=true`;
+                        %>
+                          <img src="<%= avatarUrl %>" alt="Avatar" class="mr-2 rounded-full" style="width: 2.5rem; height: 2.5rem;" />
+                        <% } %>
                         
                     </a>
                     <div class="navbar-dropdown">

@@ -235,6 +235,32 @@
                               </div>
                         </div>
 
+                        <!-- Jenis tindak pidana -->
+                        <div class="field">
+                            <label class="label">Jenis Kejahatan</label>
+                            <div class="control">
+                            <div class="select">
+                                <select name="tindakPidanaId" id="tindakPidanaSelect" required>
+                                <option value="">-</option>
+                                <% for(let i = 0; i < tindakPidanaData.length; i++) { 
+                                    const pidana = tindakPidanaData[i]; %>
+                                    <option value="<%= pidana.id_tindak_pidana %>"><%= pidana.jenis_tindak_pidana %></option>
+                                <% } %>
+                                </select>
+                            </div>
+                            </div>
+                        </div>
+  
+
+                        <script>
+                            const selectedPidana = '<%= narapidana.tindakPidanaId %>'; // id dari relasi
+                            const pidanaSelect = document.getElementById('tindakPidanaSelect');
+                            if (selectedPidana) {
+                                pidanaSelect.value = selectedPidana;
+                            }
+                        </script>
+
+
                         <script>
                             // Mendapatkan nilai agama dari narapidana
                             var pendidikanNarapidana = '<%= narapidana.pendidikan_terakhir %>';
@@ -291,9 +317,5 @@
         </div>
     </section>
 </form>
-
-   
-  
-
 </body>
 </html>

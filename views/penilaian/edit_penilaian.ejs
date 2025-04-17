@@ -1,51 +1,71 @@
-<form id="formEditPenilaian" action="/data/update_penilaian" method="POST">
-    <input type="hidden" name="id_penilaian" value="<%= penilaian.id_penilaian %>">
-    <div class="field">
-        <label class="label">Narapidana:</label>
-        <div class="control">
-            <select class="input" name="narapidanaId">
-                <% narapidanaData.forEach(narapidana => { %>
-                    <option value="<%= narapidana.id_narapidana %>" <%= penilaian.narapidanaId === narapidana.id_narapidana ? 'selected' : '' %>><%= narapidana.nama_narapidana %></option>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head'); %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" />
+</head>
+<body>
+<%- include('partials/header'); %>
+
+<div class="container mt-6">
+  <nav class="breadcrumb" aria-label="breadcrumbs">
+    <ul>
+      <li><a href="/adm/dashboard"><span class="icon"><i class="fas fa-home"></i></span><span>Dashboard</span></a></li>
+      <li><a href="/data/penilaian"><span class="icon"><i class="fas fa-book"></i></span><span>Data Penilaian</span></a></li>
+      <li class="is-active"><a href="#"><span class="icon"><i class="fas fa-pen"></i></span><span>Edit Penilaian</span></a></li>
+    </ul>
+  </nav>
+
+  <h1 class="title is-4 mb-5">Edit Penilaian untuk: <%= narapidana.nama_narapidana %></h1>
+
+  <form action="/data/update_penilaian_batch" method="POST">
+    <% penilaianList.forEach((p, index) => { %>
+      <div class="box">
+        <input type="hidden" name="id_penilaian[]" value="<%= p.id_penilaian %>">
+        <input type="hidden" name="kriteriaId[]" value="<%= p.kriteriaId %>">
+        <input type="hidden" name="narapidanaId" value="<%= p.narapidanaId %>">
+        <input type="hidden" name="periodeId" value="<%= p.periodeId %>">
+
+        <div class="field">
+          <label class="label">Kriteria: <%= p.Kriterium?.nama_kriteria %></label>
+        </div>
+
+        <div class="field">
+          <label class="label">Sub Kriteria</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="subKriteriaId[]" onchange="updateNilaiKriteria(this, <%= index %>)">
+                <option value="">Pilih Sub-Kriteria</option>
+                <% subKriteriaData.forEach(sub => { %>
+                  <% if (sub.kriteriaId === p.kriteriaId) { %>
+                    <option value="<%= sub.id_sub_kriteria %>"
+                            data-bobot="<%= sub.bobot_sub_kriteria %>"
+                            <%= sub.id_sub_kriteria === p.subKriteriaId ? 'selected' : '' %>>
+                      <%= sub.bobot_sub_kriteria %> | <%= sub.nama_sub_kriteria %>
+                    </option>
+                  <% } %>
                 <% }) %>
-            </select>
+              </select>
+              <input type="hidden" id="nilai-<%= index %>" name="nilai_kriteria[]" value="<%= p.nilai_kriteria %>">
+            </div>
+          </div>
         </div>
+      </div>
+    <% }) %>
+
+    <div class="is-flex is-justify-content-center">
+      <button type="submit" class="button is-success">Simpan Semua</button>
     </div>
-    <div class="field">
-        <label class="label">Kriteria:</label>
-        <div class="control">
-            <select class="input" name="kriteriaId">
-                <% kriteriaData.forEach(kriteria => { %>
-                    <option value="<%= kriteria.id_kriteria %>" <%= penilaian.kriteriaId === kriteria.id_kriteria ? 'selected' : '' %>><%= kriteria.nama_kriteria %></option>
-                <% }) %>
-            </select>
-        </div>
-    </div>
-    <div class="field">
-        <label class="label">Nilai Kriteria:</label>
-        <div class="control">
-            <input class="input" type="text" name="nilai_kriteria" value="<%= penilaian.nilai_kriteria %>">
-        </div>
-    </div>
-    <div class="field">
-        <label class="label">Sub Kriteria:</label>
-        <div class="control">
-            <select class="input" name="subKriteriaId">
-                <% subKriteriaData.forEach(subKriteria => { %>
-                    <option value="<%= subKriteria.id_sub_kriteria %>" <%= penilaian.subKriteriaId === subKriteria.id_sub_kriteria ? 'selected' : '' %>><%= subKriteria.nama_sub_kriteria %></option>
-                <% }) %>
-            </select>
-        </div>
-    </div>
-    <div class="field">
-        <label class="label">Periode:</label>
-        <div class="control">
-            <select class="input" name="periodeId">
-                <% periodeData.forEach(periode => { %>
-                    <option value="<%= periode.id_periode %>" <%= penilaian.periodeId === periode.id_periode ? 'selected' : '' %>><%= periode.nama_periode %></option>
-                <% }) %>
-            </select>
-        </div>
-    </div>
-    <button type="submit" class="button is-success">Simpan</button>
-    <a href="/data/penilaian" class="button is-light">Batal</a>
-</form>
+  </form>
+</div>
+
+<script>
+  function updateNilaiKriteria(selectElement, index) {
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    const bobot = selectedOption.getAttribute("data-bobot");
+    document.getElementById(`nilai-${index}`).value = bobot || "";
+  }
+</script>
+
+</body>
+</html>

@@ -1,13 +1,18 @@
 
 import bcrypt from 'bcrypt'; // Import library bcryptjs untuk enkripsi password
 import * as userService from '../services/user.services.js'
+import User from "../models/user.model.js";
 
 
 export const userPage = async(req,res)=>{
     const title = "Data User";
+
+    const successUpdateUserProfile  = req.flash('successUpdateInfoProfile');
+
     try {
         res.render('data_user',{
-            title
+            title,
+            successUpdateUserProfile
         });
     } catch (error) {
         throw error;
@@ -41,6 +46,35 @@ export const updatePassword = async (req, res) => {
         // Tangani error
         console.error('Error in updatePassword:', error);
         res.status(500).json({ error: 'Failed to update password' });
+    }
+};
+
+
+export const updateUser = async (req, res) => {
+    const { id_user } = req.params;
+    const { username, nama_lengkap, email } = req.body;
+
+    try {
+        const user = await User.findByPk(id_user);
+        if (!user) {
+            return res.redirect('/adm/profil_saya');
+        }
+
+        await user.update({ username, nama_lengkap, email });
+
+        // Hapus session (logout) lalu redirect
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Gagal destroy session:', err);
+                return res.redirect('/adm/profil_saya');
+            }
+
+            // Simpan info lewat query param untuk alert di FE
+            res.redirect('/?updated=success');
+        });
+    } catch (error) {
+        console.error(error);
+        res.redirect('/adm/profil_saya');
     }
 };
 

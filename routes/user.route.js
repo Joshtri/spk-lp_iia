@@ -12,7 +12,8 @@ router.get('/user',protect, userController.userPage);
 // router.post('/post_admin',protect, adminController.create);
 // router.delete('/delete_admin/:id_admin', adminController.delete);
 
-
+// Edit profil
+router.put("/user/:id_user", userController.updateUser);
 
 
 

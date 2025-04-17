@@ -20,6 +20,9 @@
              
                 <button class="delete" onclick="closeNotification(this)"></button>
             </div>
+
+              
+              
             <h1 class="title">Profil Saya</h1>
             <div class="columns">
                 <div class="column is-one-quarter">
@@ -112,46 +115,48 @@
     </div>
 
     <!-- Modal Edit Profil -->
-    <div class="modal" id="editModal">
-        <div class="modal-background"></div>
-        <div class="modal-card">
+<!-- Modal Edit Profil -->
+<div class="modal" id="editModal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <form action="/data/user/<%= user.id_user %>?_method=PUT" method="POST">
             <header class="modal-card-head">
                 <p class="modal-card-title">Edit Profil</p>
-                <button class="delete" aria-label="close" id="closeEditModal"></button>
+                <button class="delete" aria-label="close" id="closeEditModal" type="button"></button>
             </header>
             <section class="modal-card-body">
-                <!-- Isi formulir edit profil di sini -->
+                <!-- Nama Lengkap -->
                 <div class="field">
                     <label class="label">Nama Lengkap:</label>
                     <div class="control">
-                        <!-- Input field untuk nama kriteria -->
-                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit nama lengkap" value="<%= user.nama_lengkap %>">
+                        <input class="input" type="text" name="nama_lengkap" value="<%= user.nama_lengkap %>" placeholder="Masukkan nama lengkap">
                     </div>
                 </div>
 
+                <!-- Username -->
                 <div class="field">
                     <label class="label">Username:</label>
                     <div class="control">
-                        <!-- Input field untuk nama kriteria -->
-                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" placeholder="edit username anda" value="<%= user.username %>">
+                        <input class="input" type="text" name="username" value="<%= user.username %>" placeholder="Masukkan username">
                     </div>
                 </div>
 
+                <!-- Email -->
                 <div class="field">
                     <label class="label">Email:</label>
                     <div class="control">
-                        <!-- Input field untuk nama kriteria -->
-                        <input class="input" type="text" id="editNamaKriteria" name="nama_kriteria" value="<%= user.email %>" placeholder="gunakan email yang aktif">
+                        <input class="input" type="email" name="email" value="<%= user.email %>" placeholder="Masukkan email aktif">
                     </div>
                 </div>
-
             </section>
             <footer class="modal-card-foot">
-                <button class="button is-success" id="simpanProfil">Edit</button>
-                <button class="button" id="batalEdit">Batal</button>
+                <button class="button is-success" type="submit">Simpan</button>
+                <button class="button" id="batalEdit" type="button">Batal</button>
             </footer>
-        </div>
+        </form>
     </div>
+</div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -228,5 +233,8 @@
         });
 
     </script>
+
+
+
 </body>
 </html>

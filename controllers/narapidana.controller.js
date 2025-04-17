@@ -12,6 +12,8 @@ export const narapidanaPage = async (req, res) => {
         const { narapidanaData, totalItems } = await narapidanaService.getNarapidana(currentPage, itemsPerPage);
         const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+
+
         // Dapatkan data user dari session dan gunakan sesuai kebutuhan
         const userData = req.session.user;
 
@@ -41,6 +43,7 @@ export const narapidanaPage = async (req, res) => {
 export const addNarapidanaPage = async(req,res)=>{
     const title = "Tambah Narapidana"
     const userData = req.session.user;
+    
 
     const tindakPidanaData = await pidanaService.getTindakPidana();
     try {
@@ -128,6 +131,8 @@ export const getEditNarapidana = async (req, res) => {
     const title = "Edit Narapidana";
     const userData = req.session.user; // Dapatkan data user dari session
   
+    const tindakPidanaData = await pidanaService.getTindakPidana(); // ambil semua data tindak pidana
+
     try {
       const { id } = req.params; // Ambil ID dari parameter request
       const narapidana = await narapidanaService.getNarapidanaById(id); // Panggil service untuk mendapatkan detail narapidana
@@ -140,6 +145,7 @@ export const getEditNarapidana = async (req, res) => {
       res.render('edit_narapidana', {
         title,
         user: userData,
+        tindakPidanaData,
         narapidana
       });
     } catch (error) {

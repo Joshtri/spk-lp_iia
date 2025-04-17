@@ -1,125 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-
+  <head>
     <%-include('partials/head') %>
 
     <!-- pelengkap -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-</head>
-<body>
-
-    <nav class="navbar" style="background-color: #8497B7;" role="navigation" aria-label="main navigation">
-        <div class="container">
-            <div class="navbar-brand">
-                <a href="/" class="navbar-item">
-                    <img src="/img/logo_laps.jpg" alt="Flowbite Logo">
-                </a>
-                <button class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </button>
-            </div>
-            <div id="navbarMenu" class="navbar-menu">
-                <div class="navbar-end">
-                    <div class="navbar-item">
-                        <div class="buttons">
-                            <a href="/sign_up" class="button is-primary is-light has-text-black">
-                                Sign Up
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+  <body>
+    <nav
+      class="navbar"
+      style="background-color: #8497b7"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div class="container">
+        <div class="navbar-brand">
+          <a href="/" class="navbar-item">
+            <img src="/img/logo_laps.jpg" alt="Flowbite Logo" />
+          </a>
+          <button
+            class="navbar-burger burger"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="navbarMenu"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </button>
         </div>
+        <div id="navbarMenu" class="navbar-menu">
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <div class="buttons">
+                <a
+                  href="/sign_up"
+                  class="button is-primary is-light has-text-black"
+                >
+                  Sign Up
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </nav>
 
-
     <div class="container">
-        <style>
-            .notification{
-                position: absolute;
-                right: 10px;
+      <style>
+        .notification {
+          position: absolute;
+          right: 10px;
+        }
+      </style>
 
+      <div class="columns is-centered">
+        <div class="column is-one-third">
+          <% if (messageLogin1 && messageLogin1.length > 0) { %>
+          <div class="notification is-danger mt-3">
+            <% messageLogin1.forEach(message => { %>
+            <p><%= message %></p>
+            <% }) %>
+            <button class="delete" onclick="closeNotification(this)"></button>
+          </div>
+          <% } %> <% if (messageLogin2 && messageLogin2.length > 0) { %>
+          <div class="notification is-danger mt-3">
+            <% messageLogin2.forEach(message => { %>
+            <p><%= message %></p>
+            <% }) %>
+            <button class="delete" onclick="closeNotification(this)"></button>
+          </div>
+          <% } %> <% if (messageRegister && messageRegister.length > 0) { %>
+          <div class="notification is-success mt-3">
+            <% messageRegister.forEach(message => { %>
+            <p><%= message %></p>
+            <% }) %>
+            <button class="delete" onclick="closeNotification(this)"></button>
+          </div>
+          <% } %>
+
+          <script>
+            function closeNotification(button) {
+              var notification = button.parentNode;
+              notification.classList.add(
+                "animate__animated",
+                "animate__fadeOut"
+              ); // Tambahkan kelas animasi fade out
+              setTimeout(function () {
+                notification.remove();
+              }, 1000); // Setelah 1 detik (durasi animasi), notifikasi dihapus
             }
-        </style>
 
-        <div class="columns is-centered">
-            <div class="column is-one-third">
+            document.addEventListener("DOMContentLoaded", function () {
+              var notification = document.querySelector(".notification"); // Cari notifikasi pertama yang ditemukan
 
-                <% if (messageLogin1 && messageLogin1.length > 0) { %>
-                    <div class="notification is-danger mt-3">
-                        <% messageLogin1.forEach(message => { %>
-                            <p><%= message %></p>
-                        <% }) %>
-                        <button class="delete" onclick="closeNotification(this)"></button>
-                    </div>
-                <% } %>
+              if (notification) {
+                setTimeout(function () {
+                  notification.remove();
+                }, 6500);
+              }
+            });
+          </script>
 
-                <% if (messageLogin2 && messageLogin2.length > 0) { %>
-                    <div class="notification is-danger mt-3">
-                        <% messageLogin2.forEach(message => { %>
-                            <p><%= message %></p>
-                        <% }) %>
-                        <button class="delete" onclick="closeNotification(this)"></button>
-                    </div>
-                <% } %>
-
-                <% if (messageRegister && messageRegister.length > 0) { %>
-                    <div class="notification is-success mt-3">
-                        <% messageRegister.forEach(message => { %>
-                            <p><%= message %></p>
-                        <% }) %>
-                        <button class="delete" onclick="closeNotification(this)"></button>
-                    </div>
-                <% } %>
-
-                <script>
-                    function closeNotification(button) {
-                        var notification = button.parentNode;
-                        notification.classList.add('animate__animated', 'animate__fadeOut'); // Tambahkan kelas animasi fade out
-                        setTimeout(function() {
-                            notification.remove();
-                        }, 1000); // Setelah 1 detik (durasi animasi), notifikasi dihapus
-                    }
-                
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var notification = document.querySelector('.notification'); // Cari notifikasi pertama yang ditemukan
-                
-                        if (notification) {
-                            setTimeout(function() {
-                                notification.remove();
-                            }, 6500);
-                        }
-                    });
-                </script>
-                
-
-                <h1 class="title is-3 has-text-centered mb-3 mt-6">Log In</h1>
-                <form class="box" method="post" action="/login">
-                    <div class="field">
-                        <label class="label">Username</label>
-                        <div class="control">
-                            <input class="input" type="text" name="username" placeholder="username" required>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label class="label">Password</label>
-                        <div class="control">
-                            <input class="input" type="password" name="password" placeholder="****" required>
-                        </div>
-                        <!-- <p class="help"><a href="#" class="has-text-primary">lupa password ?</a></p> -->
-                    </div>
-                    <div class="field">
-                        <div class="control">
-                            <button class="button is-primary is-fullwidth" type="submit">Log In</button>
-                        </div>
-                    </div>
-                </form>
-                
+          <h1 class="title is-3 has-text-centered mb-3 mt-6">Log In</h1>
+          <form class="box" method="post" action="/login">
+            <div class="field">
+              <label class="label">Username</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="text"
+                  name="username"
+                  placeholder="username"
+                  required
+                />
+              </div>
             </div>
+            <div class="field">
+              <label class="label">Password</label>
+              <div class="control">
+                <input
+                  class="input"
+                  type="password"
+                  name="password"
+                  placeholder="****"
+                  required
+                />
+              </div>
+              <!-- <p class="help"><a href="#" class="has-text-primary">lupa password ?</a></p> -->
+            </div>
+            <div class="field">
+              <div class="control">
+                <button class="button is-primary is-fullwidth" type="submit">
+                  Log In
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
-</body>
+
+    <script>
+      const urlParams = new URLSearchParams(window.location.search);
+      const isSuccess = urlParams.get("updated");
+
+      if (isSuccess === "success") {
+        alert("✅ Profil berhasil diperbarui.\nSilakan login kembali.");
+      }
+    </script>
+  </body>
 </html>
