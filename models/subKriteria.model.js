@@ -11,7 +11,7 @@ const Sub_Kriteria = db.define('Sub_Kriteria', {
     },
     nama_sub_kriteria: {
         allowNull: false,
-        type: DataTypes.STRING(80)
+        type: DataTypes.STRING(210)
     },
     kriteriaId: {
         type: DataTypes.INTEGER,
