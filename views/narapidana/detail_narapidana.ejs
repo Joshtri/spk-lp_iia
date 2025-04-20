@@ -1,171 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <%-include('partials/head'); %>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <!-- Masukkan stylesheet atau link eksternal lainnya di sini -->
-</head>
-<body>
+  </head>
+  <body>
     <!-- Header dan bagian lainnya -->
     <%-include('partials/header'); %>
     <section class="section">
-        <div class="container mb-3">
-            <nav class="breadcrumb" aria-label="breadcrumbs">
-              <ul>
-                <li>
-                  <a href="/dashboard">
-                    <span class="icon is-small">
-                      <i class="fas fa-home" aria-hidden="true"></i>
-                    </span>
-                    <span>Dashboard</span>
-                  </a>
-                </li>
-                <li class="">
-                  <a href="/data/narapidana">
-                    <span class="icon is-small">
-                      <i class="fas fa-book" aria-hidden="true"></i>
-                    </span>
-                    <span>Data Narapidana</span>
-                  </a>
-                </li>
-  
-                <li class="is-active">
-                  <a href="#">
-                    <span class="icon is-small">
-                      <i class="fa-solid fa-person" aria-hidden="true"></i>
-                    </span>
-                    <span>Detail (<%= narapidana.nama_narapidana %>)</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-    
-            <hr>
+      <div class="container mb-3">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+          <ul>
+            <li>
+              <a href="/dashboard">
+                <span class="icon is-small">
+                  <i class="fas fa-home" aria-hidden="true"></i>
+                </span>
+                <span>Dashboard</span>
+              </a>
+            </li>
+            <li class="">
+              <a href="/data/narapidana">
+                <span class="icon is-small">
+                  <i class="fas fa-book" aria-hidden="true"></i>
+                </span>
+                <span>Data Narapidana</span>
+              </a>
+            </li>
 
-            <div class="mb-3">
-                <h1 class="title">Detail Data Narapidana</h1>
-                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.User.nama_lengkap %></p>
-                <p class="has-text-weight-bold is-text ">Data dibuat : <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
-                <p class="has-text-weight-bold is-text ">Data diperbarui : <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
-            </div>
+            <li class="is-active">
+              <a href="#">
+                <span class="icon is-small">
+                  <i class="fa-solid fa-person" aria-hidden="true"></i>
+                </span>
+                <span>Detail (<%= narapidana.nama_narapidana %>)</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
 
-            <div class="mb-4">
-                <a href="/data/narapidana">
-                    <button type="button" class="button is-warning is-small">Kembali</button>
-                </a>
-            </div>
+        <hr />
 
-
-  
-            <div class="columns is-multiline">
-                <div class="column is-half">
-                    <div class="box">
-                        <div class="field">
-                            <label class="label">Nama Narapidana:</label>
-                            <input class="input " type="text" disabled value=" <%= narapidana.nama_narapidana %>">
-                        </div>
-
-                        <div class="field">
-                            <label class="label">Nomor KTP:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.no_ktp %>">
-                        </div>
-
-                        <div class="field">
-                            <label class="label">Agama:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.agama %>">
-                        </div>
-  
-                        <div class="field">
-                            <label class="label">Umur:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.umur %> Tahun">
-                        </div>
-  
-                        <div class="field">
-                            <label class="label">Tempat Lahir:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.tempat_lahir %>">
-                        </div>
-  
-                        <div class="field">
-                            <label class="label">Tanggal Lahir:</label>
-                            <!-- <input class="input" disabled type="date" value="<%= narapidana.tanggal_lahir %>">  -->
-                            <p><%= narapidana.tanggal_lahir %></p>
-                        </div>
-  
-                        <div class="field">
-                            <label class="label">Alamat:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.alamat_lengkap %>">
-                        </div>
-
-
-                    </div>
-                </div>
-                
-                <div class="column is-half">
-                    <div class="box">
-
-
-                        <div class="field">
-                            <label class="label">Pekerjaan Semula:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.pekerjaan_semula %>">
-                        </div>
-  
-                        <div class="field">
-                            <label class="label">Pendidikan Terakhir:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.pendidikan_terakhir %>">
-                        </div>
-
-                        <div class="field">
-                            <label class="label">Jenis Kejahatan:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.Tindak_Pidana.jenis_tindak_pidana %>">
-                        </div>
-
-  
-                        <div class="field">
-                            <label class="label">Kategori Register</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.register %>">
-                        </div>
-                        
-                        <div class="field">
-                            <label class="label">Masa Hukuman:</label>
-                            <input class="input" disabled type="text" value="<%= narapidana.sisa_masa_tahanan %>">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div class="mb-3">
+          <h1 class="title">Detail Data Narapidana</h1>
+          <p class="has-text-weight-bold is-text">
+            Nama Pembimbing Napi : <%= narapidana.User.nama_lengkap %>
+          </p>
+          <p class="has-text-weight-bold is-text">
+            Data dibuat : <%= new
+            Date(narapidana.createdAt).toLocaleString('id-ID', { weekday:
+            'long', day: 'numeric', month: 'long', year: 'numeric', hour:
+            'numeric', minute: 'numeric', second: 'numeric' }) %>
+          </p>
+          <p class="has-text-weight-bold is-text">
+            Data diperbarui : <%= new
+            Date(narapidana.createdAt).toLocaleString('id-ID', { weekday:
+            'long', day: 'numeric', month: 'long', year: 'numeric', hour:
+            'numeric', minute: 'numeric', second: 'numeric' }) %>
+          </p>
         </div>
-    </section>
 
+        <div class="mb-4">
+          <a href="/data/narapidana">
+            <button type="button" class="button is-warning is-small">
+              Kembali
+            </button>
+          </a>
+        </div>
+
+        <div class="columns is-multiline">
+          <div class="column is-half">
+            <div class="box">
+              <div class="field">
+                <label class="label">Nama Narapidana:</label>
+                <input
+                  class="input"
+                  type="text"
+                  disabled
+                  value=" <%= narapidana.nama_narapidana %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Nomor KTP:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.no_ktp %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Agama:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.agama %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Umur:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.umur %> Tahun"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Tempat Lahir:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.tempat_lahir %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Tanggal Lahir:</label>
+                <!-- <input class="input" disabled type="date" value="<%= narapidana.tanggal_lahir %>">  -->
+                <p><%= narapidana.tanggal_lahir %></p>
+              </div>
+
+              <div class="field">
+                <label class="label">Alamat:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.alamat_lengkap %>"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-half">
+            <div class="box">
+              <div class="field">
+                <label class="label">Pekerjaan Semula:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.pekerjaan_semula %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Pendidikan Terakhir:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.pendidikan_terakhir %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Jenis Kejahatan:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.Tindak_Pidana.jenis_tindak_pidana %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Kategori Register</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.register %>"
+                />
+              </div>
+
+              <div class="field">
+                <label class="label">Masa Hukuman:</label>
+                <input
+                  class="input"
+                  disabled
+                  type="text"
+                  value="<%= narapidana.sisa_masa_tahanan %>"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <section class="hero is-info">
-        <div class="hero-body">
-          <p class="title">Detail Penilaian Narapidana</p>
-          <p class="subtitle">penilaian dilakukan oleh <span class="is-text has-text-weight-bold"><%= narapidana.nama_wali %></span></p>
-        </div>
+      <div class="hero-body">
+        <p class="title">Detail Penilaian Narapidana</p>
+        <p class="subtitle">
+          <span class="is-text has-text-weight-bold"
+            ><%= narapidana.nama_wali %></span
+          >
+        </p>
+      </div>
     </section>
-
 
     <section class="section">
-        <h2 class="is-text has-text-weight-bold">Hasil Pemberian Nilai Kriteria</h2>
-        <p>Berikut ini merupakan hasil penilaian dari masing-masing individu yang dilakukan oleh wali berdasarkan 4 kriteria </p>
-        <hr>
-        <ul>
-            <% for (let i = 0; i < 5; i++) { %>
-                <li>
-                    <strong>Penilaian ke <%= i + 1 %>:</strong>
-                    <ul>
-                        <li>Tanggal:x</li>
-                        <li>Nilai: x</li>
-                        <!-- Tambahkan properti lainnya sesuai kebutuhan -->
-                    </ul>
-                </li>
-            <% } %>
+      <h2 class="is-text has-text-weight-bold">
+        Hasil Pemberian Nilai Kriteria
+      </h2>
+      <p>
+        Berikut ini merupakan hasil penilaian dari masing-masing individu yang
+        dilakukan oleh wali berdasarkan kriteria yang ditentukan
+      </p>
+      <hr />
+      <div class="box">
+        <!-- <h1 class="title is-4 mb-5">
+          Penilaian untuk: <%= narapidana.nama_narapidana %>
+        </h1> -->
 
-
-        </ul>
-    </section>
     
-  
-
-</body>
+            <h1 class="title is-4 mb-4">Penilaian untuk: <%= narapidana.nama_narapidana %></h1>
+          
+            <% if (penilaianList.length > 0) { %>
+              <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Kriteria</th>
+                    <th>Sub Kriteria</th>
+                    <th>Bobot</th>
+                    <th>Nilai</th>
+                    <th>Periode</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% penilaianList.forEach((p, index) => { %>
+                    <tr>
+                      <td><%= index + 1 %></td>
+                      <td><%= p.Kriterium?.nama_kriteria || '-' %></td>
+                      <td><%= p.Sub_Kriterium?.nama_sub_kriteria || '-' %></td>
+                      <td><%= p.Sub_Kriterium?.bobot_sub_kriteria || '-' %></td>
+                      <td><%= p.nilai_kriteria ?? '-' %></td>
+                      <td>
+                        <%= p.Periode?.periode_penilaian || '-' %> -
+                        <%= p.Periode?.tahun_periode || '-' %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            <% } else { %>
+              <p class="has-text-grey">Tidak ada data penilaian untuk narapidana ini.</p>
+            <% } %>
+                  
+      </div>
+    </section>
+  </body>
 </html>
