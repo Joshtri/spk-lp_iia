@@ -45,23 +45,26 @@ export const penilaianPage = async (req, res) => {
     const userData = req.session.user;
 
     const periodeData = await Periode.findAll();
-
-    // Fetch all kriteria
     const kriteriaData = await Kriteria.findAll({
       attributes: ["id_kriteria", "nama_kriteria"],
     });
 
-    // Fetch penilaian data with related narapidana, periode, and criteria values
+    const selectedPeriodeId = req.query.periodeId || "all";
+
+    const narapidanaInclude = {
+      model: Penilaian,
+      include: [Kriteria, { model: Periode }],
+      required: false, // Ini WAJIB supaya semua narapidana tetap tampil meskipun belum ada Penilaian
+    };
+
+    if (selectedPeriodeId !== "all") {
+      narapidanaInclude.where = { periodeId: selectedPeriodeId };
+    }
+
     const penilaianData = await Narapidana.findAll({
-      include: [
-        {
-          model: Penilaian,
-          include: [Kriteria, { model: Periode }], // Include Periode
-        },
-      ],
+      include: [narapidanaInclude],
     });
 
-    // Prepare the matrix for each narapidana
     const matrixData = penilaianData.map((narapidana) => {
       return {
         narapidana,
@@ -73,7 +76,7 @@ export const penilaianPage = async (req, res) => {
           const nilaiKriteria = narapidana.Penilaians.find(
             (penilaian) => penilaian.kriteriaId === kriteria.id_kriteria
           );
-          return nilaiKriteria ? nilaiKriteria.nilai_kriteria : "-"; // "-" if no value
+          return nilaiKriteria ? nilaiKriteria.nilai_kriteria : "-";
         }),
       };
     });
@@ -81,6 +84,8 @@ export const penilaianPage = async (req, res) => {
     res.render("data_penilaian", {
       penilaianData: matrixData,
       kriteriaData,
+      periodeData,
+      selectedPeriodeId,
       title,
       messagePost,
       messageUpdate,
@@ -102,13 +107,47 @@ export const addPenilaianPage = async (req, res) => {
     const narapidanaData = await Narapidana.findAll();
     const periodeData = await Periode.findAll();
     const subKriteriaData = await Sub_Kriteria.findAll();
+
+    const existingPenilaian = await Penilaian.findAll({
+      attributes: ["narapidanaId", "periodeId"],
+    });
+
+    const penilaianMap = existingPenilaian.map((p) => ({
+      narapidanaId: p.narapidanaId,
+      periodeId: p.periodeId,
+    }));
+
+    const selectedPeriodeId = req.query.periodeId
+      ? parseInt(req.query.periodeId)
+      : null;
+
+    const statusPenilaian = {};
+    for (const { narapidanaId, periodeId } of penilaianMap) {
+      if (!statusPenilaian[periodeId]) {
+        statusPenilaian[periodeId] = new Set();
+      }
+      statusPenilaian[periodeId].add(narapidanaId);
+    }
+
+    // Convert Set to Array
+    for (const key in statusPenilaian) {
+      statusPenilaian[key] = Array.from(statusPenilaian[key]);
+    }
+
+    console.log("Selected Periode ID:", selectedPeriodeId);
+    console.log("Penilaian Map:", JSON.stringify(penilaianMap, null, 2));
+
     res.render("add_penilaian", {
       title,
       user: userData,
       kriteriaData,
       narapidanaData,
       periodeData,
+      statusPenilaian, // ← tambahan ini
+
       subKriteriaData,
+      penilaianMap,
+      selectedPeriodeId,
     });
   } catch (error) {
     console.error(error);
