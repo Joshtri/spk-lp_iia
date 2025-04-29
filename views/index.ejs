@@ -1,28 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%-include('partials/head') %>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - LAPS</title>
 
-    <!-- pelengkap -->
+    <!-- Bulma CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <!-- Animate.css -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      body {
+        background: linear-gradient(to right, #dbeafe, #bfdbfe);
+        min-height: 100vh;
+      }
+
+      .login-container {
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .box {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .notification {
+        position: relative;
+        z-index: 2;
+      }
+    </style>
   </head>
   <body>
-    <nav
-      class="navbar"
-      style="background-color: #8497b7"
-      role="navigation"
-      aria-label="main navigation"
-    >
+    <!-- Navbar -->
+    <nav class="navbar" style="background-color: #4a6fa5">
       <div class="container">
         <div class="navbar-brand">
-          <a href="/" class="navbar-item">
-            <img src="/img/logo_laps.jpg" alt="Flowbite Logo" />
+          <a class="navbar-item" href="/">
+            <img
+              src="/img/logo_laps.jpg"
+              alt="Logo"
+              style="height: 60px; max-height: 60px"
+            />
           </a>
-          <button
-            class="navbar-burger burger"
+          <a
+            role="button"
+            class="navbar-burger"
             aria-label="menu"
             aria-expanded="false"
             data-target="navbarMenu"
@@ -30,126 +66,143 @@
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
-          </button>
+          </a>
         </div>
-        <div id="navbarMenu" class="navbar-menu">
+
+        <div class="navbar-menu" id="navbarMenu">
           <div class="navbar-end">
             <div class="navbar-item">
-              <div class="buttons">
-                <a
-                  href="/sign_up"
-                  class="button is-primary is-light has-text-black"
-                >
-                  Sign Up
-                </a>
-              </div>
+              <a
+                href="/sign_up"
+                class="button is-light has-background-white-ter"
+              >
+                <strong>Sign Up</strong>
+              </a>
             </div>
           </div>
         </div>
       </div>
     </nav>
 
-    <div class="container">
-      <style>
-        .notification {
-          position: absolute;
-          right: 10px;
-        }
-      </style>
-
-      <div class="columns is-centered">
-        <div class="column is-one-third">
-          <% if (messageLogin1 && messageLogin1.length > 0) { %>
-          <div class="notification is-danger mt-3">
-            <% messageLogin1.forEach(message => { %>
-            <p><%= message %></p>
-            <% }) %>
-            <button class="delete" onclick="closeNotification(this)"></button>
-          </div>
-          <% } %> <% if (messageLogin2 && messageLogin2.length > 0) { %>
-          <div class="notification is-danger mt-3">
-            <% messageLogin2.forEach(message => { %>
-            <p><%= message %></p>
-            <% }) %>
-            <button class="delete" onclick="closeNotification(this)"></button>
-          </div>
-          <% } %> <% if (messageRegister && messageRegister.length > 0) { %>
-          <div class="notification is-success mt-3">
-            <% messageRegister.forEach(message => { %>
-            <p><%= message %></p>
-            <% }) %>
-            <button class="delete" onclick="closeNotification(this)"></button>
-          </div>
-          <% } %>
-
-          <script>
-            function closeNotification(button) {
-              var notification = button.parentNode;
-              notification.classList.add(
-                "animate__animated",
-                "animate__fadeOut"
-              ); // Tambahkan kelas animasi fade out
-              setTimeout(function () {
-                notification.remove();
-              }, 1000); // Setelah 1 detik (durasi animasi), notifikasi dihapus
-            }
-
-            document.addEventListener("DOMContentLoaded", function () {
-              var notification = document.querySelector(".notification"); // Cari notifikasi pertama yang ditemukan
-
-              if (notification) {
-                setTimeout(function () {
-                  notification.remove();
-                }, 6500);
-              }
-            });
-          </script>
-
-          <h1 class="title is-3 has-text-centered mb-3 mt-6">Log In</h1>
-          <form class="box" method="post" action="/login">
-            <div class="field">
-              <label class="label">Username</label>
-              <div class="control">
-                <input
-                  class="input"
-                  type="text"
-                  name="username"
-                  placeholder="username"
-                  required
-                />
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Password</label>
-              <div class="control">
-                <input
-                  class="input"
-                  type="password"
-                  name="password"
-                  placeholder="****"
-                  required
-                />
-              </div>
-              <!-- <p class="help"><a href="#" class="has-text-primary">lupa password ?</a></p> -->
-            </div>
-            <div class="field">
-              <div class="control">
-                <button class="button is-primary is-fullwidth" type="submit">
-                  Log In
-                </button>
-              </div>
-            </div>
-          </form>
+    <!-- Login Form -->
+    <div class="login-container">
+      <div class="column is-one-third animate__animated animate__fadeInDown">
+        <!-- Logo di atas login box -->
+        <!-- Welcome Section -->
+        <div class="has-text-centered mb-4">
+          <img
+            src="/img/logo-lapas.png"
+            alt="Logo Lapas"
+            style="max-width: 150px; height: auto; margin-bottom: 1rem"
+          />
+          <h2 class="subtitle has-text-weight-semibold has-text-grey-dark">
+            Selamat Datang di Sistem SPK Lapas Kelas IIA
+          </h2>
+          <p class="is-size-6 has-text-grey">
+            Silakan login untuk melanjutkan ke sistem pengelolaan data
+            pemasyarakatan
+          </p>
         </div>
+        <% if (messageLogin1 && messageLogin1.length > 0) { %>
+        <div class="notification is-danger">
+          <% messageLogin1.forEach(message => { %>
+          <p><%= message %></p>
+          <% }) %>
+          <button class="delete" onclick="closeNotification(this)"></button>
+        </div>
+        <% } %>
+
+        <h1 class="title has-text-centered  mb-4">
+          <i class="fas fa-lock"></i> Masuk ke Sistem
+        </h1>
+
+        <form class="box" method="post" action="/login">
+          <div class="field">
+            <label class="label">Username</label>
+            <div class="control has-icons-left">
+              <input
+                class="input"
+                type="text"
+                name="username"
+                placeholder="username"
+                required
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-user"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                id="passwordInput"
+                class="input"
+                type="password"
+                name="password"
+                placeholder="••••••••"
+                required
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-lock"></i>
+              </span>
+              <span
+                class="icon is-small is-right"
+                onclick="togglePassword()"
+                style="cursor: pointer"
+              >
+                <i id="toggleIcon" class="fas fa-eye"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field mt-5">
+            <button
+              class="button is-primary is-fullwidth is-rounded is-medium"
+              type="submit"
+            >
+              Log In
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
     <script>
+      function closeNotification(button) {
+        const notification = button.parentNode;
+        notification.classList.add("animate__animated", "animate__fadeOut");
+        setTimeout(() => notification.remove(), 1000);
+      }
+
+      // Auto remove after 6s
+      document.addEventListener("DOMContentLoaded", function () {
+        const notification = document.querySelector(".notification");
+        if (notification) {
+          setTimeout(() => notification.remove(), 6500);
+        }
+      });
+
       const urlParams = new URLSearchParams(window.location.search);
       const isSuccess = urlParams.get("updated");
-
       if (isSuccess === "success") {
         alert("✅ Profil berhasil diperbarui.\nSilakan login kembali.");
+      }
+
+      function togglePassword() {
+        const input = document.getElementById("passwordInput");
+        const icon = document.getElementById("toggleIcon");
+
+        if (input.type === "password") {
+          input.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          input.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
       }
     </script>
   </body>
