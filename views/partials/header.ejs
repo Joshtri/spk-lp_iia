@@ -1,74 +1,89 @@
-
-
-<nav class="navbar" style="background-color: #8497B7;" role="navigation" aria-label="main navigation">
-    <div class="container">
-        <div class="navbar-brand">
-            <a href="/adm/dashboard" class="navbar-item">
-                <img src="/img/logo_laps.jpg" alt="Flowbite Logo" class="image w-32 md:w-48 lg:w-64 xl:w-80 mx-auto">
-                <span class="text-2xl mx-1 font-semibold has-text-weight-bold">SPK Lapas IIA</span>
-            </a>
-            <button class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </div>
-        <div id="navbarMenu" class="navbar-menu">
-            <div class="navbar-end">
-
-                <a href="/adm/dashboard" class="navbar-item">Dashboard</a>
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">Data</a>
-                    <div class="navbar-dropdown">
-                        <a href="/data/narapidana" class="navbar-item">Data Narapidana</a>
-
-                        <a href="/data/kriteria" class="navbar-item">Data Kriteria</a>
-                        <a href="/data/subkriteria" class="navbar-item">Data Sub Kriteria</a>
-
-                        
-
-                        <!-- <a href="/data/data_user" class="navbar-item">Data user</a> -->
-                        <!-- <a href="/user" class="navbar-item">Data Kewarganegaraan</a> -->
-                        <a href="/data/pidana" class="navbar-item">Data Tindak Pidana</a>
-                        <hr class="navbar-divider">
-                        <a href="/data/periode" class="navbar-item">Data Periode</a>
-                        <a href="/data/penilaian" class="navbar-item">Data Penilaian</a>
-                        <a href="/adm/data/hasil_perhitungan" class="navbar-item">Data Hasil Perhitungan</a>
-
-
-                        <% if(user) { %>
-                            <% if(user.role === 'wali pemasyarakatan') { %>
-                            <% } %>
-                        <% } %>
-
-                        
-                        <hr class="navbar-divider">
-                        <!-- <a href="#" class="navbar-item">Sign out</a> -->
-                    </div>
-                </div>
-                <a href="/adm/main_topsis" class="navbar-item">Perhitungan TOPSIS</a>
-                
-                <!-- Dropdown Profile -->
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">
-                        <!-- <img src="https://via.placeholder.com/50" class="mr-2 rounded-full h-8"> -->
-                        <% if (user) { 
-                            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama_lengkap || user.username)}&background=555f71&color=fff&bold=true`;
-                        %>
-                          <img src="<%= avatarUrl %>" alt="Avatar" class="mr-2 rounded-full" style="width: 2.5rem; height: 2.5rem;" />
-                        <% } %>
-                        
-                    </a>
-                    <div class="navbar-dropdown">
-                        <!-- Isi dropdown untuk profil -->
-                        <a href="/adm/profil_saya" class="navbar-item">Profil Saya</a>
-                        <!-- <a href="#" class="navbar-item">Pengaturan</a> -->
-                        <hr class="navbar-divider">
-                        <a href="/adm/logout" class="navbar-item">Log Out</a>
-                    </div>
-                </div>
-                <!-- Akhir Dropdown Profile -->
-            </div>
-        </div>
+<nav
+  class="navbar"
+  style="background-color: #8497b7"
+  role="navigation"
+  aria-label="main navigation"
+>
+  <div class="container">
+    <div class="navbar-brand">
+      <a href="/adm/dashboard" class="navbar-item">
+        <img
+          src="/img/logo_laps.jpg"
+  
+         alt="Logo" style="height: 60px; max-height: 60px"
+        />
+        <span class="text-2 mx-1 font-semibold has-text-weight-bold"
+          >SPK Lapas IIA</span
+        >
+      </a>
+      <button
+        class="navbar-burger burger"
+        aria-label="menu"
+        aria-expanded="false"
+        data-target="navbarMenu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-end">
+        <a href="/adm/dashboard" class="navbar-item">Dashboard</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">Data</a>
+          <div class="navbar-dropdown">
+            <a href="/data/narapidana" class="navbar-item">Data Narapidana</a>
+
+            <a href="/data/kriteria" class="navbar-item">Data Kriteria</a>
+            <a href="/data/subkriteria" class="navbar-item"
+              >Data Sub Kriteria</a
+            >
+
+            <!-- <a href="/data/data_user" class="navbar-item">Data user</a> -->
+            <!-- <a href="/user" class="navbar-item">Data Kewarganegaraan</a> -->
+            <a href="/data/pidana" class="navbar-item">Data Tindak Pidana</a>
+            <hr class="navbar-divider" />
+            <a href="/data/periode" class="navbar-item">Data Periode</a>
+            <a href="/data/penilaian" class="navbar-item">Data Penilaian</a>
+            <a href="/adm/data/hasil_perhitungan" class="navbar-item"
+              >Data Hasil Perhitungan</a
+            >
+
+            <% if(user) { %> <% if(user.role === 'wali pemasyarakatan') { %> <%
+            } %> <% } %>
+
+            <hr class="navbar-divider" />
+            <!-- <a href="#" class="navbar-item">Sign out</a> -->
+          </div>
+        </div>
+        <a href="/adm/main_topsis" class="navbar-item">Perhitungan TOPSIS</a>
+
+        <!-- Dropdown Profile -->
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link">
+            <!-- <img src="https://via.placeholder.com/50" class="mr-2 rounded-full h-8"> -->
+            <% if (user) { const avatarUrl =
+            `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama_lengkap
+            || user.username)}&background=555f71&color=fff&bold=true`; %>
+            <img
+              src="<%= avatarUrl %>"
+              alt="Avatar"
+              class="mr-2 rounded-full"
+              style="width: 2.5rem; height: 2.5rem"
+            />
+            <% } %>
+          </a>
+          <div class="navbar-dropdown">
+            <!-- Isi dropdown untuk profil -->
+            <a href="/adm/profil_saya" class="navbar-item">Profil Saya</a>
+            <!-- <a href="#" class="navbar-item">Pengaturan</a> -->
+            <hr class="navbar-divider" />
+            <a href="/adm/logout" class="navbar-item">Log Out</a>
+          </div>
+        </div>
+        <!-- Akhir Dropdown Profile -->
+      </div>
+    </div>
+  </div>
 </nav>
