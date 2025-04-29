@@ -77,6 +77,33 @@
 
         <div class="overflow-x-auto shadow-md rounded-lg mt-3">
             <div class="table-container">
+                <div class="field is-grouped">
+
+                  
+                    <div class="ml-auto is-flex">
+                        <form method="GET" action="/data/penilaian">
+                            <div class="field has-addons">
+                              <div class="control">
+                                <div class="select">
+                                  <select name="periodeId" onchange="this.form.submit()" required>
+                                    <option value="">- Pilih Periode -</option> <!-- default kosong -->
+                                    <% periodeData.forEach(function(periode) { %>
+                                      <option value="<%= periode.id_periode %>" <%= selectedPeriodeId == periode.id_periode ? 'selected' : '' %>>
+                                        <%= periode.id_periode %> - <%= periode.tahun_periode %> (<%= periode.periode_penilaian %>)
+                                      </option>
+                                    <% }) %>
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="control">
+                                <button type="submit" class="button is-info">Filter</button>
+                              </div>
+                            </div>
+                          </form>
+                          
+                    </div>
+                  </div>
+                  
                 <table class="table is-fullwidth is-hoverable">
                     <thead>
                         <tr>
@@ -109,11 +136,11 @@
                                 <!-- <a class="button is-warning is-small" href="/data/edit_penilaian/<%= penilaian.narapidana.id_narapidana %>">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a> -->
-                                <a class="button is-warning is-small" href="/data/penilaian/edit_narapidana/<%= penilaian.narapidana.id_narapidana %>">
+                                <a class="button is-warning is-small" data-tooltip="Edit Penilaian" href="/data/penilaian/edit_narapidana/<%= penilaian.narapidana.id_narapidana %>">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                                 <!-- Delete Button with Form -->
-                                <form action="/data/delete_penilaian/<%= penilaian.narapidana.id_narapidana %>" method="POST" style="display: inline;">
+                                <form action="/data/delete_penilaian/<%= penilaian.narapidana.id_narapidana %>"  data-tooltip="Delete Penilaian" method="POST" style="display: inline;">
                                     <button class="button is-danger is-small" type="submit">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
