@@ -1,65 +1,81 @@
 import Hasil_Perhitungan from "../models/hasil_perhitungan.model.js";
 import Kriteria from "../models/kriteria.model.js";
-import Narapidana from '../models/narapidana.model.js';
+import Narapidana from "../models/narapidana.model.js";
 import Penilaian from "../models/penilaian.model.js";
 import Periode from "../models/periode.model.js";
-import Sub_Kriteria from '../models/subKriteria.model.js';
-import PDFDocument from 'pdfkit';
-
+import Sub_Kriteria from "../models/subKriteria.model.js";
+import PDFDocument from "pdfkit";
 
 // Controller to fetch data
-export const MainPerhitunganPage = async (req, res) => {
-    try {
-        const title = "Perhitungan TOPSIS"
-        const messagePost = req.flash("tambahInfo");
-        const messageUpdate = req.flash("updateInfo");
-        const messageDelete = req.flash("deleteInfo");
-        const userData = req.session.user;
 
-        // Fetch all kriteria
-        const kriteriaData = await Kriteria.findAll({
-            attributes: ['id_kriteria', 'nama_kriteria', 'bobot_kriteria']
-        });
+export const hasilPerhitunganSuccessPage = async (req, res) => {
+    const title = "Hasil Perhitungan Berhasil";
+    const messagePost = req.flash("tambahInfo");
+    const messageUpdate = req.flash("updateInfo");
+    const messageDelete = req.flash("deleteInfo");
+    const userData = req.session.user;
 
-        // Fetch penilaian data with related narapidana and criteria values
-        const penilaianData = await Narapidana.findAll({
-            include: [
-                {
-                    model: Penilaian,
-                    include: [Kriteria]
-                }
-            ]
-        });
 
-        // Prepare the matrix for each narapidana
-        const matrixData = penilaianData.map((narapidana) => {
-            return {
-                narapidana,
-                kriteria_nilai: kriteriaData.map((kriteria) => {
-                    const nilaiKriteria = narapidana.Penilaians.find(
-                        (penilaian) => penilaian.kriteriaId === kriteria.id_kriteria
-                    );
-                    return nilaiKriteria ? nilaiKriteria.nilai_kriteria : "-"; // "-" if no value
-                })
-            };
-        });
-
-        res.render("mainTopsis", {
-            penilaianData: matrixData,
-            kriteriaData: kriteriaData,
-            title,
-            // kriteriaData,
-            messagePost,
-            messageUpdate,
-            messageDelete,
-            user: userData,
-        });
-    } catch (error) {
-        console.error("Error fetching data: ", error);
-        res.status(500).send("Internal Server Error");
-    }
+    res.render("hasil_perhitungan_success", {
+        title,
+        messagePost,
+        messageUpdate,
+        messageDelete,
+        user: userData,
+    });
 };
 
+export const MainPerhitunganPage = async (req, res) => {
+  try {
+    const title = "Perhitungan TOPSIS";
+    const messagePost = req.flash("tambahInfo");
+    const messageUpdate = req.flash("updateInfo");
+    const messageDelete = req.flash("deleteInfo");
+    const userData = req.session.user;
+
+    // Fetch all kriteria
+    const kriteriaData = await Kriteria.findAll({
+      attributes: ["id_kriteria", "nama_kriteria", "bobot_kriteria"],
+    });
+
+    // Fetch penilaian data with related narapidana and criteria values
+    const penilaianData = await Narapidana.findAll({
+      include: [
+        {
+          model: Penilaian,
+          include: [Kriteria],
+        },
+      ],
+    });
+
+    // Prepare the matrix for each narapidana
+    const matrixData = penilaianData.map((narapidana) => {
+      return {
+        narapidana,
+        kriteria_nilai: kriteriaData.map((kriteria) => {
+          const nilaiKriteria = narapidana.Penilaians.find(
+            (penilaian) => penilaian.kriteriaId === kriteria.id_kriteria
+          );
+          return nilaiKriteria ? nilaiKriteria.nilai_kriteria : "-"; // "-" if no value
+        }),
+      };
+    });
+
+    res.render("mainTopsis", {
+      penilaianData: matrixData,
+      kriteriaData: kriteriaData,
+      title,
+      // kriteriaData,
+      messagePost,
+      messageUpdate,
+      messageDelete,
+      user: userData,
+    });
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 // Controller untuk mengambil dan menampilkan matriks normalisasi
 // Fungsi untuk normalisasi matriks
@@ -239,8 +255,6 @@ export const MainPerhitunganPage = async (req, res) => {
 // const result = calculateIdealSolutions(weightedNormalizedMatrix);
 // console.log(result);
 
-
-
 // const calculateDistances = (weightedData, idealBest, idealWorst) => {
 //     return weightedData.map(row => {
 //         let distanceToBest = 0;
@@ -281,7 +295,6 @@ export const MainPerhitunganPage = async (req, res) => {
 //     try {
 //         const title = "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
 //         const userData = req.session.user;
-
 
 //         // Ambil data penilaian dengan data narapidana
 //         const penilaianData = await Penilaian.findAll({
@@ -377,12 +390,11 @@ export const MainPerhitunganPage = async (req, res) => {
 //     }
 // };
 
-
 // export const normalizedMatrixPage = async (req, res) => {
 //     try {
 //         const title = "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
 //         const userData = req.session.user;
-        
+
 //         // Ambil periodeId dari query string
 //         const { periodeId } = req.query;
 
@@ -474,7 +486,7 @@ export const MainPerhitunganPage = async (req, res) => {
 //             matrixData,
 //             title,
 //             user: userData,
-//             periodeData, 
+//             periodeData,
 //             selectedPeriodeId: periodeId || '' // untuk menampilkan periode yang dipilih
 //         });
 
@@ -484,286 +496,349 @@ export const MainPerhitunganPage = async (req, res) => {
 //     }
 // };
 
-
 // Controller to handle form submission and save preference data
+// export const saveHasilPerhitungan = async (req, res) => {
+//   try {
+//     const { preferences, periodeId } = req.body;
+
+//     // Debugging preferences
+//     console.log("Preferences:", preferences);
+
+//     // Validasi apakah preferences berupa array
+//     if (!Array.isArray(preferences)) {
+//       return res.status(400).json({ message: "Preferences is not an array" });
+//     }
+
+//     // Validasi apakah periodeId valid
+//     const periode = await Periode.findByPk(periodeId);
+//     if (!periode) {
+//       return res.status(400).json({ message: "Invalid Periode ID" });
+//     }
+
+//     // Loop melalui preferences dan simpan setiap hasil
+//     for (const pref of preferences) {
+//       const { nama, preferenceScore } = pref;
+
+//       // Menentukan status_kelulusan berdasarkan threshold preferensi
+//       const status_kelulusan =
+//         parseFloat(preferenceScore) >= 0.5 ? "lulus" : "tidak lulus";
+
+//       // Simpan hasil perhitungan ke dalam tabel Hasil_Perhitungan
+//       await Hasil_Perhitungan.create({
+//         nama_napi: nama, // Menyimpan nama narapidana
+//         nilai_preferensi: preferenceScore, // Nilai preferensi
+//         periodeId: periodeId, // ID periode terkait
+//         status_kelulusan: status_kelulusan, // Status kelulusan (lulus atau tidak lulus)
+//       });
+//     }
+
+//     // Kirim respon sukses
+//     res.status(201).json({ message: "Hasil perhitungan successfully saved!" });
+//   } catch (error) {
+//     console.error("Error saving hasil perhitungan:", error);
+//     res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
 export const saveHasilPerhitungan = async (req, res) => {
     try {
-        const { preferences, periodeId } = req.body;
-
-        // Debugging preferences
-        console.log('Preferences:', preferences);
-
-        // Validasi apakah preferences berupa array
-        if (!Array.isArray(preferences)) {
-            return res.status(400).json({ message: 'Preferences is not an array' });
-        }
-
-        // Validasi apakah periodeId valid
-        const periode = await Periode.findByPk(periodeId);
-        if (!periode) {
-            return res.status(400).json({ message: 'Invalid Periode ID' });
-        }
-
-        // Loop melalui preferences dan simpan setiap hasil
-        for (const pref of preferences) {
-            const { nama, preferenceScore } = pref;
-
-            // Menentukan status_kelulusan berdasarkan threshold preferensi
-            const status_kelulusan = parseFloat(preferenceScore) >= 0.5 ? 'lulus' : 'tidak lulus';
-
-            // Simpan hasil perhitungan ke dalam tabel Hasil_Perhitungan
-            await Hasil_Perhitungan.create({
-                nama_napi: nama,                  // Menyimpan nama narapidana
-                nilai_preferensi: preferenceScore, // Nilai preferensi
-                periodeId: periodeId,             // ID periode terkait
-                status_kelulusan: status_kelulusan // Status kelulusan (lulus atau tidak lulus)
-            });
-        }
-
-        // Kirim respon sukses
-        res.status(201).json({ message: 'Hasil perhitungan successfully saved!' });
+      const { preferences, periodeId } = req.body;
+  
+      if (!Array.isArray(preferences)) {
+        return res.status(400).json({ message: "Preferences is not an array" });
+      }
+  
+      const periode = await Periode.findByPk(periodeId);
+      if (!periode) {
+        return res.status(400).json({ message: "Invalid Periode ID" });
+      }
+  
+      for (const pref of preferences) {
+        const { nama, preferenceScore } = pref;
+        const status_kelulusan = parseFloat(preferenceScore) >= 0.5 ? "lulus" : "tidak lulus";
+  
+        await Hasil_Perhitungan.create({
+          nama_napi: nama,
+          nilai_preferensi: preferenceScore,
+          periodeId: periodeId,
+          status_kelulusan: status_kelulusan,
+        });
+      }
+  
+      // ✅ Setelah selesai, redirect ke halaman sukses
+      res.redirect('/adm/hasil_perhitungan_success'); 
+      // Kamu buat route /adm/hasil_perhitungan_success untuk tampilan sukses
+  
     } catch (error) {
-        console.error('Error saving hasil perhitungan:', error);
-        res.status(500).json({ message: 'Internal Server Error' });
+      console.error("Error saving hasil perhitungan:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-};
-
+  };
+  
 
 //source code jadi.
-export const hasilPerhitunganPage = async(req,res)=>{
-    const userData = req.session.user;
+export const hasilPerhitunganPage = async (req, res) => {
+  const userData = req.session.user;
+  const title = "Hasil Perhitungan";
 
-    try {
-        const title = "Hasil Perhitungan"
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
 
-        const hasilPerhitunganData = await Hasil_Perhitungan.findAll({
-            include: [{
-                model: Periode, // Join dengan tabel Kriteria
-                attributes: ['tahun_periode', 'periode_penilaian'], // Ambil kolom nama_kriteria
-            }]
-        });
+  try {
+    const { count, rows: hasilPerhitunganData } =
+      await Hasil_Perhitungan.findAndCountAll({
+        include: [
+          {
+            model: Periode,
+            attributes: ["tahun_periode", "periode_penilaian"],
+          },
+        ],
+        limit,
+        offset,
+        order: [["id_hasil_perhitungan", "ASC"]],
+      });
 
-        console.log(JSON.stringify(hasilPerhitunganData), 2);
+    const totalPages = Math.ceil(count / limit);
 
-        res.render('data_hasilPerhitungan',{
-            title,
-            user: userData,
-            hasilPerhitunganData,
-            
-        })
-    } catch (error) {
-        console.error('Error get hasil perhitungan:', error);
-        throw error;
-    }
-}
-
+    res.render("data_hasilPerhitungan", {
+      title,
+      user: userData,
+      hasilPerhitunganData,
+      currentPage: page,
+      totalPages,
+    });
+  } catch (error) {
+    console.error("Error get hasil perhitungan:", error);
+    throw error;
+  }
+};
 
 /**
  * Ekspor data hasil perhitungan ke PDF berdasarkan periode
  */
 export const exportPDFByPeriode = async (req, res) => {
-    const { periode } = req.query;
+  const { periode } = req.query;
 
-    if (!periode) {
-        return res.status(400).send('Periode harus diberikan.');
+  if (!periode) {
+    return res.status(400).send("Periode harus diberikan.");
+  }
+
+  try {
+    // Ambil data hasil perhitungan berdasarkan periode
+    const hasilPerhitunganData = await Hasil_Perhitungan.findAll({
+      where: {
+        "$Periode.periode_penilaian$": periode,
+      },
+      include: [
+        {
+          model: Periode,
+          attributes: ["tahun_periode", "periode_penilaian"],
+        },
+      ],
+    });
+
+    if (!hasilPerhitunganData || hasilPerhitunganData.length === 0) {
+      return res.status(404).send("Data tidak ditemukan untuk periode ini.");
     }
 
-    try {
-        // Ambil data hasil perhitungan berdasarkan periode
-        const hasilPerhitunganData = await Hasil_Perhitungan.findAll({
-            where: {
-                '$Periode.periode_penilaian$': periode,
-            },
-            include: [
-                {
-                    model: Periode,
-                    attributes: ['tahun_periode', 'periode_penilaian'],
-                },
-            ],
-        });
+    // Membuat dokumen PDF
+    const doc = new PDFDocument({ margin: 30, size: "A4" });
+    const fileName = `Hasil_Perhitungan_${periode}.pdf`;
 
-        if (!hasilPerhitunganData || hasilPerhitunganData.length === 0) {
-            return res.status(404).send('Data tidak ditemukan untuk periode ini.');
-        }
+    res.setHeader("Content-disposition", `attachment; filename="${fileName}"`);
+    res.setHeader("Content-type", "application/pdf");
 
-        // Membuat dokumen PDF
-        const doc = new PDFDocument({ margin: 30, size: 'A4' });
-        const fileName = `Hasil_Perhitungan_${periode}.pdf`;
+    doc.pipe(res);
 
-        res.setHeader('Content-disposition', `attachment; filename="${fileName}"`);
-        res.setHeader('Content-type', 'application/pdf');
+    // Judul Dokumen
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(16)
+      .text(`Data Hasil Perhitungan (${periode})`, { align: "center" });
+    doc.moveDown();
 
-        doc.pipe(res);
+    // Header Tabel
+    const tableTop = 150; // Posisi vertikal awal tabel
+    const columnWidths = [50, 150, 100, 100, 100]; // Lebar setiap kolom
 
-        // Judul Dokumen
-        doc.font('Helvetica-Bold').fontSize(16).text(`Data Hasil Perhitungan (${periode})`, { align: 'center' });
-        doc.moveDown();
+    doc.font("Helvetica-Bold").fontSize(10);
+    doc.text("No", 50, tableTop);
+    doc.text("Nama Narapidana", 100, tableTop);
+    doc.text("Nilai Preferensi", 250, tableTop);
+    doc.text("Periode", 350, tableTop);
+    doc.text("Status Bebas", 450, tableTop);
 
-        // Header Tabel
-        const tableTop = 150; // Posisi vertikal awal tabel
-        const columnWidths = [50, 150, 100, 100, 100]; // Lebar setiap kolom
+    doc
+      .moveTo(50, tableTop + 15)
+      .lineTo(550, tableTop + 15)
+      .stroke(); // Garis pembatas header
 
-        doc.font('Helvetica-Bold').fontSize(10);
-        doc.text('No', 50, tableTop);
-        doc.text('Nama Narapidana', 100, tableTop);
-        doc.text('Nilai Preferensi', 250, tableTop);
-        doc.text('Periode', 350, tableTop);
-        doc.text('Status Bebas', 450, tableTop);
+    // Isi Tabel
+    let y = tableTop + 20; // Baris pertama setelah header
 
-        doc.moveTo(50, tableTop + 15)
-           .lineTo(550, tableTop + 15)
-           .stroke(); // Garis pembatas header
+    hasilPerhitunganData.forEach((data, index) => {
+      const periodeText = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
+      doc.font("Helvetica").fontSize(10);
 
-        // Isi Tabel
-        let y = tableTop + 20; // Baris pertama setelah header
+      // Menulis data dalam kolom
+      doc.text(index + 1, 50, y); // Nomor
+      doc.text(data.nama_napi, 100, y); // Nama Narapidana
+      doc.text(data.nilai_preferensi, 250, y); // Nilai Preferensi
+      doc.text(periodeText, 350, y); // Periode
+      doc.text(data.status_kelulusan, 450, y); // Status Bebas
 
-        hasilPerhitunganData.forEach((data, index) => {
-            const periodeText = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
-            doc.font('Helvetica').fontSize(10);
+      // Garis horizontal antar baris
+      doc
+        .moveTo(50, y + 15)
+        .lineTo(550, y + 15)
+        .stroke();
 
-            // Menulis data dalam kolom
-            doc.text(index + 1, 50, y); // Nomor
-            doc.text(data.nama_napi, 100, y); // Nama Narapidana
-            doc.text(data.nilai_preferensi, 250, y); // Nilai Preferensi
-            doc.text(periodeText, 350, y); // Periode
-            doc.text(data.status_kelulusan, 450, y); // Status Bebas
+      y += 20; // Pindah ke baris berikutnya
+    });
 
-            // Garis horizontal antar baris
-            doc.moveTo(50, y + 15)
-               .lineTo(550, y + 15)
-               .stroke();
-
-            y += 20; // Pindah ke baris berikutnya
-        });
-
-        // Selesaikan Dokumen
-        doc.end();
-    } catch (error) {
-        console.error('Error saat membuat PDF:', error);
-        res.status(500).send('Terjadi kesalahan saat mengekspor PDF.');
-    }
+    // Selesaikan Dokumen
+    doc.end();
+  } catch (error) {
+    console.error("Error saat membuat PDF:", error);
+    res.status(500).send("Terjadi kesalahan saat mengekspor PDF.");
+  }
 };
-
-
 
 // Controller to delete hasil perhitungan by ID
 export const deleteHasilPerhitungan = async (req, res) => {
-    try {
-        const id = req.params.id; // Get the ID from the request parameters
-        // Find the record by ID
-        const hasilPerhitungan = await Hasil_Perhitungan.findByPk(id);
+  try {
+    const id = req.params.id; // Get the ID from the request parameters
+    // Find the record by ID
+    const hasilPerhitungan = await Hasil_Perhitungan.findByPk(id);
 
-        if (!hasilPerhitungan) {
-            req.flash("error", "Data tidak ditemukan.");
-            return res.redirect("/data/hasil_perhitungan"); // Redirect if the record is not found
-        }
-
-        // Delete the record
-        await hasilPerhitungan.destroy();
-
-        req.flash("success", "Data berhasil dihapus.");
-        res.redirect("/adm/data/hasil_perhitungan"); // Redirect after deletion
-    } catch (error) {
-        console.error("Error deleting hasil perhitungan:", error);
-        req.flash("error", "Terjadi kesalahan saat menghapus data.");
-        res.status(500).redirect("/data/hasil_perhitungan");
+    if (!hasilPerhitungan) {
+      req.flash("error", "Data tidak ditemukan.");
+      return res.redirect("/data/hasil_perhitungan"); // Redirect if the record is not found
     }
+
+    // Delete the record
+    await hasilPerhitungan.destroy();
+
+    req.flash("success", "Data berhasil dihapus.");
+    res.redirect("/adm/data/hasil_perhitungan"); // Redirect after deletion
+  } catch (error) {
+    console.error("Error deleting hasil perhitungan:", error);
+    req.flash("error", "Terjadi kesalahan saat menghapus data.");
+    res.status(500).redirect("/data/hasil_perhitungan");
+  }
 };
 
-
 export const normalizedMatrixPage = async (req, res) => {
-    try {
-        const title = "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
-        const userData = req.session.user;
+  try {
+    const title =
+      "Normalized Matrix (R), Weighted Normalized Matrix (V), Ideal Solutions, Distances, and Preferences";
+    const userData = req.session.user;
 
-        // Ambil periodeId dari query string
-        const { periodeId } = req.query;
+    // Ambil periodeId dari query string
+    const { periodeId } = req.query;
 
-        // Ambil semua data periode dan kriteria
-        const periodeData = await Periode.findAll();
-        const kriteriaData = await Kriteria.findAll();
+    // Ambil semua data periode dan kriteria
+    const periodeData = await Periode.findAll();
+    const kriteriaData = await Kriteria.findAll();
 
-        // Ambil data penilaian dengan data narapidana berdasarkan periodeId (jika ada)
-        const whereCondition = periodeId ? { periodeId: periodeId } : {}; // Jika periodeId ada, tambahkan kondisi where
-        const penilaianData = await Penilaian.findAll({
-            where: whereCondition,
-            include: [{
-                model: Narapidana,
-                attributes: ['nama_narapidana'],
-            }]
-        });
+    // Ambil data penilaian dengan data narapidana berdasarkan periodeId (jika ada)
+    const whereCondition = periodeId ? { periodeId: periodeId } : {}; // Jika periodeId ada, tambahkan kondisi where
+    const penilaianData = await Penilaian.findAll({
+      where: whereCondition,
+      include: [
+        {
+          model: Narapidana,
+          attributes: ["nama_narapidana"],
+        },
+      ],
+    });
 
-        // Buat matriks keputusan
-        const decisionMatrix = {};
-        penilaianData.forEach((penilaian) => {
-            const nama = penilaian.Narapidana ? penilaian.Narapidana.nama_narapidana : 'Unknown';
+    // Buat matriks keputusan
+    const decisionMatrix = {};
+    penilaianData.forEach((penilaian) => {
+      const nama = penilaian.Narapidana
+        ? penilaian.Narapidana.nama_narapidana
+        : "Unknown";
 
-            if (!decisionMatrix[nama]) {
-                decisionMatrix[nama] = {
-                    nama,
-                    kriteria_nilai: Array(kriteriaData.length).fill(0)
-                };
-            }
-
-            const kriteriaIndex = kriteriaData.findIndex(kriteria => kriteria.id_kriteria === penilaian.kriteriaId);
-            if (kriteriaIndex !== -1) {
-                decisionMatrix[nama].kriteria_nilai[kriteriaIndex] = parseFloat(penilaian.nilai_kriteria) || 0;
-            }
-        });
-
-        const decisionMatrixArray = Object.values(decisionMatrix);
-
-        // Normalisasi Matriks (R)
-        const normalizedMatrix = normalizeMatrix(decisionMatrixArray);
-
-        // Matriks Normalisasi Terbobot (V)
-        const weightedNormalizedMatrix = normalizedMatrix.map((item) => {
-            return {
-                nama: item.nama,
-                weighted_kriteria: item.normalized.map((nilai, index) =>
-                    parseFloat(nilai) * parseFloat(kriteriaData[index]?.bobot_kriteria || 0)
-                )
-            };
-        });
-
-        // Solusi Ideal Positif dan Negatif
-        const { idealPositive, idealNegative } = calculateIdealSolutions(weightedNormalizedMatrix, kriteriaData);
-
-        // Jarak ke Solusi Ideal
-        const distances = calculateDistances(weightedNormalizedMatrix, idealPositive, idealNegative);
-
-        // Skor Preferensi
-        const preferences = calculatePreferences(distances);
-
-        const matrixData = {
-            normalized: normalizedMatrix,
-            weighted: weightedNormalizedMatrix,
-            distances: distances,
-            idealPositive: idealPositive,
-            idealNegative: idealNegative,
-            preferences: preferences
+      if (!decisionMatrix[nama]) {
+        decisionMatrix[nama] = {
+          nama,
+          kriteria_nilai: Array(kriteriaData.length).fill(0),
         };
+      }
 
-        console.log("DEBUG: Normalized Matrix:", normalizedMatrix);
-        console.log("DEBUG: Weighted Normalized Matrix:", weightedNormalizedMatrix);
-        console.log("DEBUG: Ideal Positive Solution:", idealPositive);
-        console.log("DEBUG: Ideal Negative Solution:", idealNegative);
-        console.log("DEBUG: Distances to Ideal Solutions:", distances);
-        console.log("DEBUG: Preferences:", preferences);
+      const kriteriaIndex = kriteriaData.findIndex(
+        (kriteria) => kriteria.id_kriteria === penilaian.kriteriaId
+      );
+      if (kriteriaIndex !== -1) {
+        decisionMatrix[nama].kriteria_nilai[kriteriaIndex] =
+          parseFloat(penilaian.nilai_kriteria) || 0;
+      }
+    });
 
-        // Render hasil ke template
-        res.render("normalizedMatrix", {
-            kriteriaData,
-            matrixData,
-            title,
-            user: userData,
-            periodeData,
-            selectedPeriodeId: periodeId || '' // untuk menampilkan periode yang dipilih
-        });
-    } catch (error) {
-        console.error('Error fetching normalized matrix and preferences:', error);
-        res.status(500).send("Internal Server Error");
-    }
+    const decisionMatrixArray = Object.values(decisionMatrix);
+
+    // Normalisasi Matriks (R)
+    const normalizedMatrix = normalizeMatrix(decisionMatrixArray);
+
+    // Matriks Normalisasi Terbobot (V)
+    const weightedNormalizedMatrix = normalizedMatrix.map((item) => {
+      return {
+        nama: item.nama,
+        weighted_kriteria: item.normalized.map(
+          (nilai, index) =>
+            parseFloat(nilai) *
+            parseFloat(kriteriaData[index]?.bobot_kriteria || 0)
+        ),
+      };
+    });
+
+    // Solusi Ideal Positif dan Negatif
+    const { idealPositive, idealNegative } = calculateIdealSolutions(
+      weightedNormalizedMatrix,
+      kriteriaData
+    );
+
+    // Jarak ke Solusi Ideal
+    const distances = calculateDistances(
+      weightedNormalizedMatrix,
+      idealPositive,
+      idealNegative
+    );
+
+    // Skor Preferensi
+    const preferences = calculatePreferences(distances);
+
+    const matrixData = {
+      normalized: normalizedMatrix,
+      weighted: weightedNormalizedMatrix,
+      distances: distances,
+      idealPositive: idealPositive,
+      idealNegative: idealNegative,
+      preferences: preferences,
+    };
+
+    console.log("DEBUG: Normalized Matrix:", normalizedMatrix);
+    console.log("DEBUG: Weighted Normalized Matrix:", weightedNormalizedMatrix);
+    console.log("DEBUG: Ideal Positive Solution:", idealPositive);
+    console.log("DEBUG: Ideal Negative Solution:", idealNegative);
+    console.log("DEBUG: Distances to Ideal Solutions:", distances);
+    console.log("DEBUG: Preferences:", preferences);
+
+    // Render hasil ke template
+    res.render("normalizedMatrix", {
+      kriteriaData,
+      matrixData,
+      title,
+      user: userData,
+      periodeData,
+      selectedPeriodeId: periodeId || "", // untuk menampilkan periode yang dipilih
+    });
+  } catch (error) {
+    console.error("Error fetching normalized matrix and preferences:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 // Helper Functions
@@ -772,87 +847,89 @@ export const normalizedMatrixPage = async (req, res) => {
  * Normalisasi Matriks
  */
 const normalizeMatrix = (decisionMatrix) => {
-    const criteriaCount = decisionMatrix[0]?.kriteria_nilai?.length || 0;
-    const criteriaSums = Array(criteriaCount).fill(0);
+  const criteriaCount = decisionMatrix[0]?.kriteria_nilai?.length || 0;
+  const criteriaSums = Array(criteriaCount).fill(0);
 
-    decisionMatrix.forEach((item) => {
-        item.kriteria_nilai.forEach((value, index) => {
-            criteriaSums[index] += Math.pow(value, 2);
-        });
+  decisionMatrix.forEach((item) => {
+    item.kriteria_nilai.forEach((value, index) => {
+      criteriaSums[index] += Math.pow(value, 2);
     });
+  });
 
-    const normalizedMatrix = decisionMatrix.map((item) => {
-        return {
-            nama: item.nama,
-            normalized: item.kriteria_nilai.map((value, index) =>
-                criteriaSums[index] > 0 ? value / Math.sqrt(criteriaSums[index]) : 0
-            )
-        };
-    });
+  const normalizedMatrix = decisionMatrix.map((item) => {
+    return {
+      nama: item.nama,
+      normalized: item.kriteria_nilai.map((value, index) =>
+        criteriaSums[index] > 0 ? value / Math.sqrt(criteriaSums[index]) : 0
+      ),
+    };
+  });
 
-    return normalizedMatrix;
+  return normalizedMatrix;
 };
 
 /**
  * Hitung Solusi Ideal Positif dan Negatif
  */
 const calculateIdealSolutions = (weightedMatrix, kriteriaData) => {
-    const criteriaCount = kriteriaData.length;
-    const idealPositive = Array(criteriaCount).fill(-Infinity);
-    const idealNegative = Array(criteriaCount).fill(Infinity);
+  const criteriaCount = kriteriaData.length;
+  const idealPositive = Array(criteriaCount).fill(-Infinity);
+  const idealNegative = Array(criteriaCount).fill(Infinity);
 
-    weightedMatrix.forEach((item) => {
-        item.weighted_kriteria.forEach((value, index) => {
-            if (value > idealPositive[index]) idealPositive[index] = value;
-            if (value < idealNegative[index]) idealNegative[index] = value;
-        });
+  weightedMatrix.forEach((item) => {
+    item.weighted_kriteria.forEach((value, index) => {
+      if (value > idealPositive[index]) idealPositive[index] = value;
+      if (value < idealNegative[index]) idealNegative[index] = value;
     });
+  });
 
-    return { idealPositive, idealNegative };
+  return { idealPositive, idealNegative };
 };
 
 /**
  * Hitung Jarak ke Solusi Ideal
  */
 const calculateDistances = (weightedMatrix, idealPositive, idealNegative) => {
-    return weightedMatrix.map((item) => {
-        const distanceToPositive = Math.sqrt(
-            item.weighted_kriteria.reduce((sum, value, index) => {
-                return sum + Math.pow(value - idealPositive[index], 2);
-            }, 0)
-        );
+  return weightedMatrix.map((item) => {
+    const distanceToPositive = Math.sqrt(
+      item.weighted_kriteria.reduce((sum, value, index) => {
+        return sum + Math.pow(value - idealPositive[index], 2);
+      }, 0)
+    );
 
-        const distanceToNegative = Math.sqrt(
-            item.weighted_kriteria.reduce((sum, value, index) => {
-                return sum + Math.pow(value - idealNegative[index], 2);
-            }, 0)
-        );
+    const distanceToNegative = Math.sqrt(
+      item.weighted_kriteria.reduce((sum, value, index) => {
+        return sum + Math.pow(value - idealNegative[index], 2);
+      }, 0)
+    );
 
-        return {
-            nama: item.nama,
-            distanceToPositive,
-            distanceToNegative
-        };
-    });
+    return {
+      nama: item.nama,
+      distanceToPositive,
+      distanceToNegative,
+    };
+  });
 };
 
 /**
  * Hitung Skor Preferensi
  */
 const calculatePreferences = (distances) => {
-    return distances.map((item) => {
-        const preference = item.distanceToPositive + item.distanceToNegative === 0
-            ? 0
-            : item.distanceToNegative / (item.distanceToPositive + item.distanceToNegative);
+  return distances
+    .map((item) => {
+      const preference =
+        item.distanceToPositive + item.distanceToNegative === 0
+          ? 0
+          : item.distanceToNegative /
+            (item.distanceToPositive + item.distanceToNegative);
 
-        return {
-            nama: item.nama,
-            preference
-        };
-    }).sort((a, b) => b.preference - a.preference); // Urutkan berdasarkan preferensi
+      return {
+        nama: item.nama,
+        preference,
+      };
+    })
+    .sort((a, b) => b.preference - a.preference); // Urutkan berdasarkan preferensi
 };
-
-
 
 // Controller untuk mengambil dan menampilkan Matriks Ternormalisasi Terbobot
 // Controller untuk mengambil dan menampilkan Matriks Ternormalisasi Terbobot
@@ -877,12 +954,12 @@ const calculatePreferences = (distances) => {
 //             console.error("Kriteria data is empty or undefined");
 //             return res.status(500).send("Data kriteria tidak ditemukan");
 //         }
-        
+
 //         if (!penilaianData || !penilaianData.length) {
 //             console.error("Penilaian data is empty or undefined");
 //             return res.status(500).send("Data penilaian tidak ditemukan");
 //         }
-        
+
 //         // Membuat matriks normalisasi dari penilaianData
 //         const decisionMatrix = penilaianData.map((item) => {
 //             const nilaiKriteria = item.nilai_kriteria || {};
@@ -908,7 +985,6 @@ const calculatePreferences = (distances) => {
 //                 })
 //             };
 //         });
-        
 
 //         // Render halaman matriks normalisasi terbobot
 //         res.render("weightedNormalizedMatrix", {
