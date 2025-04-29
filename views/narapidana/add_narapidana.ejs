@@ -84,7 +84,17 @@
 
                   <div class="field">
                     <label class="label">Nomor KTP:</label>
-                    <input class="input" required name="no_ktp" type="number" oninput="validateNIPLength(this)">
+                    <input
+                    class="input"
+                    required
+                    name="no_ktp"
+                    type="text"
+                    id="nipInput"
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    maxlength="16"
+                    oninput="validateNIPLength(this)"
+                  />
                     <!-- Notifikasi teks untuk NIP -->
                     <p id="nipNotification" class="help is-danger" style="display: none;">Nomor KTP harus terdiri dari 16 digit.</p>
                     
@@ -105,6 +115,7 @@
                             <option value="islam">Islam</option>
                             <option value="hindu">Hindu</option>
                             <option value="buddha">Buddha</option>
+                            <option value="konghucu">Konghucu</option>
                           </select>
                         </div>
                       </div>
@@ -125,7 +136,7 @@
 
                     <div class="field">
                       <label class="label">Alamat:</label>
-                      <input class="input" required name="alamat_lengkap" type="text">
+                      <textarea class="input" required name="alamat_lengkap" cols="5" rows="5"></textarea>
                     </div>
                 </div>
             </div>
@@ -258,50 +269,44 @@
     </div>
 
     <script>
-      function validateNIPLength(element) {
-          var nip = element.value;
-          var notification = document.getElementById("notificationKTP");
-          var nipNotification = document.getElementById("nipNotification");
-          var nipNotificationSuccess = document.getElementById("nipNotificationSuccess");
+function validateNIPLength(element) {
+    const nip = element.value;
+    const notification = document.getElementById("notificationKTP");
+    const nipNotification = document.getElementById("nipNotification");
+    const nipNotificationSuccess = document.getElementById("nipNotificationSuccess");
 
-          if (nip.length < 16) { // Periksa jika panjang NIP kurang dari 16
-              // Jika panjang NIP kurang dari 16 karakter, tampilkan pesan dan sembunyikan notifikasi panjang NIP
-              nipNotification.style.display = "block";
-              notification.style.display = "none";
-              nipNotificationSuccess.style.display = "none";
-              return; // Keluar dari fungsi karena NIP belum mencapai 16 digit
-          }
+    // Cek jika tidak 16 digit
+    if (nip.length < 16) {
+        nipNotification.style.display = "block";
+        notification.style.display = "none";
+        nipNotificationSuccess.style.display = "none";
+        return;
+    }
 
-          if (nip.length > 16) {
-              // Jika panjang NIP melebihi 16 karakter, tampilkan notifikasi
-              notification.style.display = "block";
-              nipNotification.style.display = "none"; // Sembunyikan pesan NIP sudah 16 digit
-              nipNotificationSuccess.style.display = "none";
-              // Potong input menjadi 16 karakter
-              element.value = nip.substring(0, 16);
-          } else {
-              // Jika panjang NIP tidak melebihi 16 karakter, sembunyikan notifikasi
-              notification.style.display = "none";
-              nipNotification.style.display = "none"; // Sembunyikan pesan NIP sudah 16 digit
-              nipNotificationSuccess.style.display = "block";
-          }
-      }
+    if (nip.length > 16) {
+        element.value = nip.substring(0, 16);
+        notification.style.display = "block";
+        notification.textContent = "Nomor KTP tidak boleh melebihi 16 digit.";
+        nipNotification.style.display = "none";
+        nipNotificationSuccess.style.display = "none";
+        return;
+    }
 
-      // Fungsi untuk menutup notifikasi dengan fade out setelah 3 detik
-      function closeNotification(id) {
-          var notification = document.getElementById(id);
-          notification.style.transition = "opacity 0.5s"; // Efek fade out
-          notification.style.opacity = "0"; // Mengatur opacity menjadi 0
-          // Setelah 3 detik, notifikasi akan dihilangkan dari tampilan
-          // setTimeout(function() {
-          //     notification.style.display = "none";
-          // }, 3000); // 3000 ms = 3 detik
-      }
+    // Validasi angka awal (tidak boleh 0, 2, atau 4)
+    const firstDigit = nip.charAt(0);
+    if (["0", "2", "4"].includes(firstDigit)) {
+        notification.style.display = "block";
+        notification.textContent = "Tolong periksa No KTP Anda lagi.";
+        nipNotification.style.display = "none";
+        nipNotificationSuccess.style.display = "none";
+        return;
+    }
 
-      // Mengatur event listener pada input field untuk memanggil fungsi validateNIPLength saat pengguna memasukkan NIP
-      document.getElementById("nipInput").addEventListener("input", function() {
-    validateNIPLength(this);
-});
+    // Jika valid
+    notification.style.display = "none";
+    nipNotification.style.display = "none";
+    nipNotificationSuccess.style.display = "block";
+}
     </script>
   
   
