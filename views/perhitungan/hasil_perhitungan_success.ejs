@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head'); %>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+  <body>
+    <%- include('partials/header'); %>
+
+    <div class="container mt-6">
+      <div class="columns is-centered">
+        <div class="column is-half has-text-centered">
+          <div class="box animate__animated animate__fadeInDown">
+            <span class="icon is-large has-text-success">
+              <i class="fas fa-check-circle fa-4x"></i>
+            </span>
+
+            <h1 class="title is-3 mt-3 has-text-success">Berhasil Disimpan!</h1>
+            <p class="subtitle is-5">
+              Hasil perhitungan berhasil disimpan ke database.
+            </p>
+
+            <div class="buttons is-centered mt-5">
+              <a href="/adm/dashboard" class="button is-primary">
+                <span class="icon"><i class="fas fa-home"></i></span>
+                <span>Kembali ke Dashboard</span>
+              </a>
+
+              <a href="/adm/data/hasil_perhitungan" class="button is-link">
+                <span class="icon"><i class="fas fa-table"></i></span>
+                <span>Lihat Hasil Perhitungan</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const navbarBurgers = Array.from(
+          document.querySelectorAll(".navbar-burger")
+        );
+        if (navbarBurgers.length > 0) {
+          navbarBurgers.forEach((burger) => {
+            burger.addEventListener("click", () => {
+              const target = burger.dataset.target;
+              const menu = document.getElementById(target);
+              burger.classList.toggle("is-active");
+              menu.classList.toggle("is-active");
+            });
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
