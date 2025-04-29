@@ -127,7 +127,7 @@
                             <td><%= narapidana.User.nama_lengkap %></td>
                             <td>
                                 <button class="button is-small">
-                                    <a href="/data/narapidana/<%= narapidana.id_narapidana %>" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
+                                    <a href="/data/narapidana/<%= narapidana.id_narapidana %>" class="has-text-black" data-tooltip="Detail Narapidana"><i class="fa-regular fa-eye"></i></a>
                                 </button>
 
 
@@ -137,16 +137,16 @@
                                     <div class="dropdown is-hoverable">
             
                                         <div class="dropdown-trigger">
-                                          <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu4">
+                                          <button class="button is-small" aria-haspopup="true" aria-controls="dropdown-menu4" data-tooltip="Edit Narapidana">
                                             <span><i class="fa-regular fa-pen-to-square"></i></span>
                                             <span class="icon is-small">
                                               <i class="fas fa-angle-down" aria-hidden="true"></i>
                                             </span>
                                           </button>
                                         </div>
-                            
-                                        <div class="dropdown-menu" id="dropdown-menu4" role="menu">
-                                          <div class="dropdown-content">
+                                        
+                                        <div class="dropdown-menu" id="dropdown-menu4" role="menu"  >
+                                          <div class="dropdown-content" >
                                             <div class="dropdown-item">
                                                 <a href="/data/edit_narapidana/<%= narapidana.id_narapidana %>" class="dropdown-item">
                                                     Edit Data
@@ -169,7 +169,7 @@
 
 
                                     <!-- Tombol untuk membuka modal konfirmasi -->
-                                    <button class="button is-danger is-small" onclick="openConfirmationModal('<%= narapidana.id_narapidana %>')">
+                                    <button class="button is-danger is-small" data-tooltip="Delete Narapidana" onclick="openConfirmationModal('<%= narapidana.id_narapidana %>')">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
 
