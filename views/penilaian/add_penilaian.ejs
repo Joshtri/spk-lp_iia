@@ -60,7 +60,11 @@
                             <select name="periodeId" onchange="location.href='?periodeId=' + this.value" required>
                               <option>-</option>
                               <% periodeData.forEach(function(periode) { %>
-                                <option value="<%= periode.id_periode %>"><%= periode.tahun_periode %> | <%= periode.periode_penilaian %></option>
+                                <option 
+                                  value="<%= periode.id_periode %>" 
+                                  <%= periode.id_periode == selectedPeriodeId ? 'selected' : '' %>>
+                                  <%= periode.tahun_periode %> | <%= periode.periode_penilaian %>
+                                </option>
                               <% }) %>
 
                             </select>
