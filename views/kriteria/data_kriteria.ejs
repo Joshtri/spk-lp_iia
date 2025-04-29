@@ -73,7 +73,7 @@
 
         <div class="field is-grouped">
             <% if (user && user.role === 'wali pemasyarakatan') { %>
-            <button class="button is-small is-success is-light" id="btnTambahData">Tambah Data Kriteria</button>
+            <button class="button is-small is-success is-light"  id="btnTambahData">Tambah Data Kriteria</button>
             <button class="button mx-2 is-small is-link is-light" id="btnTambahSub">Tambah Sub Kriteria</button>
             <% } %>
 
@@ -118,7 +118,7 @@
 
                                 
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
-                                <button class="button is-small" onclick="editKriteria(
+                                <button class="button is-small" data-tooltip="Edit kriteria" onclick="editKriteria(
                                     '<%= kriteriaData[i].id_kriteria %>',
                                     '<%= kriteriaData[i].nama_kriteria %>',
                                     '<%= kriteriaData[i].bobot_kriteria %>',
@@ -141,7 +141,7 @@
                                     </script>
     
                                 <!-- Tombol untuk membuka modal konfirmasi -->
-                                <button class="button is-danger is-small" onclick="openConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">
+                                <button class="button is-danger is-small" data-tooltip="Delete kriteria" onclick="openConfirmationModal('<%= kriteriaData[i].id_kriteria %>')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
 
