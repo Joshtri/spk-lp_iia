@@ -7,6 +7,7 @@ const router = express.Router();
 
 
 router.get('/main_topsis', perhitunganController.MainPerhitunganPage);
+router.get('/hasil_perhitungan_success', perhitunganController.hasilPerhitunganSuccessPage);
 router.get('/normalized-matrix', perhitunganController.normalizedMatrixPage);
 router.post('/simpan-perhitungan', perhitunganController.saveHasilPerhitungan)
 // router.get('/weighted-normalized-matrix', perhitunganController.weightedNormalizedMatrixPage)
