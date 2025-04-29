@@ -110,7 +110,7 @@
                                 <% if(user && user.role == 'wali pemasyarakatan') { %>
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->
-                                <button class="button is-small" onclick="editPeriode('<%= periodeData[i].id_periode %>', '<%= periodeData[i].periode_penilaian %>', '<%= periodeData[i].tahun_periode %>')">
+                                <button class="button is-small" data-tooltip="Edit Periode" onclick="editPeriode('<%= periodeData[i].id_periode %>', '<%= periodeData[i].periode_penilaian %>', '<%= periodeData[i].tahun_periode %>')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
 
@@ -132,7 +132,7 @@
                                     }
                                 </script>
                                 <!-- Tombol untuk membuka modal konfirmasi -->
-                                <button class="button is-danger is-small" onclick="openConfirmationModal('<%= periodeData[i].id_periode %>')">
+                                <button class="button is-danger is-small" data-tooltip="Delete Periode" onclick="openConfirmationModal('<%= periodeData[i].id_periode %>')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                                 
