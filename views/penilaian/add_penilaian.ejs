@@ -57,7 +57,7 @@
                         <label for="" class="label">Penilaian pada periode : </label>
                         <div class="control">
                           <div class="select">
-                            <select name="periodeId" id="">
+                            <select name="periodeId" onchange="location.href='?periodeId=' + this.value" required>
                               <option>-</option>
                               <% periodeData.forEach(function(periode) { %>
                                 <option value="<%= periode.id_periode %>"><%= periode.tahun_periode %> | <%= periode.periode_penilaian %></option>
@@ -68,18 +68,37 @@
                         </div>
                       </div>
                       <div class="field">
-                          <label class="label">Nama Narapidana</label>
-                          <div class="control">
-                              <div class="select">
-                                  <select name="narapidanaId" required>
-                                      <option>-</option>
-                                      <% narapidanaData.forEach(function(narapidana) { %>
-                                        <option value="<%= narapidana.id_narapidana %>"><%= narapidana.nama_narapidana %></option>
-                                      <% }) %>
-                                  </select>
-                              </div>
+                        <label class="label">Nama Narapidana</label>
+                        <div class="control">
+                          <div class="select is-fullwidth">
+                            <select name="narapidanaId" required>
+                              <option value="">- Pilih Narapidana -</option>
+                              <% narapidanaData.forEach(function(narapidana) { %>
+                                <% 
+                                  const sudahDinilai = statusPenilaian[selectedPeriodeId]?.includes(narapidana.id_narapidana); 
+                                %>
+                                <option 
+                                  value="<%= narapidana.id_narapidana %>"
+                                  <%= sudahDinilai ? 'disabled' : '' %>
+                                >
+                                  <%= narapidana.nama_narapidana %> <%= sudahDinilai ? '(Sudah Diberi Nilai)' : '' %>
+                                </option>
+                              <% }) %>
+                            </select>
                           </div>
-                      </div> 
+                        </div>
+                      </div>
+
+                      <!-- <% if (!selectedPeriodeId) { %>
+                        <p class="has-text-danger">⚠ Periode belum dipilih</p>
+                      <% } %>
+                      
+                      <% if (statusPenilaian && selectedPeriodeId) { %>
+                        <p class="has-text-info">Periode ID Aktif: <%= selectedPeriodeId %></p>
+                        <p class="has-text-grey">Sudah dinilai: <%= JSON.stringify(statusPenilaian[selectedPeriodeId]) %></p>
+                      <% } %> -->
+                      
+                      
       
                       <hr class="navbar-divider">
       
