@@ -2,29 +2,36 @@ import * as pidanaService from "../services/pidana.services.js";
 
 export const pidanaPage = async (req, res) => {
   const title = "Data Pidana";
-  // Dapatkan data user dari session dan gunakan sesuai kebutuhan
   const userData = req.session.user;
 
   const messagePost = req.flash("tambahInfo");
   const messageUpdate = req.flash("updateInfo");
   const messageDelete = req.flash("deleteInfo");
 
-  const tindakPidanaData = await pidanaService.getTindakPidana();
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
 
   try {
+    const allData = await pidanaService.getTindakPidana(); // semua data
+    const totalItems = allData.length;
+    const totalPages = Math.ceil(totalItems / limit);
+    const currentPageData = allData.slice(offset, offset + limit);
+
     res.render("data_pidana", {
       title,
       user: userData,
       messagePost,
       messageUpdate,
       messageDelete,
-      tindakPidanaData,
+      tindakPidanaData: currentPageData,
+      currentPage: page,
+      totalPages,
     });
   } catch (error) {
     throw error;
   }
 };
-
 
 export const createTindakPidana = async (req,res)=>{
     try {
