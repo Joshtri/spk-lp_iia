@@ -103,6 +103,27 @@
                           
                     </div>
                   </div>
+
+                  <% if (messageDelete && messageDelete.length > 0) { %>
+                    <div class="notification is-danger">
+                      <% messageDelete.forEach(msg => { %>
+                        <p><%= msg %></p>
+                      <% }) %>
+                      <button class="delete" onclick="this.parentNode.remove()"></button>
+                    </div>
+                  <% } %>
+
+
+                  <% if (messageUpdate && messageUpdate.length > 0) { %>
+                    <div class="notification is-info">
+                      <% messageUpdate.forEach(function(msg) { %>
+                        <p><%= msg %></p>
+                      <% }) %>
+                      <button class="delete" onclick="this.parentNode.remove()"></button>
+                    </div>
+                  <% } %>
+                  
+                  
                   
                 <table class="table is-fullwidth is-hoverable">
                     <thead>
@@ -124,9 +145,9 @@
                             <td>
                                 <% if (penilaian.periode) { %>
                                     <%= penilaian.periode.id_periode %> - <%= penilaian.periode.tahun_periode %>
-                                <% } else { %>
-                                    beri penilaian terlebih dulu
-                                <% } %>
+                                  <% } else { %>
+                                    <span class="has-text-grey-light is-italic">Belum dinilai</span>
+                                  <% } %>
                             </td>
                             <% penilaian.kriteria_nilai.forEach(function(nilai) { %>
                                 <td><%= nilai %></td>
@@ -140,11 +161,16 @@
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </a>
                                 <!-- Delete Button with Form -->
-                                <form action="/data/delete_penilaian/<%= penilaian.narapidana.id_narapidana %>"  data-tooltip="Delete Penilaian" method="POST" style="display: inline;">
-                                    <button class="button is-danger is-small" type="submit">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </form>
+                                <form 
+                                action="/data/delete_penilaian/<%= penilaian.narapidana.id_narapidana %>"  
+                                method="POST" 
+                                style="display: inline;"
+                                onsubmit="return confirm('Yakin ingin menghapus penilaian ini?');"
+                              >
+                                  <button class="button is-danger is-small" type="submit">
+                                      <i class="fa-solid fa-trash"></i>
+                                  </button>
+                              </form>
                             </td>
                         </tr>
                         <% }) %>
