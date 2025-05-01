@@ -26,30 +26,14 @@
                   <span class="icon is-small">
                     <i class="fas fa-book" aria-hidden="true"></i>
                   </span>
-                  <span>Data Admin</span>
+                  <span>Data User</span>
                 </a>
               </li>
             </ul>
         </nav>
 
         <hr>
-        <% if (messagePost && messagePost.length > 0) { %>
-          <div class="notification is-success">
-              <% messagePost.forEach(message => { %>
-                  <p><%= message %></p>
-              <% }) %>
-              <button class="delete" onclick="closeNotification(this)"></button>
-          </div>
-      <% } %>
 
-      <% if (messageDelete && messageDelete.length > 0) { %>
-          <div class="notification is-success">
-              <% messageDelete.forEach(message => { %>
-                  <p><%= message %></p>
-              <% }) %>
-              <button class="delete" onclick="closeNotification(this)"></button>
-          </div>
-      <% } %>
       
       <script>
           function closeNotification(button) {
@@ -75,13 +59,33 @@
                 </p>
             </div>
         </div>
+        <% if (messagePost && messagePost.length > 0) { %>
+        <div class="notification is-success">
+            <% messagePost.forEach(msg => { %>
+              <p><%= msg %></p>
+            <% }) %>
+            <button class="delete" onclick="closeNotification(this)"></button>
+          </div>
+        <% } %>
+
+        <% if (message && message.length > 0) { %>
+          <div class="notification is-warning">
+            <% message.forEach(msg => { %>
+              <p><%= msg %></p>
+            <% }) %>
+            <button class="delete" onclick="this.parentNode.remove()"></button>
+          </div>
+        <% } %>
+        
+
+
         
         <div class="overflow-x-auto shadow-md rounded-lg mt-3">
             <table class="table is-fullwidth is-hoverable">
                 <thead>
                     <tr>
                         <th>No.</th>
-                        <th>Nama Admin</th>
+                        <th>Nama User</th>
                         <th>Username</th>
                         <!-- <th>Tindak Pidana</th> -->
                         <th>Role</th>
@@ -96,17 +100,37 @@
                         <td><%= adminData[i].username %></td>
                         <td><%= adminData[i].role %></td>
                         <td class="has-text-centered">
-                            <button class="button">
-                                <a href="/data/detail_narapidana" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
-                            </button>
+                          <button class="button">
+
+                            <a href="/data/detail_user/<%= adminData[i].id_user %>/detail" data-tooltip="Detail User" class="has-text-black">
+                              <i class="fa-regular fa-eye"></i>
+                            </a>
+                          </button>
+                          
     
-                            <button class="button">
-                                <a href="/data/edit_narapidana" class="has-text-dark"><i class="fa-regular fa-pen-to-square"></i></a>
-                            </button>
+                          <button class="button is-warning is-light">
+                            <a href="/data/edit_user/<%= adminData[i].id_user %>/edit"  data-tooltip="Edit User"  class="has-text-dark">
+                              <i class="fa-regular fa-pen-to-square"></i>
+                            </a>
+                          </button>
+
+                          <button class="button is-info is-light">
+                            <a href="/data/edit_user/<%= adminData[i].id_user %>/password" data-tooltip="Edit Password User"   class="has-text-dark">
+                              <i class="fa-solid fa-key"></i>
+                            </a>
+                          </button>
+                          
     
-                            <button class="button is-danger">
-                                <a href="#" class="has-text-dark"><i class="fa-solid fa-trash"></i></a>
-                            </button>
+                          <form
+                          action="/data/delete_user/<%= adminData[i].id_user %>"
+                          method="POST"
+                          style="display: inline;"
+                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus user ini?');"
+                        >
+                          <button class="button is-danger" data-tooltip="Delete User" type="submit">
+                            <span class="has-text-white"><i class="fa-solid fa-trash"></i></span>
+                          </button>
+                        </form>
                         </td>
                     </tr>
                     <% } %>
@@ -126,7 +150,7 @@
                 <button class="delete" id="btnCloseHead" aria-label="close"></button>
               </header>
               <section class="modal-card-body">
-                <form action="/data/post_admin" method="post">
+                <form action="/data/post_user" method="post">
 
                 
 
@@ -201,6 +225,14 @@
             }
         });
     </script>
+
+
+<script>
+  function closeNotification(button) {
+    var notification = button.parentNode;
+    notification.remove();
+  }
+</script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
