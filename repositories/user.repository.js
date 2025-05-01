@@ -55,11 +55,15 @@ export const findUserByUsernameAndPassword = async (username, password) => {
     try {
         const user = await User.findOne({ where: { username } });
         if (!user) {
-            return null; // Pengguna tidak ditemukan
+            console.log("Username tidak ditemukan:", username);
+            return null;
         }
+        
         const isPasswordMatch = await bcrypt.compare(password, user.password);
         if (!isPasswordMatch) {
-            return null; // Kata sandi tidak cocok
+            console.log("Password tidak cocok. Password input:", password);
+            console.log("Password hashed DB:", user.password);
+            return null;
         }
         return user;
     } catch (error) {
