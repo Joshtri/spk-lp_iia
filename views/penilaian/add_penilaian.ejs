@@ -114,10 +114,10 @@
                               <label class="label"><%= kriteria.nama_kriteria %></label>
                               <div class="control">
                                   <!-- Use array syntax for the kriteriaId -->
-                                  <input type="hidden" class="input is-small mb-4" value="<%= kriteria.id_kriteria %>" name="kriteriaId[]">
+                                  <input type="hidden" class="input is-small mb-4" value="<%= kriteria.id_kriteria %>" name="kriteriaId[]" required>
                               
                                   <!-- Dropdown to select the sub-kriteria -->
-                                  <select name="subKriteriaId[]" class="input" onchange="updateNilaiKriteria(this)">
+                                  <select name="subKriteriaId[]" class="input" onchange="updateNilaiKriteria(this)" required>
                                       <option value="">Pilih Sub-Kriteria</option>
                           
                                       <!-- Loop through subKriteriaData and only show sub-kriteria that matches the current kriteria -->
