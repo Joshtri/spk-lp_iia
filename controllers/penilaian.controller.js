@@ -3,6 +3,7 @@ import Narapidana from "../models/narapidana.model.js";
 import Penilaian from "../models/penilaian.model.js";
 import Periode from "../models/periode.model.js";
 import Sub_Kriteria from "../models/subKriteria.model.js";
+import { Op } from "sequelize";
 
 // export const penilaianPage = async (req, res) => {
 //     const title = "Data Penilaian";
@@ -51,38 +52,41 @@ export const penilaianPage = async (req, res) => {
 
     const selectedPeriodeId = req.query.periodeId || "all";
 
-    const narapidanaInclude = {
-      model: Penilaian,
-      include: [Kriteria, { model: Periode }],
-      required: false, // Ini WAJIB supaya semua narapidana tetap tampil meskipun belum ada Penilaian
-    };
-
-    if (selectedPeriodeId !== "all") {
-      narapidanaInclude.where = { periodeId: selectedPeriodeId };
-    }
-
-    const penilaianData = await Narapidana.findAll({
-      include: [narapidanaInclude],
+    // Ambil semua penilaian sekaligus
+    const penilaianList = await Penilaian.findAll({
+      include: [{ model: Narapidana }, { model: Periode }, { model: Kriteria }],
+      where:
+        selectedPeriodeId !== "all"
+          ? { periodeId: selectedPeriodeId }
+          : undefined,
+      order: [["updatedAt", "DESC"]],
     });
 
-    const matrixData = penilaianData.map((narapidana) => {
-      return {
-        narapidana,
-        periode:
-          narapidana.Penilaians.length > 0
-            ? narapidana.Penilaians[0].Periode
-            : null,
-        kriteria_nilai: kriteriaData.map((kriteria) => {
-          const nilaiKriteria = narapidana.Penilaians.find(
-            (penilaian) => penilaian.kriteriaId === kriteria.id_kriteria
-          );
-          return nilaiKriteria ? nilaiKriteria.nilai_kriteria : "-";
-        }),
-      };
+    // Group penilaian berdasarkan kombinasi narapidana & periode
+    const grouped = {};
+    penilaianList.forEach((pen) => {
+      const key = `${pen.narapidanaId}_${pen.periodeId}`;
+      if (!grouped[key]) {
+        grouped[key] = {
+          narapidana: pen.Narapidana,
+          periode: pen.Periode,
+          nilaiMap: {},
+        };
+      }
+      grouped[key].nilaiMap[pen.kriteriaId] = pen.nilai_kriteria;
     });
 
+    // Transform hasil jadi array untuk ditampilkan
+    const penilaianData = Object.values(grouped).map((group) => ({
+      narapidana: group.narapidana,
+      periode: group.periode,
+      kriteria_nilai: kriteriaData.map(
+        (k) => group.nilaiMap[k.id_kriteria] ?? "-"
+      ),
+    }));
+ 
     res.render("data_penilaian", {
-      penilaianData: matrixData,
+      penilaianData,
       kriteriaData,
       periodeData,
       selectedPeriodeId,
@@ -146,7 +150,7 @@ export const addPenilaianPage = async (req, res) => {
       statusPenilaian, // ← tambahan ini
 
       subKriteriaData,
-      penilaianMap,
+       penilaianMap,
       selectedPeriodeId,
     });
   } catch (error) {
@@ -225,29 +229,26 @@ export const createPenilaian = async (req, res) => {
 };
 
 export const deletePenilaian = async (req, res) => {
-  const { id } = req.params; // This should be `narapidanaId` now
+  const { id } = req.params; // narapidanaId
 
   try {
-    // Find and delete penilaian records where narapidanaId matches
     const deleted = await Penilaian.destroy({
       where: { narapidanaId: id },
     });
 
     if (deleted === 0) {
-      return res
-        .status(404)
-        .json({ message: "Penilaian not found for the given narapidanaId." });
+      req.flash("deleteInfo", "Data penilaian tidak ditemukan.");
+      return res.redirect("/data/penilaian");
     }
 
-    return res
-      .status(200)
-      .json({ message: "Penilaian records deleted successfully." });
+    req.flash("deleteInfo", "Data penilaian berhasil dihapus.");
+    return res.redirect("/data/penilaian");
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error." });
+    req.flash("deleteInfo", "Terjadi kesalahan saat menghapus data.");
+    return res.redirect("/data/penilaian");
   }
 };
-
 // controllers/penilaian.controller.js
 
 export const editPenilaianPage = async (req, res) => {
@@ -311,7 +312,7 @@ export const updatePenilaian = async (req, res) => {
   } = req.body;
 
   try {
-    // Validate input
+    // Validasi input
     if (
       !id_penilaian ||
       !narapidanaId ||
@@ -320,26 +321,27 @@ export const updatePenilaian = async (req, res) => {
       !subKriteriaId ||
       !periodeId
     ) {
-      return res.status(400).json({ message: "All fields are required." });
+      req.flash("updateInfo", "Semua field harus diisi.");
+      return res.redirect("/data/penilaian");
     }
 
-    // Check if Penilaian exists
+    // Cek apakah penilaian ada
     const penilaian = await Penilaian.findByPk(id_penilaian);
     if (!penilaian) {
-      return res.status(404).json({ message: "Penilaian not found." });
+      req.flash("updateInfo", "Data penilaian tidak ditemukan.");
+      return res.redirect("/data/penilaian");
     }
 
-    // Check if Kriteria, Sub-Kriteria, and Narapidana exist
+    // Cek apakah relasi valid
     const kriteria = await Kriteria.findByPk(kriteriaId);
     const subKriteria = await Sub_Kriteria.findByPk(subKriteriaId);
 
     if (!kriteria || !subKriteria) {
-      return res
-        .status(404)
-        .json({ message: "Kriteria or Sub-Kriteria not found." });
+      req.flash("updateInfo", "Kriteria atau Sub-Kriteria tidak valid.");
+      return res.redirect("/data/penilaian");
     }
 
-    // Update Penilaian record
+    // Update data
     await Penilaian.update(
       {
         narapidanaId,
@@ -353,12 +355,15 @@ export const updatePenilaian = async (req, res) => {
       }
     );
 
-    return res.status(200).json({ message: "Penilaian updated successfully." });
+    req.flash("updateInfo", "Data penilaian berhasil diperbarui.");
+    return res.redirect("/data/penilaian");
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Internal server error." });
+    req.flash("updateInfo", "Terjadi kesalahan saat memperbarui data.");
+    return res.redirect("/data/penilaian");
   }
 };
+
 
 export const destroyAllPenilaian = async (req, res) => {
   try {
