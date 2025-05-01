@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head'); %>
+  </head>
+  <body>
+    <%- include('partials/header'); %>
+    <div class="container mt-6">
+      <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+          <li><a href="/adm/dashboard">Dashboard</a></li>
+          <li><a href="/data/user">Users Management</a></li>
+          <li class="is-active"><a href="#">Detail User</a></li>
+        </ul>
+      </nav>
+
+      <hr />
+
+      <h1 class="title is-4">Detail User</h1>
+
+      <div class="box">
+        <p><strong>Nama Lengkap:</strong> <%= user.nama_lengkap %></p>
+        <p><strong>Username:</strong> <%= user.username %></p>
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <p><strong>Role:</strong> <%= user.role %></p>
+      </div>
+
+      <a href="/data/user" class="button is-light">Kembali</a>
+    </div>
+  </body>
+</html>
