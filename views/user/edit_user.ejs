@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head'); %>
+</head>
+<body>
+  <%- include('partials/header'); %>
+  <div class="container mt-6">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <li><a href="/adm/dashboard"><span class="icon is-small"><i class="fas fa-home"></i></span> <span>Dashboard</span></a></li>
+        <li><a href="/data/user"><span class="icon is-small"><i class="fas fa-users"></i></span> <span>Data User</span></a></li>
+        <li class="is-active"><a href="#"><span>Edit User</span></a></li>
+      </ul>
+    </nav>
+
+    <form action="/data/edit_user/<%= user.id_user %>/edit" method="POST" class="box">
+      <div class="field">
+        <label class="label">Nama Lengkap</label>
+        <div class="control">
+          <input class="input" type="text" name="nama_lengkap" value="<%= user.nama_lengkap %>">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Username</label>
+        <div class="control">
+          <input class="input" type="text" name="username" value="<%= user.username %>">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Email</label>
+        <div class="control">
+          <input class="input" type="email" name="email" value="<%= user.email %>">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">Role</label>
+        <div class="control">
+          <div class="select">
+            <select name="role">
+              <option value="wali pemasyarakatan" <%= user.role === 'wali pemasyarakatan' ? 'selected' : '' %>>Wali Pemasyarakatan</option>
+              <option value="koordinator wali" <%= user.role === 'koordinator wali' ? 'selected' : '' %>>Koordinator Wali</option>
+              <option value="kepala lapas" <%= user.role === 'kepala lapas' ? 'selected' : '' %>>Kepala Lapas</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-grouped mt-4">
+        <div class="control">
+          <button class="button is-primary" type="submit">Simpan Perubahan</button>
+        </div>
+        <div class="control">
+          <a class="button is-light" href="/data/user">Batal</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
