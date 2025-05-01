@@ -112,48 +112,55 @@
         </div>
         <% } %>
 
-        <h1 class="title has-text-centered  mb-4">
+        <h1 class="title has-text-centered mb-4">
           <i class="fas fa-lock"></i> Masuk ke Sistem
         </h1>
 
         <form class="box" method="post" action="/login">
           <div class="field">
             <label class="label">Username</label>
-            <div class="control has-icons-left">
-              <input
-                class="input"
-                type="text"
-                name="username"
-                placeholder="username"
-                required
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-user"></i>
-              </span>
+            <div class="field has-addons">
+              <p class="control is-expanded">
+                <input
+                  class="input"
+                  type="text"
+                  name="username"
+                  placeholder="Masukkan username"
+                  required
+                />
+              </p>
+              <p class="control">
+                <span class="button is-static">
+                  User
+                </span>
+              </p>
             </div>
           </div>
-
+          
           <div class="field">
             <label class="label">Password</label>
-            <div class="control has-icons-left has-icons-right">
-              <input
-                id="passwordInput"
-                class="input"
-                type="password"
-                name="password"
-                placeholder="••••••••"
-                required
-              />
-              <span class="icon is-small is-left">
-                <i class="fas fa-lock"></i>
-              </span>
-              <span
-                class="icon is-small is-right"
-                onclick="togglePassword()"
-                style="cursor: pointer"
-              >
-                <i id="toggleIcon" class="fas fa-eye"></i>
-              </span>
+            <div class="field has-addons">
+              <p class="control is-expanded">
+                <input
+                  id="passwordInput"
+                  class="input"
+                  type="password"
+                  name="password"
+                  placeholder="Masukkan password"
+                  required
+                />
+              </p>
+              <p class="control">
+                <button
+                  type="button"
+                  class="button is-light"
+                  onclick="togglePassword()"
+                  id="toggleBtn"
+                  style="height: 100%"
+                >
+                  Lihat
+                </button>
+              </p>
             </div>
           </div>
 
@@ -192,16 +199,14 @@
 
       function togglePassword() {
         const input = document.getElementById("passwordInput");
-        const icon = document.getElementById("toggleIcon");
+        const toggleBtn = document.getElementById("toggleBtn");
 
         if (input.type === "password") {
           input.type = "text";
-          icon.classList.remove("fa-eye");
-          icon.classList.add("fa-eye-slash");
+          toggleBtn.textContent = "Sembunyikan";
         } else {
           input.type = "password";
-          icon.classList.remove("fa-eye-slash");
-          icon.classList.add("fa-eye");
+          toggleBtn.textContent = "Lihat";
         }
       }
     </script>
