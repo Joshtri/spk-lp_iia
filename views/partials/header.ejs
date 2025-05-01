@@ -40,7 +40,6 @@
               >Data Sub Kriteria</a
             >
 
-            <!-- <a href="/data/data_user" class="navbar-item">Data user</a> -->
             <!-- <a href="/user" class="navbar-item">Data Kewarganegaraan</a> -->
             <a href="/data/pidana" class="navbar-item">Data Tindak Pidana</a>
             <hr class="navbar-divider" />
@@ -49,9 +48,14 @@
             <a href="/adm/data/hasil_perhitungan" class="navbar-item"
               >Data Hasil Perhitungan</a
             >
+            <% if (user && user.role === 'admin') { %>
+              <a href="/data/user" class="navbar-item">Users Management</a>
+            <% } %>
 
             <% if(user) { %> <% if(user.role === 'wali pemasyarakatan') { %> <%
-            } %> <% } %>
+            } %>
+            
+            <% } %>
 
             <hr class="navbar-divider" />
             <!-- <a href="#" class="navbar-item">Sign out</a> -->
