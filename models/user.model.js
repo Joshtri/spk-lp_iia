@@ -31,7 +31,7 @@ const User =  db.define("User",{
         allowNull: false
     },
     role: {
-        type: DataTypes.ENUM('wali pemasyarakatan','koordinator wali','kepala lapas'),
+        type: DataTypes.ENUM('wali pemasyarakatan','koordinator wali','kepala lapas', 'admin'),
         defaultValue: 'wali pemasyarakatan',
         allowNull: false
     }
