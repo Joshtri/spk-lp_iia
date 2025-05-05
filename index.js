@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 
 // import MongoStore from 'connect-mongo';
 // import connectDB from './config/mongoConfig.js';
+import fileUpload from 'express-fileupload';
 
 import routeLogin from './routes/login.route.js';
 import routeNarapidana from './routes/narapidana.route.js';
@@ -22,6 +23,7 @@ import routePidana from './routes/pidana.route.js';
 import routePerhitungan from './routes/perhitungan.route.js';
 import routePenilaian from './routes/penilaian.route.js';
 import routePeriode from './routes/periode.route.js';
+import routeFileDistribusi from './routes/fileDistribusi.route.js';
 
 
 import db from './config/dbConfig.js';
@@ -48,6 +50,7 @@ const __dirname = path.dirname(__filename);
 
 // Menggunakan method-override
 app.use(methodOverride('_method'));
+app.use(fileUpload());
 
 // Express Session untuk Offline
 app.use(
@@ -89,17 +92,18 @@ app.set("views", [
   path.join(__dirname, "/views/user"),
   path.join(__dirname, "/views/kriteria"),
   path.join(__dirname, "/views/perhitungan"),
-  path.join(__dirname, "/views/pidana"),
+  path.join(__dirname, "/views/pidana"),  
   path.join(__dirname, "/views/other"),
   path.join(__dirname, "/views/penilaian"),
   path.join(__dirname, "/views/periode"),
   path.join(__dirname, "/views/sub_kriteria"),
+  path.join(__dirname, "/views/file_distribusi"),
 ]);
 
 // Menggunakan rute secara eksplisit untuk setiap grup rute
 app.use('/', routeLogin);
 app.use('/adm', routeDashboard, routePerhitungan);
-app.use('/data',  routeUser, routeKriteria, routeNarapidana,routeSubKriteria,routePidana, routePenilaian, routePeriode);
+app.use('/data',  routeUser, routeKriteria, routeNarapidana,routeSubKriteria,routePidana, routePenilaian, routePeriode,routeFileDistribusi );
 
 
 app.listen(PORT, () => {

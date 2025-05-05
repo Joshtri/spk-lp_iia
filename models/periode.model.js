@@ -18,6 +18,8 @@ const Periode = db.define('Periode',{
         allowNull:false,
         type: DataTypes.STRING(50)
     }
+    
+
 });
 
 

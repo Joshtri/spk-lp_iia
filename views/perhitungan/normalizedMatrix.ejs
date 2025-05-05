@@ -39,6 +39,10 @@
             </nav>
             <hr class="navbar-divider mb-3"/>
 
+            <% if (message && message.length > 0) { %>
+                <div class="notification is-danger"><%= message %></div>
+              <% } %>
+
             <form method="GET" action="/adm/normalized-matrix">
                 <label for="periodeId">Pilih Periode:</label>
                 <select name="periodeId" class="select" id="periodeId">

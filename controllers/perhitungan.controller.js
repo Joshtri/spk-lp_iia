@@ -9,20 +9,19 @@ import PDFDocument from "pdfkit";
 // Controller to fetch data
 
 export const hasilPerhitunganSuccessPage = async (req, res) => {
-    const title = "Hasil Perhitungan Berhasil";
-    const messagePost = req.flash("tambahInfo");
-    const messageUpdate = req.flash("updateInfo");
-    const messageDelete = req.flash("deleteInfo");
-    const userData = req.session.user;
+  const title = "Hasil Perhitungan Berhasil";
+  const messagePost = req.flash("tambahInfo");
+  const messageUpdate = req.flash("updateInfo");
+  const messageDelete = req.flash("deleteInfo");
+  const userData = req.session.user;
 
-
-    res.render("hasil_perhitungan_success", {
-        title,
-        messagePost,
-        messageUpdate,
-        messageDelete,
-        user: userData,
-    });
+  res.render("hasil_perhitungan_success", {
+    title,
+    messagePost,
+    messageUpdate,
+    messageDelete,
+    user: userData,
+  });
 };
 
 export const MainPerhitunganPage = async (req, res) => {
@@ -541,40 +540,52 @@ export const MainPerhitunganPage = async (req, res) => {
 // };
 
 export const saveHasilPerhitungan = async (req, res) => {
-    try {
-      const { preferences, periodeId } = req.body;
-  
-      if (!Array.isArray(preferences)) {
-        return res.status(400).json({ message: "Preferences is not an array" });
-      }
-  
-      const periode = await Periode.findByPk(periodeId);
-      if (!periode) {
-        return res.status(400).json({ message: "Invalid Periode ID" });
-      }
-  
-      for (const pref of preferences) {
-        const { nama, preferenceScore } = pref;
-        const status_kelulusan = parseFloat(preferenceScore) >= 0.5 ? "lulus" : "tidak lulus";
-  
-        await Hasil_Perhitungan.create({
-          nama_napi: nama,
-          nilai_preferensi: preferenceScore,
-          periodeId: periodeId,
-          status_kelulusan: status_kelulusan,
-        });
-      }
-  
-      // ✅ Setelah selesai, redirect ke halaman sukses
-      res.redirect('/adm/hasil_perhitungan_success'); 
-      // Kamu buat route /adm/hasil_perhitungan_success untuk tampilan sukses
-  
-    } catch (error) {
-      console.error("Error saving hasil perhitungan:", error);
-      res.status(500).json({ message: "Internal Server Error" });
+  try {
+    const { preferences, periodeId } = req.body;
+
+    if (!Array.isArray(preferences)) {
+      return res.status(400).json({ message: "Preferences is not an array" });
     }
-  };
-  
+
+    // Validasi periode
+    const periode = await Periode.findByPk(periodeId);
+    if (!periode) {
+      return res.status(400).json({ message: "Invalid Periode ID" });
+    }
+
+    // ✅ Validasi: cek apakah hasil sudah ada untuk periode ini
+    const existingData = await Hasil_Perhitungan.findOne({
+      where: { periodeId },
+    });
+
+    if (existingData) {
+      // Jika sudah ada, redirect kembali dengan pesan flash
+      req.flash("uploadInfo", " Hasil perhitungan untuk periode ini sudah tersimpan.");
+      return res.redirect("/adm/normalized-matrix?periodeId=" + periodeId);
+    }
+
+    // ✅ Simpan hasil baru jika belum ada
+    for (const pref of preferences) {
+      const { nama, preferenceScore } = pref;
+      const status_kelulusan =
+        parseFloat(preferenceScore) >= 0.5 ? "lulus" : "tidak lulus";
+
+      await Hasil_Perhitungan.create({
+        nama_napi: nama,
+        nilai_preferensi: parseFloat(preferenceScore),
+        periodeId,
+        status_kelulusan,
+      });
+    }
+
+    req.flash("uploadInfo", "✅ Hasil perhitungan berhasil disimpan.");
+    res.redirect("/adm/data/hasil_perhitungan");
+  } catch (error) {
+    console.error("Error saving hasil perhitungan:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 
 //source code jadi.
 export const hasilPerhitunganPage = async (req, res) => {
@@ -625,7 +636,6 @@ export const exportPDFByPeriode = async (req, res) => {
   }
 
   try {
-    // Ambil data hasil perhitungan berdasarkan periode
     const hasilPerhitunganData = await Hasil_Perhitungan.findAll({
       where: {
         "$Periode.periode_penilaian$": periode,
@@ -642,69 +652,74 @@ export const exportPDFByPeriode = async (req, res) => {
       return res.status(404).send("Data tidak ditemukan untuk periode ini.");
     }
 
-    // Membuat dokumen PDF
     const doc = new PDFDocument({ margin: 30, size: "A4" });
     const fileName = `Hasil_Perhitungan_${periode}.pdf`;
 
     res.setHeader("Content-disposition", `attachment; filename="${fileName}"`);
     res.setHeader("Content-type", "application/pdf");
-
     doc.pipe(res);
 
-    // Judul Dokumen
+    const maxY = 800; // batas bawah halaman A4
+    const lineHeight = 20;
+    let y = 100;
+
+    // Judul
     doc
       .font("Helvetica-Bold")
       .fontSize(16)
-      .text(`Data Hasil Perhitungan (${periode})`, { align: "center" });
-    doc.moveDown();
+      .text(`Data Hasil Perhitungan (${periode})`, {
+        align: "center",
+      });
 
-    // Header Tabel
-    const tableTop = 150; // Posisi vertikal awal tabel
-    const columnWidths = [50, 150, 100, 100, 100]; // Lebar setiap kolom
+    y += 30;
 
-    doc.font("Helvetica-Bold").fontSize(10);
-    doc.text("No", 50, tableTop);
-    doc.text("Nama Narapidana", 100, tableTop);
-    doc.text("Nilai Preferensi", 250, tableTop);
-    doc.text("Periode", 350, tableTop);
-    doc.text("Status Bebas", 450, tableTop);
+    // Fungsi untuk header tabel
+    const drawTableHeader = () => {
+      doc.font("Helvetica-Bold").fontSize(10);
+      doc.text("No", 50, y);
+      doc.text("Nama Narapidana", 80, y);
+      doc.text("Nilai Preferensi", 220, y);
+      doc.text("Periode", 320, y);
+      doc.text("Status Bebas", 430, y);
+      doc
+        .moveTo(50, y + 15)
+        .lineTo(550, y + 15)
+        .stroke();
+      y += 20;
+    };
 
-    doc
-      .moveTo(50, tableTop + 15)
-      .lineTo(550, tableTop + 15)
-      .stroke(); // Garis pembatas header
-
-    // Isi Tabel
-    let y = tableTop + 20; // Baris pertama setelah header
+    drawTableHeader();
 
     hasilPerhitunganData.forEach((data, index) => {
       const periodeText = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
+
+      // Pindah halaman jika y melebihi batas
+      if (y > maxY - lineHeight * 2) {
+        doc.addPage();
+        y = 50;
+        drawTableHeader(); // Tampilkan header ulang di halaman baru
+      }
+
       doc.font("Helvetica").fontSize(10);
-
-      // Menulis data dalam kolom
-      doc.text(index + 1, 50, y); // Nomor
-      doc.text(data.nama_napi, 100, y); // Nama Narapidana
-      doc.text(data.nilai_preferensi, 250, y); // Nilai Preferensi
-      doc.text(periodeText, 350, y); // Periode
-      doc.text(data.status_kelulusan, 450, y); // Status Bebas
-
-      // Garis horizontal antar baris
+      doc.text(index + 1, 50, y);
+      doc.text(data.nama_napi, 80, y, { width: 120, ellipsis: true });
+      doc.text(data.nilai_preferensi.toFixed(4), 220, y);
+      doc.text(periodeText, 320, y, { width: 100 });
+      doc.text(data.status_kelulusan || "-", 430, y);
       doc
         .moveTo(50, y + 15)
         .lineTo(550, y + 15)
         .stroke();
 
-      y += 20; // Pindah ke baris berikutnya
+      y += lineHeight;
     });
 
-    // Selesaikan Dokumen
     doc.end();
   } catch (error) {
     console.error("Error saat membuat PDF:", error);
     res.status(500).send("Terjadi kesalahan saat mengekspor PDF.");
   }
 };
-
 // Controller to delete hasil perhitungan by ID
 export const deleteHasilPerhitungan = async (req, res) => {
   try {
@@ -736,10 +751,18 @@ export const normalizedMatrixPage = async (req, res) => {
     const userData = req.session.user;
 
     // Ambil periodeId dari query string
-    const { periodeId } = req.query;
+    // const { periodeId } = req.query;
 
-    // Ambil semua data periode dan kriteria
-    const periodeData = await Periode.findAll();
+    const periodeData = await Periode.findAll({
+      order: [
+        ["tahun_periode", "DESC"],
+        ["periode_penilaian", "DESC"],
+      ],
+    });
+
+    // Periode default adalah yang terbaru
+    const latestPeriode = periodeData[0];
+    const periodeId = req.query.periodeId || latestPeriode?.id_periode;
     const kriteriaData = await Kriteria.findAll();
 
     // Ambil data penilaian dengan data narapidana berdasarkan periodeId (jika ada)
@@ -818,6 +841,7 @@ export const normalizedMatrixPage = async (req, res) => {
       idealNegative: idealNegative,
       preferences: preferences,
     };
+    const message = req.flash("uploadInfo");
 
     console.log("DEBUG: Normalized Matrix:", normalizedMatrix);
     console.log("DEBUG: Weighted Normalized Matrix:", weightedNormalizedMatrix);
@@ -831,6 +855,7 @@ export const normalizedMatrixPage = async (req, res) => {
       kriteriaData,
       matrixData,
       title,
+      message,
       user: userData,
       periodeData,
       selectedPeriodeId: periodeId || "", // untuk menampilkan periode yang dipilih

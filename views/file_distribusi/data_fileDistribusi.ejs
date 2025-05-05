@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%- include("partials/head") %>
+  </head>
+  <body>
+    <%- include("partials/header") %>
+
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3"><%= title %></h1>
+
+        <% if (message.length > 0) { %>
+        <div class="notification is-success"><%= message %></div>
+        <% } %> <% if (user.role !== 'kepala lapas') { %>
+
+        <form
+          action="/data/file-distribusi/upload"
+          method="POST"
+          enctype="multipart/form-data"
+        >
+          <div class="field">
+            <label class="label">Judul File</label>
+            <div class="control">
+              <input class="input" type="text" name="judul_file" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Ditujukan Ke</label>
+            <div class="control">
+              <div class="select">
+                <select name="ditujukan_ke" required>
+                  <option value="">-- Pilih Role --</option>
+                  <% roles.forEach(role => { %>
+                  <option value="<%= role %>"><%= role %></option>
+                  <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <% if (user.role === 'koordinator wali') { %>
+          <p class="help is-info mt-1">
+            Anda hanya dapat mengirim ke Kepala Lapas
+          </p>
+          <% } %>
+
+          <hr style="margin-top: 20px" />
+          <div class="field">
+            <label class="label">Upload File (PDF)</label>
+            <div class="control">
+              <input
+                type="file"
+                name="file"
+                accept="application/pdf"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="control">
+              <button class="button is-primary" type="submit">Upload</button>
+            </div>
+          </div>
+        </form>
+        <% } %> <% if (user.role === 'koordinator wali') { %>
+        <h2 class="subtitle is-4">File dari Kepala Lapas untuk Anda</h2>
+        <% } else if (user.role === 'kepala lapas') { %>
+        <h2 class="subtitle is-4">File dari Koordinator Wali untuk Anda</h2>
+        <% } else { %>
+        <h2 class="subtitle is-4">Daftar File Distribusi</h2>
+        <% } %> <% if (allFiles.length === 0) { %>
+        <p>Belum ada file distribusi.</p>
+        <% } else { %>
+        <div class="table-container">
+          <table class="table is-striped is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Judul File</th>
+                <th>Ditujukan Ke</th>
+                <th>Tanggal Upload</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% allFiles.forEach((file, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= file.judul_file %></td>
+                <td><%= file.ditujukan_ke %></td>
+                <td><%= new Date(file.createdAt).toLocaleString("id-ID") %></td>
+                <td>
+                  <a
+                    href="/data/file-distribusi/view/<%= file.id_file %>"
+                    class="button is-small is-info"
+                    target="_blank"
+                  >
+                    Lihat
+                  </a>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <!-- <%- include("partials/footer") %> -->
+  </body>
+</html>
