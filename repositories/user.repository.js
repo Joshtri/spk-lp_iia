@@ -103,3 +103,7 @@ export const deleteUserById = async (userId) => {
         throw error;
     }
 };
+
+export async function countByRole(role) {
+    return await User.count({ where: { role } });
+}

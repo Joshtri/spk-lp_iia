@@ -4,6 +4,9 @@
     <%-include('partials/head'); %>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 </head>
 <body>
     <%-include('partials/header'); %>
@@ -75,7 +78,7 @@
                         <label class="label">Nama Narapidana</label>
                         <div class="control">
                           <div class="select is-fullwidth">
-                            <select name="narapidanaId" required>
+                            <select id="narapidana-select" name="narapidanaId" required>
                               <option value="">- Pilih Narapidana -</option>
                               <% narapidanaData.forEach(function(narapidana) { %>
                                 <% 
@@ -164,6 +167,19 @@
         hiddenInput.value = bobotSubKriteria || '';
       }
     </script>
+
+    <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const narapidanaSelect = document.getElementById('narapidana-select');
+    if (narapidanaSelect) {
+      new Choices(narapidanaSelect, {
+        searchEnabled: true,
+        itemSelectText: '', // optional: remove "Press to select" label
+        shouldSort: false, // biar urutan tidak berubah
+      });
+    }
+  });
+</script>
     
     
 </body>

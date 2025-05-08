@@ -66,7 +66,7 @@
           </div>
         </form>
         <% } %> <% if (user.role === 'koordinator wali') { %>
-        <h2 class="subtitle is-4">File dari Kepala Lapas untuk Anda</h2>
+        <h2 class="subtitle is-4">File dari Wali Pemasyarakatan untuk Anda</h2>
         <% } else if (user.role === 'kepala lapas') { %>
         <h2 class="subtitle is-4">File dari Koordinator Wali untuk Anda</h2>
         <% } else { %>
@@ -80,7 +80,8 @@
               <tr>
                 <th>#</th>
                 <th>Judul File</th>
-                <th>Ditujukan Ke</th>
+                <th>Nama Pengirim</th>
+                <th>Diterima dari pihak</th>
                 <th>Tanggal Upload</th>
                 <th>Action</th>
               </tr>
@@ -90,6 +91,7 @@
               <tr>
                 <td><%= index + 1 %></td>
                 <td><%= file.judul_file %></td>
+                <td><%= file.User ? file.User.nama_lengkap : 'Tidak diketahui' %></td>
                 <td><%= file.ditujukan_ke %></td>
                 <td><%= new Date(file.createdAt).toLocaleString("id-ID") %></td>
                 <td>
