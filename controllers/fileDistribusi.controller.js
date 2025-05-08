@@ -96,7 +96,7 @@ export const uploadFileDistribusi = async (req, res) => {
     });
 
     req.flash("uploadInfo", "✅ File distribusi berhasil diunggah!");
-    res.redirect("/data/file-distribusi");
+    res.redirect("/data/sspn-spk");
   } catch (err) {
     console.error(err);
     res.status(500).send("Upload gagal");

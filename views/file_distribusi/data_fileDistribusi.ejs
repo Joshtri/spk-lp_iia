@@ -81,7 +81,7 @@
                 <th>#</th>
                 <th>Judul File</th>
                 <th>Nama Pengirim</th>
-                <th>Diterima dari pihak</th>
+                <!-- <th>Diterima dari pihak</th> -->
                 <th>Tanggal Upload</th>
                 <th>Action</th>
               </tr>
@@ -92,7 +92,7 @@
                 <td><%= index + 1 %></td>
                 <td><%= file.judul_file %></td>
                 <td><%= file.User ? file.User.nama_lengkap : 'Tidak diketahui' %></td>
-                <td><%= file.ditujukan_ke %></td>
+                <!-- <td><%= file.ditujukan_ke %></td> -->
                 <td><%= new Date(file.createdAt).toLocaleString("id-ID") %></td>
                 <td>
                   <a
