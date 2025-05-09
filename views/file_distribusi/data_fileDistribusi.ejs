@@ -14,7 +14,7 @@
         <div class="notification is-success"><%= message %></div>
         <% } %> <% if (user.role !== 'kepala lapas') { %>
 
-        <form
+          <form
           action="/data/file-distribusi/upload"
           method="POST"
           enctype="multipart/form-data"
@@ -25,27 +25,32 @@
               <input class="input" type="text" name="judul_file" required />
             </div>
           </div>
-
-          <div class="field">
-            <label class="label">Ditujukan Ke</label>
-            <div class="control">
-              <div class="select">
-                <select name="ditujukan_ke" required>
-                  <option value="">-- Pilih Role --</option>
-                  <% roles.forEach(role => { %>
-                  <option value="<%= role %>"><%= role %></option>
-                  <% }); %>
-                </select>
+        
+          <% if (user.role === 'koordinator wali') { %>
+            <div class="field">
+              <label class="label">Ditujukan Ke</label>
+              <div class="control">
+                <input class="input" type="text" value="Kepala Lapas" disabled />
+                <input type="hidden" name="ditujukan_ke" value="kepala lapas" />
+              </div>
+              <p class="help is-info mt-1">Anda hanya dapat mengirim ke Kepala Lapas</p>
+            </div>
+          <% } else { %>
+            <div class="field">
+              <label class="label">Ditujukan Ke</label>
+              <div class="control">
+                <div class="select">
+                  <select name="ditujukan_ke" required>
+                    <option value="">-- Pilih Role --</option>
+                    <% roles.forEach(role => { %>
+                      <option value="<%= role %>"><%= role %></option>
+                    <% }); %>
+                  </select>
+                </div>
               </div>
             </div>
-          </div>
-
-          <% if (user.role === 'koordinator wali') { %>
-          <p class="help is-info mt-1">
-            Anda hanya dapat mengirim ke Kepala Lapas
-          </p>
           <% } %>
-
+        
           <hr style="margin-top: 20px" />
           <div class="field">
             <label class="label">Upload File (PDF)</label>
@@ -58,13 +63,16 @@
               />
             </div>
           </div>
-
+        
           <div class="field">
             <div class="control">
-              <button class="button is-primary" type="submit">Upload</button>
+              <button class="button is-primary" type="submit">Kirim ke Kepala Lapas</button>
             </div>
           </div>
         </form>
+
+        <hr>
+        
         <% } %> <% if (user.role === 'koordinator wali') { %>
         <h2 class="subtitle is-4">File dari Wali Pemasyarakatan untuk Anda</h2>
         <% } else if (user.role === 'kepala lapas') { %>
