@@ -109,9 +109,11 @@
       </div>
 
       <section id="ikhtisar-data-section">
-        <div class="columns is-centered custom-columns">
+        <div class="columns is-multiline is-variable is-4">
           <!-- Jumlah Narapidana (selalu tampil) -->
-          <div class="column is-half-tablet is-one-third-desktop">
+          <div
+            class="column is-full-mobile is-half-tablet is-one-third-desktop"
+          >
             <div class="card">
               <div class="card-content">
                 <h3 class="title is-4">Jumlah Narapidana</h3>
@@ -119,42 +121,45 @@
               </div>
             </div>
           </div>
-      
-          <!-- Admin dan Wali Pemasyarakatan -->
-          <% if (user.role === 'admin' || user.role === 'wali pemasyarakatan') { %>
-            <div class="column is-half-tablet is-one-third-desktop">
-              <div class="card">
-                <div class="card-content">
-                  <h3 class="title is-4">Jumlah Kriteria</h3>
-                  <p class="is-size-5"><%= totalKriteria %></p>
-                </div>
+
+          <% if (user.role === 'admin' || user.role === 'wali pemasyarakatan') {
+          %>
+          <div
+            class="column is-full-mobile is-half-tablet is-one-third-desktop"
+          >
+            <div class="card">
+              <div class="card-content">
+                <h3 class="title is-4">Jumlah Kriteria</h3>
+                <p class="is-size-5"><%= totalKriteria %></p>
               </div>
             </div>
-            <div class="column is-half-tablet is-one-third-desktop">
-              <div class="card">
-                <div class="card-content">
-                  <h3 class="title is-4">Jumlah User</h3>
-                  <p class="is-size-5"><%= totalUser %></p>
-                </div>
+          </div>
+
+          <div
+            class="column is-full-mobile is-half-tablet is-one-third-desktop"
+          >
+            <div class="card">
+              <div class="card-content">
+                <h3 class="title is-4">Jumlah User</h3>
+                <p class="is-size-5"><%= totalUser %></p>
               </div>
             </div>
-          <% } %>
-      
-          <!-- Koordinator Wali dan Kepala Lapas -->
-          <% if (user.role === 'koordinator wali' || user.role === 'kepala lapas' || user.role === 'admin') { %>
-            <div class="column is-half-tablet is-one-third-desktop">
-              <div class="card">
-                <div class="card-content">
-                  <h3 class="title is-4">Jumlah Wali Pemasyarakatan</h3>
-                  <p class="is-size-5"><%= totalWaliPemasyarakatan %></p>
-                </div>
+          </div>
+          <% } %> <% if (user.role === 'koordinator wali' || user.role ===
+          'kepala lapas' || user.role === 'admin') { %>
+          <div
+            class="column is-full-mobile is-half-tablet is-one-third-desktop"
+          >
+            <div class="card">
+              <div class="card-content">
+                <h3 class="title is-4">Jumlah Wali Pemasyarakatan</h3>
+                <p class="is-size-5"><%= totalWaliPemasyarakatan %></p>
               </div>
             </div>
+          </div>
           <% } %>
         </div>
       </section>
-      
-      
     </div>
 
     <!-- JS Section -->
