@@ -28,5 +28,9 @@ router.post('/edit_user/:id/password', userController.changePassword);
 router.post('/delete_user/:id', userController.deleteUser);
 
 
+router.get("/bawahan/wali", userController.getWaliBawahanPage);
+
+
+
 
 export default router

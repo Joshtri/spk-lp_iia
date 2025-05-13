@@ -1,6 +1,6 @@
 import FileDistribusi from "../models/file_distribusi.model.js";
 import User from "../models/user.model.js";
-
+import { Op } from "sequelize";
 
 export const fileDistribusiPage = async (req, res) => {
   const title = "Upload File Distribusi";
@@ -10,53 +10,52 @@ export const fileDistribusiPage = async (req, res) => {
   try {
     let allFiles = [];
 
-    // Role-based filtering + join user
+    const koordinatorList = await User.findAll({
+      where: { role: "koordinator wali" },
+      attributes: ["id_user", "nama_lengkap"],
+    });
+
     if (user.role === "koordinator wali") {
       allFiles = await FileDistribusi.findAll({
-        where: { ditujukan_ke: "koordinator wali" },
+        where: {
+          [Op.or]: [
+            { ditujukan_ke_id: user.id_user },
+            { koordinatorId: user.id_user }, // ✅ juga cocokkan dengan koordinatorId
+          ],
+        },
         include: [
-          {
-            model: User,
-            attributes: ["nama_lengkap"],
-          },
+          { model: User, as: "pengirim", attributes: ["nama_lengkap"] },
         ],
         order: [["createdAt", "DESC"]],
       });
     } else if (user.role === "kepala lapas") {
+      // Ambil berdasarkan role lama
       allFiles = await FileDistribusi.findAll({
         where: { ditujukan_ke: "kepala lapas" },
         include: [
-          {
-            model: User,
-            attributes: ["nama_lengkap"],
-          },
+          { model: User, as: "pengirim", attributes: ["nama_lengkap"] },
+          { model: User, as: "penerima", attributes: ["nama_lengkap"] },
         ],
         order: [["createdAt", "DESC"]],
       });
     } else {
-      // Admin bisa lihat semua
+      // Admin melihat semua file + relasi pengirim dan penerima
       allFiles = await FileDistribusi.findAll({
         include: [
-          {
-            model: User,
-            attributes: ["nama_lengkap"],
-          },
+          { model: User, as: "pengirim", attributes: ["nama_lengkap"] },
+          { model: User, as: "penerima", attributes: ["nama_lengkap"] },
         ],
         order: [["createdAt", "DESC"]],
       });
     }
 
-    const targetRoles =
-      user.role === "koordinator wali"
-        ? ["kepala lapas"]
-        : ["koordinator wali", "kepala lapas"];
-
     res.render("data_fileDistribusi", {
       title,
       user,
       message,
-      roles: targetRoles,
       allFiles,
+      roles: ["koordinator wali", "kepala lapas"], // untuk admin
+      koordinatorList,
     });
   } catch (err) {
     console.error(err);
@@ -66,33 +65,27 @@ export const fileDistribusiPage = async (req, res) => {
 
 export const uploadFileDistribusi = async (req, res) => {
   try {
-    const { judul_file, ditujukan_ke } = req.body;
-
-    // Ambil user dari session
+    const { judul_file, ditujukan_ke, ditujukan_ke_id, koordinatorId } =
+      req.body;
     const user = req.session.user;
 
-    if (!user || !user.id_user) {
-      return res.status(403).send("Akses ditolak. User tidak ditemukan.");
-    }
-
-    if (!req.files || !req.files.file) {
+    if (!user || !user.id_user) return res.status(403).send("Akses ditolak.");
+    if (!req.files || !req.files.file)
       return res.status(400).send("File tidak ditemukan");
-    }
 
     const file = req.files.file;
-
-    // Validasi ekstensi
-    if (file.mimetype !== "application/pdf") {
+    if (file.mimetype !== "application/pdf")
       return res.status(400).send("File harus berupa PDF");
-    }
 
     const base64File = file.data.toString("base64");
 
     await FileDistribusi.create({
       judul_file,
-      ditujukan_ke,
       file: base64File,
-      userId: user.id_user, // ✅ simpan relasi user
+      ditujukan_ke,
+      ditujukan_ke_id: parseInt(ditujukan_ke_id) || null,
+      koordinatorId: parseInt(koordinatorId) || null, // ✅ Akan tersimpan sekarang
+      userId: user.id_user,
     });
 
     req.flash("uploadInfo", "✅ File distribusi berhasil diunggah!");

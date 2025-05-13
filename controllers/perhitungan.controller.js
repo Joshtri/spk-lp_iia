@@ -23,7 +23,6 @@ export const hasilPerhitunganSuccessPage = async (req, res) => {
     user: userData,
   });
 };
-
 export const MainPerhitunganPage = async (req, res) => {
   try {
     const title = "Perhitungan TOPSIS";
@@ -37,8 +36,9 @@ export const MainPerhitunganPage = async (req, res) => {
       attributes: ["id_kriteria", "nama_kriteria", "bobot_kriteria"],
     });
 
-    // Fetch penilaian data with related narapidana and criteria values
+    // Hanya ambil narapidana yang ditangani oleh user ini (wali)
     const penilaianData = await Narapidana.findAll({
+      where: { waliId: userData.id_user }, // ✅ filter sesuai wali pemasyarakatan
       include: [
         {
           model: Penilaian,
@@ -47,7 +47,7 @@ export const MainPerhitunganPage = async (req, res) => {
       ],
     });
 
-    // Prepare the matrix for each narapidana
+    // Buat matriks nilai kriteria
     const matrixData = penilaianData.map((narapidana) => {
       return {
         narapidana,
@@ -55,16 +55,15 @@ export const MainPerhitunganPage = async (req, res) => {
           const nilaiKriteria = narapidana.Penilaians.find(
             (penilaian) => penilaian.kriteriaId === kriteria.id_kriteria
           );
-          return nilaiKriteria ? nilaiKriteria.nilai_kriteria : "-"; // "-" if no value
+          return nilaiKriteria ? nilaiKriteria.nilai_kriteria : "-";
         }),
       };
     });
 
     res.render("mainTopsis", {
       penilaianData: matrixData,
-      kriteriaData: kriteriaData,
+      kriteriaData,
       title,
-      // kriteriaData,
       messagePost,
       messageUpdate,
       messageDelete,
@@ -560,7 +559,10 @@ export const saveHasilPerhitungan = async (req, res) => {
 
     if (existingData) {
       // Jika sudah ada, redirect kembali dengan pesan flash
-      req.flash("uploadInfo", " Hasil perhitungan untuk periode ini sudah tersimpan.");
+      req.flash(
+        "uploadInfo",
+        " Hasil perhitungan untuk periode ini sudah tersimpan."
+      );
       return res.redirect("/adm/normalized-matrix?periodeId=" + periodeId);
     }
 
@@ -586,8 +588,6 @@ export const saveHasilPerhitungan = async (req, res) => {
   }
 };
 
-
-//source code jadi.
 export const hasilPerhitunganPage = async (req, res) => {
   const userData = req.session.user;
   const title = "Hasil Perhitungan";
@@ -597,8 +597,18 @@ export const hasilPerhitunganPage = async (req, res) => {
   const offset = (page - 1) * limit;
 
   try {
+    const narapidanaList = await Narapidana.findAll({
+      where: { waliId: userData.id_user },
+      attributes: ["nama_narapidana"],
+    });
+
+    const namaNapiList = narapidanaList.map((napi) => napi.nama_narapidana);
+
     const { count, rows: hasilPerhitunganData } =
       await Hasil_Perhitungan.findAndCountAll({
+        where: {
+          nama_napi: namaNapiList,
+        },
         include: [
           {
             model: Periode,
@@ -773,6 +783,9 @@ export const normalizedMatrixPage = async (req, res) => {
         {
           model: Narapidana,
           attributes: ["nama_narapidana"],
+          ...(userData.role === "wali pemasyarakatan" && {
+            where: { waliId: userData.id_user },
+          }),
         },
       ],
     });

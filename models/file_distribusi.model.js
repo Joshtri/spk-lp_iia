@@ -22,8 +22,20 @@ const FileDistribusi = db.define(
       type: DataTypes.STRING(255),
       allowNull: true,
     },
-
+    ditujukan_ke_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     userId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: User,
+        key: "id_user",
+      },
+    },
+    // ✅ Tambahkan ini:
+    koordinatorId: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
@@ -34,12 +46,15 @@ const FileDistribusi = db.define(
   },
   {
     timestamps: true,
-    tableName: "file_distribusi", // custom nama tabel
+    tableName: "file_distribusi",
   }
 );
 
 // Relasi
-User.hasMany(FileDistribusi, { foreignKey: "userId" });
-FileDistribusi.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(FileDistribusi, { foreignKey: "userId", as: "pengiriman" });
+FileDistribusi.belongsTo(User, { foreignKey: "userId", as: "pengirim" });
+
+User.hasMany(FileDistribusi, { foreignKey: "koordinatorId", as: "diterima" });
+FileDistribusi.belongsTo(User, { foreignKey: "koordinatorId", as: "penerima" });
 
 export default FileDistribusi;

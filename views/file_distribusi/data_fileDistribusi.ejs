@@ -14,65 +14,99 @@
         <div class="notification is-success"><%= message %></div>
         <% } %> <% if (user.role !== 'kepala lapas') { %>
 
-          <form
-          action="/data/file-distribusi/upload"
-          method="POST"
-          enctype="multipart/form-data"
-        >
-          <div class="field">
-            <label class="label">Judul File</label>
-            <div class="control">
-              <input class="input" type="text" name="judul_file" required />
-            </div>
-          </div>
-        
-          <% if (user.role === 'koordinator wali') { %>
-            <div class="field">
-              <label class="label">Ditujukan Ke</label>
-              <div class="control">
-                <input class="input" type="text" value="Kepala Lapas" disabled />
-                <input type="hidden" name="ditujukan_ke" value="kepala lapas" />
-              </div>
-              <p class="help is-info mt-1">Anda hanya dapat mengirim ke Kepala Lapas</p>
-            </div>
-          <% } else { %>
-            <div class="field">
-              <label class="label">Ditujukan Ke</label>
-              <div class="control">
-                <div class="select">
-                  <select name="ditujukan_ke" required>
-                    <option value="">-- Pilih Role --</option>
-                    <% roles.forEach(role => { %>
-                      <option value="<%= role %>"><%= role %></option>
-                    <% }); %>
-                  </select>
-                </div>
-              </div>
-            </div>
-          <% } %>
-        
-          <hr style="margin-top: 20px" />
-          <div class="field">
-            <label class="label">Upload File (PDF)</label>
-            <div class="control">
-              <input
-                type="file"
-                name="file"
-                accept="application/pdf"
-                required
-              />
-            </div>
-          </div>
-        
-          <div class="field">
-            <div class="control">
-              <button class="button is-primary" type="submit">Kirim ke Kepala Lapas</button>
-            </div>
-          </div>
-        </form>
+<form
+  action="/data/file-distribusi/upload"
+  method="POST"
+  enctype="multipart/form-data"
+>
+  <!-- Judul -->
+  <div class="field">
+    <label class="label">Judul File</label>
+    <div class="control">
+      <input class="input" type="text" name="judul_file" required />
+    </div>
+  </div>
 
-        <hr>
-        
+  <!-- Tujuan (Role-based) -->
+  <% if (user.role === 'koordinator wali') { %>
+    <!-- Koordinator Wali: hanya bisa kirim ke Kepala Lapas -->
+    <input type="hidden" name="ditujukan_ke" value="kepala lapas" />
+  
+  <% } else if (user.role === 'wali pemasyarakatan') { %>
+    <!-- Wali Pemasyarakatan: hanya bisa kirim ke koordinator wali spesifik -->
+    <input type="hidden" name="ditujukan_ke" value="koordinator wali" />
+    <div class="field">
+      <label class="label">Pilih Koordinator Wali Tujuan</label>
+      <div class="control">
+        <div class="select is-fullwidth">
+          <select name="ditujukan_ke_id" required>
+            <option value="">-- Pilih Koordinator Wali --</option>
+            <% koordinatorList.forEach(koor => { %>
+              <option value="<%= koor.id_user %>">
+                <%= koor.nama_lengkap %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  <% } else if (user.role === 'admin') { %>
+    <!-- Admin: bebas pilih role + koordinator -->
+    <div class="field">
+      <label class="label">Ditujukan Ke (Role)</label>
+      <div class="control">
+        <div class="select">
+          <select name="ditujukan_ke" required>
+            <option value="">-- Pilih Role --</option>
+            <% roles.forEach(role => { %>
+              <option value="<%= role %>"><%= role %></option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="label">Pilih Koordinator Tujuan (Jika Perlu)</label>
+      <div class="control">
+        <div class="select is-fullwidth">
+          <select name="ditujukan_ke_id">
+            <option value="">-- Pilih Koordinator (Opsional) --</option>
+            <% koordinatorList.forEach(koor => { %>
+              <option value="<%= koor.id_user %>">
+                <%= koor.nama_lengkap %>
+              </option>
+            <% }); %>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  <% } %>
+
+  <!-- Upload File -->
+  <hr style="margin-top: 20px" />
+  <div class="field"> 
+    <label class="label">Upload File (PDF)</label>
+    <div class="control">
+      <input type="file" name="file" accept="application/pdf" required />
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="field">
+    <div class="control">
+      <button class="button is-primary" type="submit">
+        Kirim File
+      </button>
+    </div>
+  </div>
+</form>
+
+
+        <hr />
+
         <% } %> <% if (user.role === 'koordinator wali') { %>
         <h2 class="subtitle is-4">File dari Wali Pemasyarakatan untuk Anda</h2>
         <% } else if (user.role === 'kepala lapas') { %>
@@ -99,7 +133,10 @@
               <tr>
                 <td><%= index + 1 %></td>
                 <td><%= file.judul_file %></td>
-                <td><%= file.User ? file.User.nama_lengkap : 'Tidak diketahui' %></td>
+                <td>
+                  <%= file.pengirim ? file.pengirim.nama_lengkap : 'Tidak diketahui' %>
+                </td>
+
                 <!-- <td><%= file.ditujukan_ke %></td> -->
                 <td><%= new Date(file.createdAt).toLocaleString("id-ID") %></td>
                 <td>

@@ -9,33 +9,34 @@ import * as pidanaService from "../services/pidana.services.js";
 export const narapidanaPage = async (req, res) => {
   const title = "Data Narapidana";
   const currentPage = parseInt(req.query.page) || 1;
-  const itemsPerPage = 10; // You can adjust this value as needed
+  const itemsPerPage = 10;
 
   try {
     const { narapidanaData, totalItems } =
       await narapidanaService.getNarapidana(currentPage, itemsPerPage);
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-    // Dapatkan data user dari session dan gunakan sesuai kebutuhan
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
     const userData = req.session.user;
 
     const messagePost = req.flash("tambahInfo");
     const messageUpdate = req.flash("updateInfo");
     const messageDelete = req.flash("deleteInfo");
 
+    console.log(JSON.stringify(narapidanaData[0], null, 2));
+
     res.render("data_narapidana", {
-      narapidanaData,
       title,
       user: userData,
+      narapidanaData,
       messagePost,
       messageUpdate,
       messageDelete,
       currentPage,
       totalPages,
-      itemsPerPage, // Pass itemsPerPage to the template
+      itemsPerPage,
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error in narapidanaPage:", error);
     res.status(500).send("Internal Server Error");
   }
 };

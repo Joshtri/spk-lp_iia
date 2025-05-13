@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head'); %>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <%- include('partials/header'); %>
+
+    <div class="container mt-6">
+      <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+          <li>
+            <a href="/adm/dashboard">
+              <span class="icon is-small"><i class="fas fa-home"></i></span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="is-active">
+            <a href="#">
+              <span class="icon is-small"><i class="fas fa-users"></i></span>
+              <span>Daftar Wali Pemasyarakatan</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <hr />
+
+      <% if (message && message.length > 0) { %>
+      <div class="notification is-warning">
+        <% message.forEach(msg => { %>
+        <p><%= msg %></p>
+        <% }) %>
+        <button class="delete" onclick="this.parentNode.remove()"></button>
+      </div>
+      <% } %>
+
+      <div class="box mt-4">
+        <h2 class="title is-5">Wali Pemasyarakatan Dibawah Naungan Anda</h2>
+
+        <table class="table is-fullwidth is-hoverable">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama Lengkap</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th class="has-text-centered">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (waliList.length === 0) { %>
+            <tr>
+              <td colspan="5" class="has-text-centered">
+                Belum ada wali pemasyarakatan yang terdaftar di bawah Anda.
+              </td>
+            </tr>
+            <% } else { %> <% waliList.forEach((wali, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td><%= wali.nama_lengkap %></td>
+              <td><%= wali.username %></td>
+              <td><%= wali.email %></td>
+              <td class="has-text-centered">
+                <a
+                  href="/data/detail_user/<%= wali.id_user %>/detail"
+                  class="button is-small"
+                  title="Lihat Detail"
+                >
+                  <i class="fa-regular fa-eye"></i>
+                </a>
+                <a
+                  href="/data/edit_user/<%= wali.id_user %>/edit"
+                  class="button is-warning is-light is-small"
+                  title="Edit"
+                >
+                  <i class="fa-regular fa-pen-to-square"></i>
+                </a>
+              </td>
+            </tr>
+            <% }) %> <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script>
+      function closeNotification(button) {
+        var notification = button.parentNode;
+        notification.remove();
+      }
+    </script>
+  </body>
+</html>

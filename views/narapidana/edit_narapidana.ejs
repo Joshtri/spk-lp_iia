@@ -44,7 +44,7 @@
 
             <div class="mb-3">
                 <h1 class="title">Edit Data Narapidana</h1>
-                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.User.nama_lengkap %></p>
+                <p class="has-text-weight-bold is-text ">Nama Pembimbing Napi : <%= narapidana.wali?.nama_lengkap %></p>
                 <p class="has-text-weight-bold is-text ">Data dibuat: <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
                 <p class="has-text-weight-bold is-text ">Data diperbarui: <%= new Date(narapidana.createdAt).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' }) %></p>
             </div>

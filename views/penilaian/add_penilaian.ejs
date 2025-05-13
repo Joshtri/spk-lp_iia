@@ -88,7 +88,7 @@
                                   value="<%= narapidana.id_narapidana %>"
                                   <%= sudahDinilai ? 'disabled' : '' %>
                                 >
-                                  <%= narapidana.nama_narapidana %> <%= sudahDinilai ? '(Sudah Diberi Nilai)' : '' %>
+                                  <%= narapidana.nama_narapidana %> - <%= narapidana.wali?.nama_lengkap || 'Tanpa Wali' %> <%= sudahDinilai ? '(Sudah Diberi Nilai)' : '' %>
                                 </option>
                               <% }) %>
                             </select>

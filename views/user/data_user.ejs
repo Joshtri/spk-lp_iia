@@ -87,8 +87,8 @@
                         <th>No.</th>
                         <th>Nama User</th>
                         <th>Username</th>
-                        <!-- <th>Tindak Pidana</th> -->
                         <th>Role</th>
+                        <th>Atasan</th> <!-- Tambahkan ini -->
                         <th class="has-text-centered">Action</th>
                     </tr>
                 </thead>
@@ -99,6 +99,9 @@
                         <td><%= adminData[i].nama_lengkap %></td>
                         <td><%= adminData[i].username %></td>
                         <td><%= adminData[i].role %></td>
+                        <td><%= adminData[i].koordinator?.nama_lengkap || '-' %></td>
+
+
                         <td class="has-text-centered">
                           <button class="button">
 
@@ -142,72 +145,85 @@
 
 
 
-        <div id="modalTambah" class="modal">
-            <div class="modal-background"></div>
-            <div class="modal-card">
-              <header class="modal-card-head">
-                <p class="modal-card-title is-bold">Tambah User</p>
-                <button class="delete" id="btnCloseHead" aria-label="close"></button>
-              </header>
-              <section class="modal-card-body">
-                <form action="/data/post_user" method="post">
+<div id="modalTambah" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title is-bold">Tambah User</p>
+      <button class="delete" id="btnCloseHead" aria-label="close"></button>
+    </header>
+    <section class="modal-card-body">
+      <form action="/data/post_user" method="post">
 
-                
-
-                <div class="field">
-                    <label class="label">Nama Lengkap</label>
-                    <div class="control">
-                      <input class="input" type="text" name="nama_lengkap" placeholder="Nama Lengkap">
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Username</label>
-                    <div class="control">
-                      <input class="input" type="text" name="username" placeholder="Isi Username">
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Password</label>
-                    <div class="control">
-                      <input class="input" type="text" name="password" placeholder="Isi Password">
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label">Email</label>
-                    <div class="control">
-                      <input class="input" type="text" name="email" placeholder="Isi Email">
-                    </div>
-                    <small> *) gunakan akun email yang aktif</small>
-                </div>
-
-                <div class="field">
-                    <label class="label">Akses Sebagai</label>
-                    <div class="control">
-                      <div class="select">
-                        <select name="role">
-                          <option>-</option>
-                          <option value="wali pemasyarakatan">Wali Permasyarakatan</option>
-                          <option value="koordinator wali">Koordinator Wali</option>
-                          <option value="kepala lapas">Kepala Lapas</option>
-                        </select>
-                      </div>
-                    </div>
-                </div>
-
-
-              </section>
-              <footer class="modal-card-foot">
-                <div class="buttons">
-                    <button type="button" id="btnCloseModal" class="mr-3 button is-light mt-3">Tutup</button>
-                    <button type="submit" class="button is-success mt-3">Simpan</button>
-                </div>
-              </footer>
-            </form>
-            </div>
+        <div class="field">
+          <label class="label">Nama Lengkap</label>
+          <div class="control">
+            <input class="input" type="text" name="nama_lengkap" placeholder="Nama Lengkap">
+          </div>
         </div>
+
+        <div class="field">
+          <label class="label">Username</label>
+          <div class="control">
+            <input class="input" type="text" name="username" placeholder="Isi Username">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Password</label>
+          <div class="control">
+            <input class="input" type="text" name="password" placeholder="Isi Password">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control">
+            <input class="input" type="text" name="email" placeholder="Isi Email">
+          </div>
+          <small>*) gunakan akun email yang aktif</small>
+        </div>
+
+        <div class="field">
+          <label class="label">Akses Sebagai</label>
+          <div class="control">
+            <div class="select">
+              <select name="role" id="roleSelect">
+                <option value="-">-</option>
+                <option value="wali pemasyarakatan">Wali Pemasyarakatan</option>
+                <option value="koordinator wali">Koordinator Wali</option>
+                <option value="kepala lapas">Kepala Lapas</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Field: Pilih Koordinator (muncul jika role = wali pemasyarakatan) -->
+        <div class="field" id="koordinatorField" style="display: none;">
+          <label class="label">Pilih Koordinator Wali</label>
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select name="koordinatorId">
+                <option value="">- Pilih Koordinator -</option>
+                <% koordinatorList.forEach(koor => { %>
+                  <option value="<%= koor.id_user %>"><%= koor.nama_lengkap %></option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
+        </div>
+
+    </section>
+    <footer class="modal-card-foot">
+      <div class="buttons">
+        <button type="button" id="btnCloseModal" class="mr-3 button is-light mt-3">Tutup</button>
+        <button type="submit" class="button is-success mt-3">Simpan</button>
+      </div>
+    </footer>
+    </form>
+  </div>
+</div>
+
     </div>
     
     <script>
@@ -256,5 +272,46 @@
   </script>
 
   <script src="/js/liveSearchBar.js"></script>
+
+  <script>
+  // Toggle field koordinator saat role dipilih
+  document.addEventListener('DOMContentLoaded', () => {
+    const roleSelect = document.querySelector('select[name="role"]');
+    const koordinatorField = document.getElementById('koordinatorField');
+
+    roleSelect.addEventListener('change', () => {
+      if (roleSelect.value === 'wali pemasyarakatan') {
+        koordinatorField.style.display = 'block';
+      } else {
+        koordinatorField.style.display = 'none';
+      }
+    });
+  });
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const roleSelect = document.getElementById('roleSelect');
+    const koordinatorField = document.getElementById('koordinatorField');
+
+    if (roleSelect) {
+      roleSelect.addEventListener('change', () => {
+        if (roleSelect.value === 'wali pemasyarakatan') {
+          koordinatorField.style.display = 'block';
+        } else {
+          koordinatorField.style.display = 'none';
+        }
+      });
+
+      // Inisialisasi saat pertama kali dibuka
+      if (roleSelect.value === 'wali pemasyarakatan') {
+        koordinatorField.style.display = 'block';
+      }
+    }
+  });
+</script>
+
+
 </body>
 </html>

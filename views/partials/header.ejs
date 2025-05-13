@@ -49,6 +49,8 @@
             <a href="/data/penilaian" class="navbar-item">Data Penilaian</a>
             
             <% } %>
+
+            
             
             <a href="/data/sspn-spk" class="navbar-item">Data SPPN SPK</a>
             
@@ -61,6 +63,7 @@
 
             <% if (user && user.role === 'admin') { %>
             <a href="/data/user" class="navbar-item">Users Management</a>
+            <a href="/data/bawahan/wali" class="navbar-item">Bawahan Koor Wali </a>
             <% } %> <% if(user) { %> <% if(user.role === 'wali pemasyarakatan')
             { %> <% } %> <% } %>
 

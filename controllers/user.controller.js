@@ -1,36 +1,34 @@
 import bcrypt from "bcrypt"; // Import library bcryptjs untuk enkripsi password
 import * as userService from "../services/user.services.js";
 import User from "../models/user.model.js";
-// export const userPage = async(req,res)=>{
-//     const title = "Data User";
-
-//     const successUpdateUserProfile  = req.flash('successUpdateInfoProfile');
-//     const userData = req.session.user;
-
-//     try {
-//         res.render('data_user',{
-//             title,
-//             successUpdateUserProfile,
-//             user: userData,
-
-//         });
-//     } catch (error) {
-//         throw error;
-//     }
-// };
 
 export const userPage = async (req, res) => {
   const title = "Data User";
   const successUpdateUserProfile = req.flash("successUpdateInfoProfile");
   const userData = req.session.user;
 
+  const koordinatorList = await User.findAll({
+    where: { role: "koordinator wali" },
+  });
+
   try {
-    const adminData = await User.findAll(); // ambil semua data admin
+    // const adminData = await User.findAll(); // ambil semua data admin
+    const adminData = await User.findAll({
+      include: {
+        model: User,
+        as: "koordinator",
+        attributes: ["id_user", "nama_lengkap"], // bisa tambahkan username juga kalau mau
+      },
+    });
+
+
+    console.log('debugging adminData', adminData);
     res.render("data_user", {
       title,
       successUpdateUserProfile,
       user: userData,
       adminData,
+      koordinatorList,
       messagePost: req.flash("messagePost"), // ⬅️ tambahkan ini!
       message: req.flash("changePassword"), // ✅ tambahkan ini jika ingin akses <%= message %> di EJS
     });
@@ -40,7 +38,8 @@ export const userPage = async (req, res) => {
 };
 
 export const postUser = async (req, res) => {
-  const { username, password, nama_lengkap, email, role } = req.body;
+  const { username, password, nama_lengkap, email, role, koordinatorId } =
+    req.body;
 
   try {
     // Validasi sederhana
@@ -56,7 +55,7 @@ export const postUser = async (req, res) => {
         "messagePost",
         "Harap isi semua kolom dan pilih role dengan benar."
       );
-      return res.redirect("/data/user"); // sesuaikan dengan route kamu
+      return res.redirect("/data/user");
     }
 
     // Enkripsi password
@@ -69,12 +68,11 @@ export const postUser = async (req, res) => {
       nama_lengkap,
       email,
       role,
+      koordinatorId:
+        role === "wali pemasyarakatan" ? koordinatorId || null : null,
     });
 
-    // Set flash message
     req.flash("messagePost", "Data user berhasil ditambahkan.");
-
-    // Redirect kembali ke halaman data user
     res.redirect("/data/user");
   } catch (error) {
     console.error("Gagal menambahkan user:", error);
@@ -235,31 +233,30 @@ export const userEditSubmit = async (req, res) => {
 // GET Page
 export const passwordPage = async (req, res) => {
   const { id } = req.params; // id user yang mau diubah
-  const title = 'Ubah Password';
-  const message = req.flash('changePassword');
+  const title = "Ubah Password";
+  const message = req.flash("changePassword");
 
   try {
     const user = await User.findByPk(id);
     if (!user) {
-      req.flash('changePassword', 'User tidak ditemukan.');
-      return res.redirect('/data/user');
+      req.flash("changePassword", "User tidak ditemukan.");
+      return res.redirect("/data/user");
     }
 
-    res.render('ubah_password', {
+    res.render("ubah_password", {
       title,
       user,
       message,
       showOldPassword: false, // ⬅️ admin tidak perlu input password lama
       formAction: `/data/edit_user/${user.id_user}/password`, // ⬅️ endpoint untuk update
-      cancelLink: '/data/user' // ⬅️ tombol batal kembali ke daftar user
+      cancelLink: "/data/user", // ⬅️ tombol batal kembali ke daftar user
     });
   } catch (err) {
     console.error(err);
-    req.flash('changePassword', 'Terjadi kesalahan.');
-    return res.redirect('/data/user');
+    req.flash("changePassword", "Terjadi kesalahan.");
+    return res.redirect("/data/user");
   }
 };
-
 
 export const changePassword = async (req, res) => {
   const { id } = req.params; // Ambil ID user dari URL
@@ -298,7 +295,6 @@ export const changePassword = async (req, res) => {
   }
 };
 
-
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
 
@@ -316,5 +312,30 @@ export const deleteUser = async (req, res) => {
     console.error("Gagal menghapus user:", error);
     req.flash("message", "Terjadi kesalahan saat menghapus user.");
     res.redirect("/data/user");
+  }
+};
+
+export const getWaliBawahanPage = async (req, res) => {
+  const title = "Daftar Wali Pemasyarakatan";
+  const userData = req.session.user;
+
+  try {
+    const waliList = await User.findAll({
+      where: {
+        role: "wali pemasyarakatan",
+        koordinatorId: userData.id_user, // ambil berdasarkan koordinator yang login
+      },
+    });
+
+    res.render("data_wali_bawahan", {
+      title,
+      user: userData,
+      waliList,
+      message: req.flash("message"),
+    });
+  } catch (error) {
+    console.error("Gagal mengambil data wali bawahan:", error);
+    req.flash("message", "Terjadi kesalahan.");
+    res.redirect("/dashboard");
   }
 };

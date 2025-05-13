@@ -4,6 +4,7 @@ import Penilaian from "../models/penilaian.model.js";
 import Periode from "../models/periode.model.js";
 import Sub_Kriteria from "../models/subKriteria.model.js";
 import { Op } from "sequelize";
+import User from "../models/user.model.js";
 
 // export const penilaianPage = async (req, res) => {
 //     const title = "Data Penilaian";
@@ -52,9 +53,16 @@ export const penilaianPage = async (req, res) => {
 
     const selectedPeriodeId = req.query.periodeId || "all";
 
-    // Ambil semua penilaian sekaligus
+    // Ambil penilaian dengan filter periode + filter waliId (via include.Narapidana)
     const penilaianList = await Penilaian.findAll({
-      include: [{ model: Narapidana }, { model: Periode }, { model: Kriteria }],
+      include: [
+        {
+          model: Narapidana,
+          where: { waliId: userData.id_user }, // hanya narapidana dari wali login
+        },
+        { model: Periode },
+        { model: Kriteria },
+      ],
       where:
         selectedPeriodeId !== "all"
           ? { periodeId: selectedPeriodeId }
@@ -62,7 +70,7 @@ export const penilaianPage = async (req, res) => {
       order: [["updatedAt", "DESC"]],
     });
 
-    // Group penilaian berdasarkan kombinasi narapidana & periode
+    // Grouping penilaian berdasarkan narapidana & periode
     const grouped = {};
     penilaianList.forEach((pen) => {
       const key = `${pen.narapidanaId}_${pen.periodeId}`;
@@ -76,7 +84,6 @@ export const penilaianPage = async (req, res) => {
       grouped[key].nilaiMap[pen.kriteriaId] = pen.nilai_kriteria;
     });
 
-    // Transform hasil jadi array untuk ditampilkan
     const penilaianData = Object.values(grouped).map((group) => ({
       narapidana: group.narapidana,
       periode: group.periode,
@@ -84,7 +91,7 @@ export const penilaianPage = async (req, res) => {
         (k) => group.nilaiMap[k.id_kriteria] ?? "-"
       ),
     }));
- 
+
     res.render("data_penilaian", {
       penilaianData,
       kriteriaData,
@@ -108,7 +115,16 @@ export const addPenilaianPage = async (req, res) => {
   try {
     const title = "Tambah Penilaian";
     const kriteriaData = await Kriteria.findAll();
-    const narapidanaData = await Narapidana.findAll();
+    const narapidanaData = await Narapidana.findAll({
+      include: [
+        {
+          model: User,
+          as: "wali",
+          attributes: ["nama_lengkap"],
+        },
+      ],
+    });
+
     const periodeData = await Periode.findAll();
     const subKriteriaData = await Sub_Kriteria.findAll();
 
@@ -150,7 +166,7 @@ export const addPenilaianPage = async (req, res) => {
       statusPenilaian, // ← tambahan ini
 
       subKriteriaData,
-       penilaianMap,
+      penilaianMap,
       selectedPeriodeId,
     });
   } catch (error) {
@@ -363,7 +379,6 @@ export const updatePenilaian = async (req, res) => {
     return res.redirect("/data/penilaian");
   }
 };
-
 
 export const destroyAllPenilaian = async (req, res) => {
   try {
