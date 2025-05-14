@@ -116,6 +116,9 @@ export const addPenilaianPage = async (req, res) => {
     const title = "Tambah Penilaian";
     const kriteriaData = await Kriteria.findAll();
     const narapidanaData = await Narapidana.findAll({
+      where: {
+        waliId: userData.id_user, // ✅ Filter berdasarkan wali yang sedang login
+      },
       include: [
         {
           model: User,
