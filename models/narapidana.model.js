@@ -94,7 +94,7 @@ const Narapidana = db.define(
         "hukuman mati",
         "hukuman seumur hidup",
         "B1 pidahan > 1 tahun < 3 tahun & 3 > keatas",
-        "B2A 4 tahun < 1 tahun (pidana diatas 4 bulan, kurang dari 1 tahun)",
+        "4 bulan < 1 tahun",
         "B2B 3 bulan kebawah",
         "B3/Subsider pidana pengganti denda"
       ),

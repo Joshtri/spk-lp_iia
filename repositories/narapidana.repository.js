@@ -21,19 +21,23 @@ export const createNarapidana = async (narapidanaData) => {
 
 // narapidanaRepository.js
 
-export const getNarapidana = async (skip, limit) => {
+export const getNarapidana = async (skip, limit, waliId) => {
   try {
+    const whereClause = waliId ? { waliId } : {}; // hanya filter jika waliId ada
+
     const { rows: narapidanaData, count: totalItems } =
       await Narapidana.findAndCountAll({
+        where: whereClause,
         offset: skip,
         limit: limit,
         include: [
           {
             model: User,
-            as: "wali", // ✅ sesuai relasi di model
+            as: "wali", // sesuai relasi
             attributes: ["id_user", "nama_lengkap", "email"],
           },
         ],
+        order: [["createdAt", "DESC"]],
       });
 
     return { narapidanaData, totalItems };
@@ -41,6 +45,7 @@ export const getNarapidana = async (skip, limit) => {
     throw new Error(error.message);
   }
 };
+
 
 export const getNarapidanaById = async (id) => {
   try {

@@ -12,17 +12,17 @@ export const narapidanaPage = async (req, res) => {
   const itemsPerPage = 10;
 
   try {
+    const userData = req.session.user;
+    const waliIdFilter = userData.role === "wali pemasyarakatan" ? userData.id_user : null;
+
     const { narapidanaData, totalItems } =
-      await narapidanaService.getNarapidana(currentPage, itemsPerPage);
+      await narapidanaService.getNarapidana(currentPage, itemsPerPage, waliIdFilter);
 
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    const userData = req.session.user;
 
     const messagePost = req.flash("tambahInfo");
     const messageUpdate = req.flash("updateInfo");
     const messageDelete = req.flash("deleteInfo");
-
-    console.log(JSON.stringify(narapidanaData[0], null, 2));
 
     res.render("data_narapidana", {
       title,
@@ -40,6 +40,7 @@ export const narapidanaPage = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 export const addNarapidanaPage = async (req, res) => {
   const title = "Tambah Narapidana";

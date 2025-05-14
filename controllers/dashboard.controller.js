@@ -55,11 +55,14 @@ export const dashboardPage = async (req, res) => {
 
       // Tambahkan juga jika admin
       if (role === "admin") {
-        const totalWaliPemasyarakatan = await userRepository.countByRole(
-          "wali pemasyarakatan"
-        );
+        const totalWaliPemasyarakatan = await userRepository.countByRole("wali pemasyarakatan");
+        const totalKoordinatorWali = await userRepository.countByRole("koordinator wali");
+
         viewData.totalWaliPemasyarakatan = totalWaliPemasyarakatan;
+        viewData.totalKoordinatorWali = totalKoordinatorWali;
       }
+
+
     } else if (role === "koordinator wali" || role === "kepala lapas") {
       const totalWaliPemasyarakatan = await userRepository.countByRole(
         "wali pemasyarakatan"

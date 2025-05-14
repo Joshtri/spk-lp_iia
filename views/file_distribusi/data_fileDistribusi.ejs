@@ -28,29 +28,25 @@
   </div>
 
   <!-- Tujuan (Role-based) -->
-  <% if (user.role === 'koordinator wali') { %>
-    <!-- Koordinator Wali: hanya bisa kirim ke Kepala Lapas -->
-    <input type="hidden" name="ditujukan_ke" value="kepala lapas" />
-  
-  <% } else if (user.role === 'wali pemasyarakatan') { %>
-    <!-- Wali Pemasyarakatan: hanya bisa kirim ke koordinator wali spesifik -->
-    <input type="hidden" name="ditujukan_ke" value="koordinator wali" />
-    <div class="field">
-      <label class="label">Pilih Koordinator Wali Tujuan</label>
-      <div class="control">
-        <div class="select is-fullwidth">
-          <select name="ditujukan_ke_id" required>
-            <option value="">-- Pilih Koordinator Wali --</option>
-            <% koordinatorList.forEach(koor => { %>
-              <option value="<%= koor.id_user %>">
-                <%= koor.nama_lengkap %>
-              </option>
-            <% }); %>
-          </select>
-        </div>
-      </div>
-    </div>
+<% if (user.role === 'koordinator wali') { %>
+  <!-- Koordinator Wali: kirim ke Kepala Lapas -->
+  <p>File akan dikirim ke <strong>Kepala Lapas</strong></p>
+  <input type="hidden" name="ditujukan_ke" value="kepala lapas" />
+  <input type="hidden" name="ditujukan_ke_id" value="" />
 
+<% } else if (user.role === 'wali pemasyarakatan') { %>
+  <% if (!koordinatorIdTarget) { %>
+    <article class="message is-danger">
+      <div class="message-body">
+        Tidak ditemukan koordinator wali yang terkait dengan akun Anda. Harap hubungi admin.
+      </div>
+    </article>
+  <% } else { %>
+    <p>File akan dikirim ke koordinator wali yang membawahi Anda</p>
+    <input type="hidden" name="ditujukan_ke" value="koordinator wali" />
+    <input type="hidden" name="ditujukan_ke_id" value="<%= koordinatorIdTarget %>" />
+    <input type="hidden" name="koordinatorId" value="<%= koordinatorIdTarget %>" />
+  <% } %>
   <% } else if (user.role === 'admin') { %>
     <!-- Admin: bebas pilih role + koordinator -->
     <div class="field">
@@ -84,6 +80,7 @@
     </div>
 
   <% } %>
+
 
   <!-- Upload File -->
   <hr style="margin-top: 20px" />

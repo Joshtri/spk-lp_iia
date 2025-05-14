@@ -8,10 +8,10 @@ export const createNarapidana = async(narapidanaData)=>{
   }
 };
 
-export const getNarapidana = async (page, limit) => {
+export const getNarapidana = async (page, limit, waliId) => {
   try {
     const skip = (page - 1) * limit;
-    return await narapidanaRepository.getNarapidana(skip, limit);
+    return await narapidanaRepository.getNarapidana(skip, limit, waliId);
   } catch (error) {
     throw new Error(error.message);
   }

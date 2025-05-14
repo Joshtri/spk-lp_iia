@@ -7,6 +7,8 @@ export const fileDistribusiPage = async (req, res) => {
   const user = req.session.user || {};
   const message = req.flash("uploadInfo");
 
+  console.log("Session User:", req.session.user);
+
   try {
     let allFiles = [];
 
@@ -15,21 +17,39 @@ export const fileDistribusiPage = async (req, res) => {
       attributes: ["id_user", "nama_lengkap"],
     });
 
-    if (user.role === "koordinator wali") {
+    // 🔻 Tambahkan di sini
+    let koordinatorIdTarget = null;
+    if (user.role === "wali pemasyarakatan") {
+      const currentUser = await User.findByPk(user.id_user, {
+        attributes: ["id_user", "koordinatorId"],
+      });
+      console.log("Current user from DB:", currentUser);
+
+      koordinatorIdTarget = currentUser?.koordinatorId || null;
+    }
+
+    if (user.role === "wali pemasyarakatan") {
+      // Hanya file yang dia upload sendiri
       allFiles = await FileDistribusi.findAll({
-        where: {
-          [Op.or]: [
-            { ditujukan_ke_id: user.id_user },
-            { koordinatorId: user.id_user }, // ✅ juga cocokkan dengan koordinatorId
-          ],
-        },
+        where: { userId: user.id_user },
         include: [
           { model: User, as: "pengirim", attributes: ["nama_lengkap"] },
+          { model: User, as: "penerima", attributes: ["nama_lengkap"] },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+    } else if (user.role === "koordinator wali") {
+      // File dari wali yang dibawahinya (koordinatorId === id_user)
+      allFiles = await FileDistribusi.findAll({
+        where: { koordinatorId: user.id_user },
+        include: [
+          { model: User, as: "pengirim", attributes: ["nama_lengkap"] },
+          { model: User, as: "penerima", attributes: ["nama_lengkap"] },
         ],
         order: [["createdAt", "DESC"]],
       });
     } else if (user.role === "kepala lapas") {
-      // Ambil berdasarkan role lama
+      // File yang ditujukan langsung ke kepala lapas
       allFiles = await FileDistribusi.findAll({
         where: { ditujukan_ke: "kepala lapas" },
         include: [
@@ -39,7 +59,7 @@ export const fileDistribusiPage = async (req, res) => {
         order: [["createdAt", "DESC"]],
       });
     } else {
-      // Admin melihat semua file + relasi pengirim dan penerima
+      // Admin: semua file
       allFiles = await FileDistribusi.findAll({
         include: [
           { model: User, as: "pengirim", attributes: ["nama_lengkap"] },
@@ -49,13 +69,18 @@ export const fileDistribusiPage = async (req, res) => {
       });
     }
 
+    console.log("User role:", user.role);
+    console.log("Resolved koordinatorIdTarget:", koordinatorIdTarget);
+
+    // 🔻 Tambahkan `koordinatorIdTarget` ke render
     res.render("data_fileDistribusi", {
       title,
       user,
       message,
       allFiles,
-      roles: ["koordinator wali", "kepala lapas"], // untuk admin
+      roles: ["koordinator wali", "kepala lapas"],
       koordinatorList,
+      koordinatorIdTarget, // ✅ kirim ke tampilan
     });
   } catch (err) {
     console.error(err);
@@ -65,8 +90,17 @@ export const fileDistribusiPage = async (req, res) => {
 
 export const uploadFileDistribusi = async (req, res) => {
   try {
-    const { judul_file, ditujukan_ke, ditujukan_ke_id, koordinatorId } =
-      req.body;
+    const {
+      judul_file,
+      ditujukan_ke: raw_ditujukan_ke,
+      ditujukan_ke_id,
+      koordinatorId,
+    } = req.body;
+
+    const ditujukan_ke = Array.isArray(raw_ditujukan_ke)
+      ? raw_ditujukan_ke[0]
+      : raw_ditujukan_ke;
+
     const user = req.session.user;
 
     if (!user || !user.id_user) return res.status(403).send("Akses ditolak.");
