@@ -91,6 +91,21 @@ export const updateUserPassword = async (userId, newPassword) => {
     }
 };
 
+
+export const countWaliByKoordinator = async (koordinatorId) => {
+  try {
+    return await User.count({
+      where: {
+        role: 'wali pemasyarakatan',
+        koordinatorId: koordinatorId,
+      },
+    });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
 export const deleteUserById = async (userId) => {
     try {
         const deletedUser = await User.destroy({

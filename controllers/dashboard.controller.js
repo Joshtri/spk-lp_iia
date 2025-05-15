@@ -2,31 +2,6 @@ import * as kriteriaRepository from "../repositories/kriteria.repository.js";
 import * as narapidanaRepository from "../repositories/narapidana.repository.js";
 import * as userRepository from "../repositories/user.repository.js";
 
-// export const dashboardPage = async(req,res)=>{
-//     const title = "Dashboard";
-//     const totalKriteria = await kriteriaRepository.totalKriteria();
-//     const totalNarapidana = await narapidanaRepository.totalNarapidana();
-//     const totalUser = await userRepository.totalUser();
-
-//     // Dapatkan data user dari session dan gunakan sesuai kebutuhan
-//     const userData = req.session.user;
-
-//     const messageLoginSuccess = req.flash('loginSuccessInfo');
-
-//     try {
-//         res.render('dashboard',{
-//             title,
-//             user: userData,
-//             totalKriteria,
-//             totalNarapidana,
-//             totalUser,
-//             messageLoginSuccess,
-//         });
-//     } catch (error) {
-//         throw error;
-//     }
-// };
-
 export const dashboardPage = async (req, res) => {
   const title = "Dashboard";
   const userData = req.session.user;
@@ -74,7 +49,16 @@ export const dashboardPage = async (req, res) => {
         viewData.totalWaliPemasyarakatan = totalWaliPemasyarakatan;
         viewData.totalKoordinatorWali = totalKoordinatorWali;
       }
-    } else if (role === "koordinator wali" || role === "kepala lapas") {
+    } else if (role === "koordinator wali") {
+      const totalWaliPemasyarakatan =
+        await userRepository.countWaliByKoordinator(userData.id_user);
+
+      viewData = {
+        ...viewData,
+        totalNarapidana,
+        totalWaliPemasyarakatan,
+      };
+    } else if (role === "kepala lapas") {
       const totalWaliPemasyarakatan = await userRepository.countByRole(
         "wali pemasyarakatan"
       );
