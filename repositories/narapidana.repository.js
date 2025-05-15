@@ -19,6 +19,19 @@ export const createNarapidana = async (narapidanaData) => {
   }
 };
 
+
+export const countByWaliId = async (waliId) => {
+  try {
+    return await Narapidana.count({
+      where: { waliId },
+    });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+
+
 // narapidanaRepository.js
 
 export const getNarapidana = async (skip, limit, waliId) => {

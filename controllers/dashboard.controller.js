@@ -40,7 +40,16 @@ export const dashboardPage = async (req, res) => {
       messageLoginSuccess,
     };
 
-    const totalNarapidana = await narapidanaRepository.totalNarapidana();
+    // const totalNarapidana = await narapidanaRepository.totalNarapidana();
+    let totalNarapidana = 0;
+
+    if (role === "wali pemasyarakatan") {
+      totalNarapidana = await narapidanaRepository.countByWaliId(
+        userData.id_user
+      );
+    } else {
+      totalNarapidana = await narapidanaRepository.totalNarapidana();
+    }
 
     if (role === "admin" || role === "wali pemasyarakatan") {
       const totalKriteria = await kriteriaRepository.totalKriteria();
@@ -55,14 +64,16 @@ export const dashboardPage = async (req, res) => {
 
       // Tambahkan juga jika admin
       if (role === "admin") {
-        const totalWaliPemasyarakatan = await userRepository.countByRole("wali pemasyarakatan");
-        const totalKoordinatorWali = await userRepository.countByRole("koordinator wali");
+        const totalWaliPemasyarakatan = await userRepository.countByRole(
+          "wali pemasyarakatan"
+        );
+        const totalKoordinatorWali = await userRepository.countByRole(
+          "koordinator wali"
+        );
 
         viewData.totalWaliPemasyarakatan = totalWaliPemasyarakatan;
         viewData.totalKoordinatorWali = totalKoordinatorWali;
       }
-
-
     } else if (role === "koordinator wali" || role === "kepala lapas") {
       const totalWaliPemasyarakatan = await userRepository.countByRole(
         "wali pemasyarakatan"
