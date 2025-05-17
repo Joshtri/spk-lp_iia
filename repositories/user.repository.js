@@ -1,3 +1,4 @@
+import db from '../config/dbConfig.js';
 import User from '../models/user.model.js';
 import bcrypt from 'bcrypt'
 
@@ -12,6 +13,25 @@ import bcrypt from 'bcrypt'
 //         });
 //     });
 // };
+
+export async function getWalisByKoordinator(koordinatorId) {
+  return await User.findAll({
+    where: {
+      role: 'wali pemasyarakatan',
+      koordinatorId: koordinatorId, // pastikan kamu menyimpan `koordinatorId` di table user
+    },
+  });
+}
+
+export async function countGroupedByRole() {
+  return await User.findAll({
+    attributes: ['role', [db.fn('COUNT', db.col('id_user')), 'total']],
+    group: ['role'],
+    raw: true,
+  });
+}
+
+
 
 // // Mengecek apakah username sudah terdaftar
 // export const checkUsernameExists = (username) => {

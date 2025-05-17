@@ -15,13 +15,32 @@ export const dashboardPage = async (req, res) => {
       messageLoginSuccess,
     };
 
-    // const totalNarapidana = await narapidanaRepository.totalNarapidana();
     let totalNarapidana = 0;
 
     if (role === "wali pemasyarakatan") {
       totalNarapidana = await narapidanaRepository.countByWaliId(
         userData.id_user
       );
+    } else if (role === "koordinator wali") {
+      const waliList = await userRepository.getWalisByKoordinator(
+        userData.id_user
+      );
+      const waliIds = waliList.map((w) => w.id_user);
+      totalNarapidana = await narapidanaRepository.countByWaliIds(waliIds);
+
+      const jumlahPerWali = await narapidanaRepository.countGroupedByWali(
+        waliIds
+      );
+      viewData.chartData = {
+        type: "bar",
+        title: "Jumlah Narapidana per Wali",
+        data: jumlahPerWali.map((w) => ({
+          name: w.nama_wali,
+          total: w.total,
+        })),
+      };
+      totalNarapidana, // ✅ DITAMBAHKAN DI SINI
+        (viewData.totalWaliPemasyarakatan = waliIds.length);
     } else {
       totalNarapidana = await narapidanaRepository.totalNarapidana();
     }
@@ -37,7 +56,6 @@ export const dashboardPage = async (req, res) => {
         totalUser,
       };
 
-      // Tambahkan juga jika admin
       if (role === "admin") {
         const totalWaliPemasyarakatan = await userRepository.countByRole(
           "wali pemasyarakatan"
@@ -48,15 +66,54 @@ export const dashboardPage = async (req, res) => {
 
         viewData.totalWaliPemasyarakatan = totalWaliPemasyarakatan;
         viewData.totalKoordinatorWali = totalKoordinatorWali;
+
+        // Dapatkan distribusi narapidana per wali
+        const napiPerWali = await narapidanaRepository.countGroupedByWaliAll();
+        viewData.chartData = {
+          type: "bar",
+          title: "Jumlah Narapidana per Wali Pemasyarakatan",
+          data: napiPerWali.map((w) => ({
+            name: w.wali.nama_lengkap,
+            total: w.total,
+          })),
+        };
+      }
+      if (role === "wali pemasyarakatan") {
+        const napiRegisterSummary =
+          await narapidanaRepository.countGroupedByRegister(userData.id_user);
+        viewData.chartData = {
+          type: "bar",
+          title: "Kategori Register Narapidana",
+          data: napiRegisterSummary.map((s) => ({
+            name: s.register,
+            total: s.total,
+          })),
+        };
       }
     } else if (role === "koordinator wali") {
-      const totalWaliPemasyarakatan =
-        await userRepository.countWaliByKoordinator(userData.id_user);
+      const waliList = await userRepository.getWalisByKoordinator(
+        userData.id_user
+      );
+      const waliIds = waliList.map((w) => w.id_user);
+
+      totalNarapidana = await narapidanaRepository.countByWaliIds(waliIds);
+
+      const jumlahPerWali = await narapidanaRepository.countGroupedByWali(
+        waliIds
+      );
 
       viewData = {
         ...viewData,
-        totalNarapidana,
-        totalWaliPemasyarakatan,
+        totalNarapidana, // ✅ DITAMBAHKAN DI SINI
+        totalWaliPemasyarakatan: waliIds.length,
+        chartData: {
+          type: "bar",
+          title: "Jumlah Narapidana per Wali",
+          data: jumlahPerWali.map((w) => ({
+            name: w.wali.nama_lengkap, // ✅ benar
+            total: w.total,
+          })),
+        },
       };
     } else if (role === "kepala lapas") {
       const totalWaliPemasyarakatan = await userRepository.countByRole(
@@ -67,6 +124,16 @@ export const dashboardPage = async (req, res) => {
         ...viewData,
         totalNarapidana,
         totalWaliPemasyarakatan,
+      };
+
+      const napiPerWali = await narapidanaRepository.countGroupedByWaliAll();
+      viewData.chartData = {
+        type: "bar",
+        title: "Jumlah Narapidana per Wali Pemasyarakatan",
+        data: napiPerWali.map((d) => ({
+          name: d.wali.nama_lengkap,
+          total: d.total,
+        })),
       };
     }
 

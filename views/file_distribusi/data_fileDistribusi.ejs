@@ -144,6 +144,15 @@
                   >
                     Lihat
                   </a>
+
+                    <a
+                      href="/data/file-distribusi/view/<%= file.id_file %>"
+                      class="button is-small is-success"
+                      download="<%= file.judul_file %>"
+                      target="_blank"
+                    >
+                      Download
+                    </a>
                 </td>
               </tr>
               <% }); %>

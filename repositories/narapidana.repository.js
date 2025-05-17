@@ -2,6 +2,7 @@ import db from "../config/dbConfig.js";
 import Narapidana from "../models/narapidana.model.js";
 import TindakPidana from "../models/pidana.model.js";
 import User from "../models/user.model.js";
+import { Op } from "sequelize";
 
 export const totalNarapidana = async () => {
   try {
@@ -19,6 +20,93 @@ export const createNarapidana = async (narapidanaData) => {
   }
 };
 
+export async function countByWaliIds(waliIds) {
+  return await Narapidana.count({
+    where: {
+      waliId: {
+        [Op.in]: waliIds,
+      },
+    },
+  });
+}
+
+export async function countGroupedByWaliAll() {
+  return await Narapidana.findAll({
+    attributes: [
+      "waliId",
+      [db.fn("COUNT", db.col("Narapidana.id_narapidana")), "total"]
+    ],
+    include: [
+      {
+        model: User,
+        as: "wali",
+        attributes: ["nama_lengkap"]
+      }
+    ],
+    group: ["waliId", "wali.id_user", "wali.nama_lengkap"],
+    raw: true,
+    nest: true,
+  });
+}
+
+
+export async function countGroupedByKoordinator() {
+  return await Narapidana.findAll({
+    attributes: [
+      [db.col("wali.koordinator.id_user"), "koordinatorId"],
+      [db.col("wali.koordinator.nama_lengkap"), "nama_koordinator"],
+      [db.fn("COUNT", db.col("Narapidana.id_narapidana")), "total"],
+    ],
+    include: [
+      {
+        model: User,
+        as: "wali",
+        attributes: [],
+        include: [
+          {
+            model: User,
+            as: "koordinator",
+            attributes: [],
+          },
+        ],
+      },
+    ],
+    group: ["wali.koordinator.id_user", "wali.koordinator.nama_lengkap"],
+    raw: true,
+  });
+}
+
+export async function countGroupedByRegister(waliId) {
+  return await Narapidana.findAll({
+    where: { waliId },
+    attributes: [
+      "register",
+      [db.fn("COUNT", db.col("id_narapidana")), "total"],
+    ],
+    group: ["register"],
+    raw: true,
+  });
+}
+
+// export async function countGroupedByStatus(waliId) {
+//   return await Narapidana.findAll({
+//     where: { waliId },
+//     attributes: ['status', [db.fn('COUNT', db.col('id')), 'total']],
+//     group: ['status'],
+//     raw: true,
+//   });
+// }
+
+export async function countGroupedByWali(waliIds) {
+  return await Narapidana.findAll({
+    where: { waliId: { [Op.in]: waliIds } },
+    attributes: ["waliId", [db.fn("COUNT", db.col("id_narapidana")), "total"]],
+    include: [{ model: User, as: "wali", attributes: ["nama_lengkap"] }],
+    group: ["waliId", "wali.id_user"],
+    raw: true,
+    nest: true,
+  });
+}
 
 export const countByWaliId = async (waliId) => {
   try {
@@ -29,8 +117,6 @@ export const countByWaliId = async (waliId) => {
     throw new Error(error.message);
   }
 };
-
-
 
 // narapidanaRepository.js
 
@@ -58,7 +144,6 @@ export const getNarapidana = async (skip, limit, waliId) => {
     throw new Error(error.message);
   }
 };
-
 
 export const getNarapidanaById = async (id) => {
   try {

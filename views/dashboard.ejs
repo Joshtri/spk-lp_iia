@@ -19,6 +19,7 @@
       src="https://unpkg.com/htmx.org@1.9.10"
       crossorigin="anonymous"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
       @media screen and (max-width: 768px) {
@@ -162,7 +163,17 @@
         <% } %>
 
       </section>
+
+      <div class="box mt-5">
+  <h4 class="title is-5 mb-3"><%= chartData?.title || 'Statistik' %></h4>
+<canvas id="dashboardChart" style="max-height: 250px; width: 100%;"></canvas>
+</div>
+
     </div>
+
+
+
+    
 
     <!-- JS Section -->
     <script>
@@ -222,5 +233,52 @@
         }
       });
     </script>
+
+    <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // ...kode notifikasi & interaksi sebelumnya...
+
+const chartData = <%- JSON.stringify(chartData || {}) %>;
+
+    if (chartData?.data?.length > 0) {
+      const ctx = document.getElementById("dashboardChart").getContext("2d");
+
+      new Chart(ctx, {
+        type: chartData.type || 'bar',
+        data: {
+    labels: chartData.labels || chartData.data.map(item => item.name),
+          datasets: [{
+            label: chartData.title,
+            // data: chartData.data.map(item => item.value),
+      data: chartData.data.map(item => item.total || item.value || item), // fleksibel
+
+            backgroundColor: [
+              '#42a5f5', '#66bb6a', '#ffa726', '#ef5350', '#ab47bc',
+              '#26a69a', '#d4e157', '#8d6e63'
+            ],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: chartData.type === 'pie' || chartData.type === 'doughnut',
+            },
+            tooltip: {
+              enabled: true,
+            }
+          },
+          scales: chartData.type === 'bar' || chartData.type === 'line' ? {
+            y: {
+              beginAtZero: true
+            }
+          } : {}
+        }
+      });
+    }
+  });
+</script>
+
   </body>
 </html>
