@@ -120,8 +120,13 @@ export const dashboardPage = async (req, res) => {
         "wali pemasyarakatan"
       );
 
+      const totalKoordinatorWali = await userRepository.countByRole(
+        "koordinator wali"
+      );
+
       viewData = {
         ...viewData,
+        totalKoordinatorWali,
         totalNarapidana,
         totalWaliPemasyarakatan,
       };
