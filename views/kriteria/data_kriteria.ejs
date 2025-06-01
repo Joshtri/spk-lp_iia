@@ -72,7 +72,7 @@
         
 
         <div class="field is-grouped">
-            <% if (user && user.role === 'admin') { %>
+            <% if (user && user.role === 'admin' && user.role == 'wali pemasyarakatan') { %>
             <button class="button is-small is-success is-light"  id="btnTambahData">Tambah Data Kriteria</button>
             <button class="button mx-2 is-small is-link is-light" id="btnTambahSub">Tambah Sub Kriteria</button>
             <% } %>
@@ -114,7 +114,7 @@
                                 <a href="/data/subKriteria/<%= kriteriaData[i].id_kriteria %>" data-tooltip="Lihat sub kriteria" class="has-text-black"><i class="fa-regular fa-eye"></i></a>
                             </button>
 
-                            <% if(user && user.role == 'admin') { %>
+                            <% if(user && user.role == 'admin' && user.role == 'wali pemasyarakatan') { %>
 
                                 
                                 <!-- Tambahkan tombol edit pada setiap baris tabel -->

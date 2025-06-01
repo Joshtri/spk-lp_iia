@@ -82,18 +82,18 @@
         <p class="control is-expanded">
             <!-- Dropdown untuk memilih periode -->
             <div class="select is-fullwidth">
-                <select id="periodeSelect">
-                    <option value="" disabled selected>Pilih Periode</option>
-                    <% hasilPerhitunganData.forEach(data => {
-                        const periodeValue = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
-                        if (!periodeUnik.has(periodeValue)) {
-                            periodeUnik.add(periodeValue); %>
-                            <option value="<%= data.Periode.periode_penilaian %>">
-                                <%= periodeValue %>
-                            </option>
-                    <%  }
-                    }); %>
-                </select>
+<select id="periodeSelect" onchange="filterByPeriode(this.value)">
+  <option value="" disabled <%= !selectedPeriode ? 'selected' : '' %>>Pilih Periode</option>
+  <% hasilPerhitunganData.forEach(data => {
+      const periodeValue = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
+      if (!periodeUnik.has(periodeValue)) {
+          periodeUnik.add(periodeValue); %>
+          <option value="<%= data.Periode.periode_penilaian %>" <%= selectedPeriode === data.Periode.periode_penilaian ? 'selected' : '' %>>
+              <%= periodeValue %>
+          </option>
+  <%  }
+  }); %>
+</select>
             </div>
         </p>
         <p class="control">
@@ -115,7 +115,9 @@
                         <th>Periode</th>
                         <th>Status Bebas</th>
 
+                        <!--
                         <th class="has-text-centered">Action</th>
+                        -->
                     </tr>
                 </thead>
                 <tbody  id="dataTable">
@@ -129,12 +131,14 @@
                             <td><%= hasilPerhitunganData[i].status_kelulusan %></td>
 
                             <td>
-                                <!-- Delete Form -->
-                                <form action="/adm/data/delete_hasil_perhitungan/<%= hasilPerhitunganData[i].id_hasil_perhitungan %>" method="POST">
-                                    <button class="button is-danger is-small" type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
+                                <!-- Delete Form
+                            
+                                    <form action="/adm/data/delete_hasil_perhitungan/<%= hasilPerhitunganData[i].id_hasil_perhitungan %>" method="POST">
+                                        <button class="button is-danger is-small" type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')">
                                         <i class="fa-solid fa-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                        </button>
+                                    </form>
+                                -->
                             </td>
                 
                         </tr>
@@ -184,6 +188,15 @@
         </div>
         <!-- End Pagination -->
     </div>
+
+    <script>
+  function filterByPeriode(value) {
+    const params = new URLSearchParams(window.location.search);
+    params.set("periode", value);
+    params.set("page", 1); // reset page ke 1
+    window.location.search = params.toString();
+  }
+</script>
     
     <script src="/js/liveSearchBar.js"></script>
     <script src="/js/navdrop.js"></script>

@@ -595,6 +595,7 @@ export const hasilPerhitunganPage = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
   const offset = (page - 1) * limit;
+  const selectedPeriode = req.query.periode || null;
 
   try {
     const narapidanaList = await Narapidana.findAll({
@@ -604,11 +605,17 @@ export const hasilPerhitunganPage = async (req, res) => {
 
     const namaNapiList = narapidanaList.map((napi) => napi.nama_narapidana);
 
+    const whereClause = {
+      nama_napi: namaNapiList,
+    };
+
+    if (selectedPeriode) {
+      whereClause["$Periode.periode_penilaian$"] = selectedPeriode;
+    }
+
     const { count, rows: hasilPerhitunganData } =
       await Hasil_Perhitungan.findAndCountAll({
-        where: {
-          nama_napi: namaNapiList,
-        },
+        where: whereClause,
         include: [
           {
             model: Periode,
@@ -628,6 +635,7 @@ export const hasilPerhitunganPage = async (req, res) => {
       hasilPerhitunganData,
       currentPage: page,
       totalPages,
+      selectedPeriode, // untuk dipakai di dropdown view
     });
   } catch (error) {
     console.error("Error get hasil perhitungan:", error);
