@@ -115,9 +115,19 @@ export const addPenilaianPage = async (req, res) => {
   try {
     const title = "Tambah Penilaian";
     const kriteriaData = await Kriteria.findAll();
+
+    // Filter register dengan kondisi yang diinginkan:
+    const allowedRegisterValues = [
+      "B1 pidahan > 1 tahun < 3 tahun & 3 > keatas",
+    ];
+    
+
     const narapidanaData = await Narapidana.findAll({
       where: {
-        waliId: userData.id_user, // ✅ Filter berdasarkan wali yang sedang login
+        waliId: userData.id_user, // Filter wali yg login
+        register: {
+          [Op.in]: allowedRegisterValues, // Filter register sesuai value yg diizinkan
+        },
       },
       include: [
         {
@@ -166,8 +176,7 @@ export const addPenilaianPage = async (req, res) => {
       kriteriaData,
       narapidanaData,
       periodeData,
-      statusPenilaian, // ← tambahan ini
-
+      statusPenilaian,
       subKriteriaData,
       penilaianMap,
       selectedPeriodeId,

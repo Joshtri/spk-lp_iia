@@ -28,7 +28,7 @@ import routeFileDistribusi from './routes/fileDistribusi.route.js';
 
 import db from './config/dbConfig.js';
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3300;
 
 // connectDB();
 
