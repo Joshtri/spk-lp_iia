@@ -82,18 +82,16 @@
         <p class="control is-expanded">
             <!-- Dropdown untuk memilih periode -->
             <div class="select is-fullwidth">
-<select id="periodeSelect" onchange="filterByPeriode(this.value)">
-  <option value="" disabled <%= !selectedPeriode ? 'selected' : '' %>>Pilih Periode</option>
-  <% hasilPerhitunganData.forEach(data => {
-      const periodeValue = `${data.Periode.tahun_periode} | ${data.Periode.periode_penilaian}`;
-      if (!periodeUnik.has(periodeValue)) {
-          periodeUnik.add(periodeValue); %>
-          <option value="<%= data.Periode.periode_penilaian %>" <%= selectedPeriode === data.Periode.periode_penilaian ? 'selected' : '' %>>
-              <%= periodeValue %>
-          </option>
-  <%  }
-  }); %>
-</select>
+              <select id="periodeSelect" onchange="filterByPeriode(this.value)">
+                <option value="" disabled <%= !selectedPeriode ? 'selected' : '' %>>Pilih Periode</option>
+                <% allPeriodes.forEach(p => {
+                  const value = p.periode_penilaian;
+                  const label = `${p.tahun_periode} | ${p.periode_penilaian}`;
+                %>
+                  <option value="<%= value %>" <%= selectedPeriode === value ? 'selected' : '' %>><%= label %></option>
+                <% }) %>
+              </select>
+
             </div>
         </p>
         <p class="control">

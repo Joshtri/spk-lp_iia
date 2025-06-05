@@ -613,6 +613,11 @@ export const hasilPerhitunganPage = async (req, res) => {
       whereClause["$Periode.periode_penilaian$"] = selectedPeriode;
     }
 
+    const allPeriodes = await Periode.findAll({
+      attributes: ["tahun_periode", "periode_penilaian"],
+      order: [["tahun_periode", "DESC"]],
+    });
+
     const { count, rows: hasilPerhitunganData } =
       await Hasil_Perhitungan.findAndCountAll({
         where: whereClause,
@@ -635,6 +640,8 @@ export const hasilPerhitunganPage = async (req, res) => {
       hasilPerhitunganData,
       currentPage: page,
       totalPages,
+      allPeriodes,
+
       selectedPeriode, // untuk dipakai di dropdown view
     });
   } catch (error) {
