@@ -101,7 +101,13 @@
                 <i class="fas fa-file-pdf"></i> Export PDF
             </button>
         </p>
+        
+    <p class="control">
+  <a href="/adm/data/hasil_perhitungan" class="button is-light">Reset Filter</a>
+</p>
     </div>
+
+
     
                 
         
@@ -147,15 +153,15 @@
                     <!-- Other table data -->
                 </tbody>
             </table>
-            <nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
+<nav class="pagination is-centered mt-5" role="navigation" aria-label="pagination">
   <% if (currentPage > 1) { %>
-    <a class="pagination-previous" href="?page=<%= currentPage - 1 %>">Previous</a>
+    <a class="pagination-previous" href="?page=<%= currentPage - 1 %><%= selectedPeriode ? `&periode=${selectedPeriode}` : '' %>">Previous</a>
   <% } else { %>
     <a class="pagination-previous" disabled>Previous</a>
   <% } %>
 
   <% if (currentPage < totalPages) { %>
-    <a class="pagination-next" href="?page=<%= currentPage + 1 %>">Next</a>
+    <a class="pagination-next" href="?page=<%= currentPage + 1 %><%= selectedPeriode ? `&periode=${selectedPeriode}` : '' %>">Next</a>
   <% } else { %>
     <a class="pagination-next" disabled>Next</a>
   <% } %>
@@ -163,11 +169,12 @@
   <ul class="pagination-list">
     <% for (let i = 1; i <= totalPages; i++) { %>
       <li>
-        <a class="pagination-link <%= currentPage === i ? 'is-current' : '' %>" href="?page=<%= i %>"><%= i %></a>
+        <a class="pagination-link <%= currentPage === i ? 'is-current' : '' %>" href="?page=<%= i %><%= selectedPeriode ? `&periode=${selectedPeriode}` : '' %>"><%= i %></a>
       </li>
     <% } %>
   </ul>
 </nav>
+
 
         </div>
 
